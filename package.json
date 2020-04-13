@@ -11,7 +11,8 @@
     "react-dom": "^16.13.1",
     "react-redux": "^7.2.0",
     "react-scripts": "3.4.1",
-    "redux": "^4.0.5"
+    "redux": "^4.0.5",
+    "secure-ls": "^1.2.6"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -34,6 +35,5 @@
       "last 1 safari version"
     ]
   },
-  "devDependencies": {
-  }
+  "devDependencies": {}
 }
