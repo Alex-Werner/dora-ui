@@ -1,50 +1,59 @@
 export default (state = {}, action) => {
-  switch(action.type){
-    case 'WALLETS_LOADED':
-      return{
+  switch (action.type) {
+    case "WALLETS_LOADED":
+      return {
         ...state,
         availableWallets: action.payload,
         isLoading: false
       };
 
-    case 'WALLET_REQUESTED':
-      return{
+    case "DO_WALLET_CREATE":
+      return {
         ...state,
-        isCreating: true,
+        isLoading: true
       };
 
-    case 'WALLET_CREATED':
-      return{
+    case "WALLET_CREATED":
+      return {
         ...state,
-        selected: action.payload
-      };
-
-    case 'WALLET_SAVE_REQUESTED':
-      return{
-        ...state,
-        selected:{
-          ...state.selected,
-          name: action.payload
+        isLoading: false,
+        newWallet: {
+          id: new Date().getTime(),
+          mnemonic: action.payload
         }
       };
 
-    case 'WALLET_SAVED':
-      return{
+    case "DO_WALLET_SAVE":
+      return {
         ...state,
-        isCreating: false,
-        availableWallets:[
+        newWallet: null,
+        lastAdded: state.newWallet.id,
+        availableWallets: {
           ...state.availableWallets,
-          action.payload
-        ]
+          [state.newWallet.id]: {
+            mnemonic: state.newWallet.mnemonic,
+            name: action.payload
+          }
+        }
       };
 
-    case 'WALLET_SELECTED':
-      return{
+    case "DO_WALLET_SELECT":
+      return {
         ...state,
-        selected: state.availableWallets.find(w => w.mnemonic === action.payload)
+        isLoading: true,
+        currentWalletId: action.payload,
+        account: null
+      };
+
+    case "WALLET_READY":
+      return {
+        ...state,
+        isLoading: false,
+        account: action.payload.account,
+        identity: action.payload.identity
       };
 
     default:
       return state;
-  };
-}
+  }
+};

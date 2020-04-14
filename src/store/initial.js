@@ -1,6 +1,7 @@
 export default {
-  wallet:{
-    isLoading: true,
-    availableWallets: []
+  wallet: {
+    isLoading: false,
+    availableWallets: {},
+    selected: null
   }
 };

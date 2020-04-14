@@ -1,26 +1,28 @@
-import React from 'react';
-import {connect} from 'react-redux';
+import React from "react";
+import { connect } from "react-redux";
 
-import './App.css';
-import Wallet from './Components/Wallet';
+import "./App.css";
+import Wallet from "./Components/Wallet";
+import PageCreateApplication from "./Components/PageCreateApplication";
 
-function App({init}) {
+function App({ init }) {
   React.useEffect(() => {
     init();
   }, [init]);
 
   return (
-	<div className="container">
+    <div className="container">
       <Wallet />
-	</div>
+      <PageCreateApplication />
+    </div>
   );
 }
 
 const stateToProps = state => ({});
 const dispatchToProps = dispatch => {
-  return{
-    init(){
-      dispatch({type: 'INIT'});
+  return {
+    init() {
+      dispatch({ type: "INIT" });
     }
   };
 };
