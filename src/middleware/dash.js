@@ -57,9 +57,8 @@ export default store => next => async action => {
         unconfirmedBalance: client.account.getUnconfirmedBalance()
       };
 
-      store.dispatch({ type: "WALLET_READY", payload: walletAccount });
-
       const storedWalletIdentity = ls.get(`identity:${selectedWalletId}`);
+      const storedWalletApps = ls.get(`apps:${selectedWalletId}`) || "{}";
       const walletIdentity = storedWalletIdentity
         ? storedWalletIdentity
         : await client.platform.identities.register("user");
@@ -69,15 +68,62 @@ export default store => next => async action => {
         type: "WALLET_READY",
         payload: {
           account: walletAccount,
-          identityId: walletIdentity
+          identityId: walletIdentity,
+          apps: JSON.parse(storedWalletApps)
         }
       });
-
       break;
 
     case "DO_FIND_IDENTITY":
       const createdIdentity = await client.platform.identities.register("user");
       ls.set(`identity:${action.payload}`, createdIdentity);
+      break;
+
+    case "DO_CREATE_CONTRACT":
+      const storedContractIdentity = store.getState().create.contract.identity;
+      const contractIdentityId = storedContractIdentity
+        ? storedContractIdentity
+        : await client.platform.identities.register("application");
+
+      store.dispatch({
+        type: "CONTRACT_IDENTITY_CREATED",
+        payload: contractIdentityId
+      });
+
+      const contractIdentity = await client.platform.identities.get(
+        contractIdentityId
+      );
+      const contractJSON = JSON.parse(action.payload);
+      const createdContract = await client.platform.contracts.create(
+        contractJSON,
+        contractIdentity
+      );
+
+      await client.platform.contracts.broadcast(
+        createdContract,
+        contractIdentity
+      );
+
+      store.dispatch({ type: "CONTRACT_CREATED" });
+      break;
+
+    case "DO_REGISTER_APP_NAME":
+      const appIdentityIdToRegister = store.getState().create.contract.identity;
+      const nameRegIdentity = await client.platform.identities.get(
+        appIdentityIdToRegister,
+        "application"
+      );
+
+      await client.platform.names.register(action.payload, nameRegIdentity);
+
+      const appWallet = store.getState().wallet.currentWalletId;
+      const currentStoredApps = JSON.parse(ls.get(`apps:${appWallet}`) || "{}");
+      const newStoredApps = JSON.stringify({
+        ...currentStoredApps,
+        [action.payload]: appIdentityIdToRegister
+      });
+
+      ls.set(`apps:${appWallet}`, newStoredApps);
       break;
 
     default:

@@ -4,6 +4,7 @@ import { connect } from "react-redux";
 import "./App.css";
 import Wallet from "./Components/Wallet";
 import PageCreateApplication from "./Components/PageCreateApplication";
+import PageEditApplications from "./Components/PageEditApplications";
 
 function App({ init }) {
   React.useEffect(() => {
@@ -13,12 +14,20 @@ function App({ init }) {
   return (
     <div className="container">
       <Wallet />
-      <PageCreateApplication />
+      <React.Suspense fallback={"Loading..."}>
+        {/*<PageCreateApplication />*/}
+        <PageEditApplications />
+      </React.Suspense>
     </div>
   );
 }
 
-const stateToProps = state => ({});
+const stateToProps = state => {
+  return {
+    isReady: !!state.wallet.selected
+  };
+};
+
 const dispatchToProps = dispatch => {
   return {
     init() {
@@ -27,4 +36,4 @@ const dispatchToProps = dispatch => {
   };
 };
 
-export default connect(stateToProps, dispatchToProps)(App);
+export default connect(stateToProps, dispatchToProps)(React.memo(App));

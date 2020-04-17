@@ -1,6 +1,14 @@
 .wallet {
   position: fixed;
-  width: 600px;
-  left: 0;
+  width: 400px;
+  right: 0;
   top: 0;
+  background: #ccc;
+  border-left: 1px solid #ddd;
+  padding: 10px;
+  height: 100%;
+}
+.json-editor {
+  width: 100%;
+  max-width: 500px;
 }

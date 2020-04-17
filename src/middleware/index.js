@@ -1,5 +1,5 @@
-import {applyMiddleware} from 'redux';
+import { applyMiddleware } from "redux";
 
-import wallet from './wallet';
+import dash from "./dash";
 
-export default applyMiddleware(wallet);
+export default applyMiddleware(dash);

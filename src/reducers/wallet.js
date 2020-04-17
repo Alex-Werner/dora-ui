@@ -1,4 +1,11 @@
-export default (state = {}, action) => {
+const initial = {
+  isLoading: false,
+  availableWallets: {},
+  apps: {},
+  currentWalletId: null
+};
+
+export default (state = initial, action) => {
   switch (action.type) {
     case "WALLETS_LOADED":
       return {
