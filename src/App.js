@@ -2,32 +2,35 @@ import React from "react";
 import { connect } from "react-redux";
 
 import "./App.css";
-import Wallet from "./Components/Wallet";
+import Account from "./Components/Account";
+import AccountModal from "./Components/AccountModal";
 // import PageCreateApplication from "./Components/PageCreateApplication";
 // import PageEditApplications from "./Components/PageEditApplications";
 // import DevOnlyCharacterApp from "./Components/DevOnlyCharacterApp";
 
-function App({ init, isReady }) {
+function App({ init }) {
   React.useEffect(() => {
     init();
   }, [init]);
 
   return (
-    <div className="container">
-      <Wallet />
-      <React.Suspense fallback={"Loading..."}>
-        {/* <PageCreateApplication /> */}
-        {/* <PageEditApplications /> */}
-        {/* {isReady && <DevOnlyCharacterApp />} */}
-      </React.Suspense>
+    <div id="dora">
+      <AccountModal />
+      <header>
+        <Account />
+      </header>
+      <div className="container">
+        <React.Suspense fallback={"Loading..."}>
+          {/* <PageCreateApplication /> */}
+          {/* <PageEditApplications /> */}
+        </React.Suspense>
+      </div>
     </div>
   );
 }
 
 const stateToProps = state => {
-  return {
-    isReady: !!state.wallet.currentWalletId
-  };
+  return {};
 };
 
 const dispatchToProps = dispatch => {

@@ -1,7 +1,7 @@
 import { combineReducers } from "redux";
 
-import wallet from "./wallet";
+import account from "./account";
 import create from "./create";
 import apps from "./apps";
 
-export default combineReducers({ wallet, create, apps });
+export default combineReducers({ account, create, apps });

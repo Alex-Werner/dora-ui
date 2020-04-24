@@ -1,12 +1,16 @@
 import Dash from "dash";
 import SecureLS from "secure-ls";
 
+import { DASH_NETWORK } from "../dora.config";
+
 const ls = new SecureLS();
 let client;
 
 const fns = {
   INIT,
-  DO_WALLET_CREATE
+  DO_CREATE_ACCOUNT,
+  DO_SAVE_NEW_ACCOUNT,
+  DO_SELECT_ACCOUNT
 };
 
 export default store => next => action => {
@@ -18,69 +22,53 @@ export default store => next => action => {
 };
 
 export async function INIT(payload, dispatch) {
-  const loadedWallets = lsGet("saved_wallets", {});
-  const currentWalletId = lsGet("selected_wallet");
+  const availableAccounts = lsGet("saved_accounts", {});
+  const selectedAccountId = lsGet("selected_account_id");
 
-  dispatch({ type: "WALLETS_LOADED", payload: loadedWallets });
+  dispatch({ type: "AVAILABLE_ACCOUNTS_LOADED", payload: availableAccounts });
 
-  if (currentWalletId) {
-    dispatch({ type: "DO_WALLET_SELECT", payload: currentWalletId });
+  if (selectedAccountId) {
+    dispatch({ type: "DO_SELECT_ACCOUNT", payload: selectedAccountId });
   }
 }
 
-export async function DO_WALLET_CREATE(payload, dispatch) {
+export async function DO_CREATE_ACCOUNT(payload, dispatch) {
   client = new Dash.Client({
-    network: "testnet",
+    network: DASH_NETWORK,
     mnemonic: null
   });
 
   await client.isReady();
 
   const newWalletMnemonic = client.wallet.exportWallet();
-  dispatch({ type: "WALLET_CREATED", payload: newWalletMnemonic });
+  dispatch({ type: "ACCOUNT_CREATED", payload: newWalletMnemonic });
 }
 
-export async function DO_WALLET_SAVE(payload, dispatch, state) {
-  const walletToSelect = state.wallet.lastAdded;
-  dispatch({ type: "DO_WALLET_SELECT", payload: walletToSelect });
-
-  lsSet("saved_wallets", state.wallet.availableWallets);
+export async function DO_SAVE_NEW_ACCOUNT(payload, dispatch, state) {
+  lsSet("saved_accounts", state.account.availableAccounts);
 }
 
-// async function DO_WALLET_SELECT(payload, dispatch, state){
-//       const selectedWalletId = state.wallet.currentWalletId;
-//       const wallet = state.wallet.availableWallets[selectedWalletId];
-//       lsSet("selected_wallet", selectedWalletId);
+export async function DO_SELECT_ACCOUNT(payload, dispatch, state) {
+  const accountId = state.account.selectedAccountId;
+  lsSet("selected_account_id", accountId);
 
-//       client = new Dash.Client({
-//         network: "testnet",
-//         mnemonic: wallet.mnemonic
-//       });
+  const { mnemonic } = state.account.availableAccounts[accountId];
 
-//       await client.isReady();
+  client = new Dash.Client({
+    network: DASH_NETWORK,
+    mnemonic
+  });
 
-//       const walletAccount = {
-//         address: client.account.getUnusedAddress().address,
-//         confirmedBalance: client.account.getConfirmedBalance(),
-//         unconfirmedBalance: client.account.getUnconfirmedBalance()
-//       };
+  await client.isReady();
 
-//       const storedWalletIdentity = lsGet(`identity:${selectedWalletId}`);
-//       const storedWalletApps = lsGet(`apps:${selectedWalletId}`, {});
-//       const walletIdentity = storedWalletIdentity
-//         ? storedWalletIdentity
-//         : await client.platform.identities.register("user");
+  const account = {
+    address: client.account.getUnusedAddress().address,
+    confirmedBalance: client.account.getConfirmedBalance(),
+    unconfirmedBalance: client.account.getUnconfirmedBalance()
+  };
 
-//       ls.set(`identity:${selectedWalletId}`, walletIdentity);
-//       store.dispatch({
-//         type: "WALLET_READY",
-//         payload: {
-//           account: walletAccount,
-//           identityId: walletIdentity,
-//           apps: JSON.parse(storedWalletApps)
-//         }
-//       });
-// }
+  dispatch({ type: "ACCOUNT_READY", payload: account });
+}
 
 /*
  * Utility functions
