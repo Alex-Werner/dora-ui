@@ -3,10 +3,11 @@ import { connect } from "react-redux";
 
 import "./App.css";
 import Wallet from "./Components/Wallet";
-import PageCreateApplication from "./Components/PageCreateApplication";
-import PageEditApplications from "./Components/PageEditApplications";
+// import PageCreateApplication from "./Components/PageCreateApplication";
+// import PageEditApplications from "./Components/PageEditApplications";
+// import DevOnlyCharacterApp from "./Components/DevOnlyCharacterApp";
 
-function App({ init }) {
+function App({ init, isReady }) {
   React.useEffect(() => {
     init();
   }, [init]);
@@ -15,8 +16,9 @@ function App({ init }) {
     <div className="container">
       <Wallet />
       <React.Suspense fallback={"Loading..."}>
-        {/*<PageCreateApplication />*/}
-        <PageEditApplications />
+        {/* <PageCreateApplication /> */}
+        {/* <PageEditApplications /> */}
+        {/* {isReady && <DevOnlyCharacterApp />} */}
       </React.Suspense>
     </div>
   );
@@ -24,7 +26,7 @@ function App({ init }) {
 
 const stateToProps = state => {
   return {
-    isReady: !!state.wallet.selected
+    isReady: !!state.wallet.currentWalletId
   };
 };
 

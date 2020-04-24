@@ -4,129 +4,97 @@ import SecureLS from "secure-ls";
 const ls = new SecureLS();
 let client;
 
-export default store => next => async action => {
+const fns = {
+  INIT,
+  DO_WALLET_CREATE
+};
+
+export default store => next => action => {
   next(action);
 
-  switch (action.type) {
-    case "INIT":
-      const loadedWallets = JSON.parse(ls.get("saved_wallets") || "{}");
-      const currentWalletId = ls.get("selected_wallet");
-
-      store.dispatch({ type: "WALLETS_LOADED", payload: loadedWallets });
-
-      if (currentWalletId) {
-        store.dispatch({ type: "DO_WALLET_SELECT", payload: currentWalletId });
-      }
-      break;
-
-    case "DO_WALLET_CREATE":
-      client = new Dash.Client({
-        network: "testnet",
-        mnemonic: null
-      });
-
-      await client.isReady();
-
-      const newWalletMnemonic = client.wallet.exportWallet();
-      store.dispatch({ type: "WALLET_CREATED", payload: newWalletMnemonic });
-      break;
-
-    case "DO_WALLET_SAVE":
-      const walletToSelect = store.getState().wallet.lastAdded;
-      const walletsToSave = store.getState().wallet.availableWallets;
-      ls.set("saved_wallets", JSON.stringify(walletsToSave));
-
-      store.dispatch({ type: "DO_WALLET_SELECT", payload: walletToSelect });
-      break;
-
-    case "DO_WALLET_SELECT":
-      const selectedWalletId = store.getState().wallet.currentWalletId;
-      const wallet = store.getState().wallet.availableWallets[selectedWalletId];
-      ls.set("selected_wallet", selectedWalletId);
-
-      client = new Dash.Client({
-        network: "testnet",
-        mnemonic: wallet.mnemonic
-      });
-
-      await client.isReady();
-
-      const walletAccount = {
-        address: client.account.getUnusedAddress().address,
-        confirmedBalance: client.account.getConfirmedBalance(),
-        unconfirmedBalance: client.account.getUnconfirmedBalance()
-      };
-
-      const storedWalletIdentity = ls.get(`identity:${selectedWalletId}`);
-      const storedWalletApps = ls.get(`apps:${selectedWalletId}`) || "{}";
-      const walletIdentity = storedWalletIdentity
-        ? storedWalletIdentity
-        : await client.platform.identities.register("user");
-
-      ls.set(`identity:${selectedWalletId}`, walletIdentity);
-      store.dispatch({
-        type: "WALLET_READY",
-        payload: {
-          account: walletAccount,
-          identityId: walletIdentity,
-          apps: JSON.parse(storedWalletApps)
-        }
-      });
-      break;
-
-    case "DO_FIND_IDENTITY":
-      const createdIdentity = await client.platform.identities.register("user");
-      ls.set(`identity:${action.payload}`, createdIdentity);
-      break;
-
-    case "DO_CREATE_CONTRACT":
-      const storedContractIdentity = store.getState().create.contract.identity;
-      const contractIdentityId = storedContractIdentity
-        ? storedContractIdentity
-        : await client.platform.identities.register("application");
-
-      store.dispatch({
-        type: "CONTRACT_IDENTITY_CREATED",
-        payload: contractIdentityId
-      });
-
-      const contractIdentity = await client.platform.identities.get(
-        contractIdentityId
-      );
-      const contractJSON = JSON.parse(action.payload);
-      const createdContract = await client.platform.contracts.create(
-        contractJSON,
-        contractIdentity
-      );
-
-      await client.platform.contracts.broadcast(
-        createdContract,
-        contractIdentity
-      );
-
-      store.dispatch({ type: "CONTRACT_CREATED" });
-      break;
-
-    case "DO_REGISTER_APP_NAME":
-      const appIdentityIdToRegister = store.getState().create.contract.identity;
-      const nameRegIdentity = await client.platform.identities.get(
-        appIdentityIdToRegister,
-        "application"
-      );
-
-      await client.platform.names.register(action.payload, nameRegIdentity);
-
-      const appWallet = store.getState().wallet.currentWalletId;
-      const currentStoredApps = JSON.parse(ls.get(`apps:${appWallet}`) || "{}");
-      const newStoredApps = JSON.stringify({
-        ...currentStoredApps,
-        [action.payload]: appIdentityIdToRegister
-      });
-
-      ls.set(`apps:${appWallet}`, newStoredApps);
-      break;
-
-    default:
-      return;
+  if (fns[action.type]) {
+    fns[action.type](action.payload, store.dispatch, store.getState());
   }
 };
+
+export async function INIT(payload, dispatch) {
+  const loadedWallets = lsGet("saved_wallets", {});
+  const currentWalletId = lsGet("selected_wallet");
+
+  dispatch({ type: "WALLETS_LOADED", payload: loadedWallets });
+
+  if (currentWalletId) {
+    dispatch({ type: "DO_WALLET_SELECT", payload: currentWalletId });
+  }
+}
+
+export async function DO_WALLET_CREATE(payload, dispatch) {
+  client = new Dash.Client({
+    network: "testnet",
+    mnemonic: null
+  });
+
+  await client.isReady();
+
+  const newWalletMnemonic = client.wallet.exportWallet();
+  dispatch({ type: "WALLET_CREATED", payload: newWalletMnemonic });
+}
+
+export async function DO_WALLET_SAVE(payload, dispatch, state) {
+  const walletToSelect = state.wallet.lastAdded;
+  dispatch({ type: "DO_WALLET_SELECT", payload: walletToSelect });
+
+  lsSet("saved_wallets", state.wallet.availableWallets);
+}
+
+// async function DO_WALLET_SELECT(payload, dispatch, state){
+//       const selectedWalletId = state.wallet.currentWalletId;
+//       const wallet = state.wallet.availableWallets[selectedWalletId];
+//       lsSet("selected_wallet", selectedWalletId);
+
+//       client = new Dash.Client({
+//         network: "testnet",
+//         mnemonic: wallet.mnemonic
+//       });
+
+//       await client.isReady();
+
+//       const walletAccount = {
+//         address: client.account.getUnusedAddress().address,
+//         confirmedBalance: client.account.getConfirmedBalance(),
+//         unconfirmedBalance: client.account.getUnconfirmedBalance()
+//       };
+
+//       const storedWalletIdentity = lsGet(`identity:${selectedWalletId}`);
+//       const storedWalletApps = lsGet(`apps:${selectedWalletId}`, {});
+//       const walletIdentity = storedWalletIdentity
+//         ? storedWalletIdentity
+//         : await client.platform.identities.register("user");
+
+//       ls.set(`identity:${selectedWalletId}`, walletIdentity);
+//       store.dispatch({
+//         type: "WALLET_READY",
+//         payload: {
+//           account: walletAccount,
+//           identityId: walletIdentity,
+//           apps: JSON.parse(storedWalletApps)
+//         }
+//       });
+// }
+
+/*
+ * Utility functions
+ */
+function lsGet(key, defaultValue) {
+  const result = ls.get(key);
+  if (!result || !result.length) return defaultValue;
+
+  const firstChar = result[0];
+  return firstChar === "{" || firstChar === "[" ? JSON.parse(result) : result;
+}
+
+function lsSet(key, value) {
+  const valueToSave =
+    !!value && typeof value === "object" ? JSON.stringify(value) : value;
+  ls.set(key, value);
+}

@@ -2,6 +2,15 @@
 # yarn lockfile v1
 
 
+"@apidevtools/json-schema-ref-parser@^8.0.0":
+  version "8.0.0"
+  resolved "https://registry.yarnpkg.com/@apidevtools/json-schema-ref-parser/-/json-schema-ref-parser-8.0.0.tgz#9eb749499b3f8d919e90bb141e4b6f67aee4692d"
+  integrity sha512-n4YBtwQhdpLto1BaUCyAeflizmIbaloGShsPyRtFf5qdFJxfssj+GgLavczgKJFa3Bq+3St2CKcpRJdjtB4EBw==
+  dependencies:
+    "@jsdevtools/ono" "^7.1.0"
+    call-me-maybe "^1.0.1"
+    js-yaml "^3.13.1"
+
 "@babel/code-frame@7.8.3", "@babel/code-frame@^7.0.0", "@babel/code-frame@^7.8.3":
   version "7.8.3"
   resolved "https://registry.yarnpkg.com/@babel/code-frame/-/code-frame-7.8.3.tgz#33e25903d7481181534e12ec0a25f16b6fcf419e"
@@ -971,16 +980,16 @@
   resolved "https://registry.yarnpkg.com/@csstools/normalize.css/-/normalize.css-10.1.0.tgz#f0950bba18819512d42f7197e56c518aa491cf18"
   integrity sha512-ij4wRiunFfaJxjB0BdrYHIH8FxBJpOwNPhhAcunlmPdXudL1WQV1qoP9un6JsEBAgQH+7UXyyjh0g7jTxXK6tg==
 
-"@dashevo/dapi-client@~0.11.0":
-  version "0.11.0"
-  resolved "https://registry.yarnpkg.com/@dashevo/dapi-client/-/dapi-client-0.11.0.tgz#2f3baf487cd4b494ac5ef1577fddd4dfca0772bd"
-  integrity sha512-JS477m7Q5cdwDIV2CUbH52styU4siaG7kOBQTcl+f9Cbq4FLqslBgh1IlqL3LRZn9k1Fb1O9pNgwcp8iw8VJqg==
+"@dashevo/dapi-client@~0.12.0":
+  version "0.12.0"
+  resolved "https://registry.yarnpkg.com/@dashevo/dapi-client/-/dapi-client-0.12.0.tgz#588c1e8ef4c285dd488d18a5e46c77ec057bf398"
+  integrity sha512-skJMITkwZpha7LX8MhZ6ykzGjbVt+oib6dlLu073gVelRiCRnpHsjvLJMZG9/RcoGze8HGYE1AvYVL0N5h05xA==
   dependencies:
     "@babel/polyfill" "^7.8.3"
     "@dashevo/dapi-grpc" "~0.12.1"
     "@dashevo/dash-spv" "^1.1.6"
     "@dashevo/dashcore-lib" "~0.18.0"
-    "@dashevo/dpp" "~0.11.0"
+    "@dashevo/dpp" "~0.12.0"
     axios "^0.19.2"
     cbor "^5.0.1"
     lodash "^4.17.15"
@@ -1050,20 +1059,20 @@
     lodash "^4.17.15"
     unorm "^1.4.1"
 
-"@dashevo/dpp@^0.11.0-dev.4", "@dashevo/dpp@~0.11.0", "@dashevo/dpp@~0.11.1":
-  version "0.11.1"
-  resolved "https://registry.yarnpkg.com/@dashevo/dpp/-/dpp-0.11.1.tgz#3cee9fb04d1a308f7efb2ec55d056a3d7c461c4a"
-  integrity sha512-H9UpWunAbL/IOWE1V1855UUxioqRUoStGbMFQ+5dAj/xLj3NXhQV3Y1wWn+Kvf6ExXkR1cmx2KintU8XpfeaHA==
+"@dashevo/dpp@~0.12.0", "@dashevo/dpp@~0.12.1":
+  version "0.12.1"
+  resolved "https://registry.yarnpkg.com/@dashevo/dpp/-/dpp-0.12.1.tgz#a6ad703519a8dd24231716b515160f14e5043a7c"
+  integrity sha512-NNIF5lq2bNh0lwFcMrEPYLtBp5G1YayFQBIiykTrgs8uf7zHtIgHBdr4/Rsf+D4Aw6/hgOrD7NH/YFmX9uBZVw==
   dependencies:
+    "@apidevtools/json-schema-ref-parser" "^8.0.0"
     "@dashevo/dashcore-lib" "~0.18.0"
-    ajv "^6.10.2"
+    ajv "^6.12.0"
     bs58 "^4.0.1"
     cbor "^5.0.1"
-    json-schema-ref-parser "^7.1.3"
     lodash.get "^4.4.2"
     lodash.mergewith "^4.6.2"
     lodash.set "^4.3.2"
-    multihashes "^0.4.15"
+    multihashes "^0.4.19"
 
 "@dashevo/grpc-common@^0.2.0":
   version "0.2.1"
@@ -1075,13 +1084,12 @@
     grpc-health-check "^1.7.0"
     lodash.get "^4.4.2"
 
-"@dashevo/wallet-lib@^6.0.1":
-  version "6.0.1"
-  resolved "https://registry.yarnpkg.com/@dashevo/wallet-lib/-/wallet-lib-6.0.1.tgz#6ab1bb0610be002db9a85d60383261af0f177b47"
-  integrity sha512-F23cVehnALFoFSBtCdsNfPTAcDUhnPJv7AVwkETC4wnHjqD9PcX6flZSbDYKJ8DjVmkUF4+VR5BOcCzQ53A8dw==
+"@dashevo/wallet-lib@^6.1.0":
+  version "6.1.0"
+  resolved "https://registry.yarnpkg.com/@dashevo/wallet-lib/-/wallet-lib-6.1.0.tgz#590621bea58f1e40b97c2c0d14c748f9a9800ba1"
+  integrity sha512-MpzCBBQV7jQZw8beDPV2qCLNAJpENZJ+PEoxQUqUSPc6w2rZnimQQ5FeVDaIBk4aHS5wO6Oq4vzwoAooUeH6GQ==
   dependencies:
     "@dashevo/dashcore-lib" "^0.18.0"
-    "@dashevo/dpp" "^0.11.0-dev.4"
     cbor "^5.0.1"
     crypto-js "^4.0.0"
     eventemitter2 "^6.0.0"
@@ -1291,6 +1299,11 @@
     "@types/istanbul-reports" "^1.1.1"
     "@types/yargs" "^15.0.0"
     chalk "^3.0.0"
+
+"@jsdevtools/ono@^7.1.0":
+  version "7.1.2"
+  resolved "https://registry.yarnpkg.com/@jsdevtools/ono/-/ono-7.1.2.tgz#373995bb40a6686589a7fcfec06b0e6e304ef6c6"
+  integrity sha512-qS/a24RA5FEoiJS9wiv6Pwg2c/kiUo3IVUQcfeM9JvsR6pM8Yx+yl/6xWYLckZCT5jpLNhslgjiA8p/XcGyMRQ==
 
 "@mrmlnc/readdir-enhanced@^2.2.1":
   version "2.2.1"
@@ -3738,15 +3751,15 @@ damerau-levenshtein@^1.0.4:
   resolved "https://registry.yarnpkg.com/damerau-levenshtein/-/damerau-levenshtein-1.0.6.tgz#143c1641cb3d85c60c32329e26899adea8701791"
   integrity sha512-JVrozIeElnj3QzfUIt8tB8YMluBJom4Vw9qTPpjGYQ9fYlB3D/rb6OordUxf3xeFB35LKWs0xqcO5U6ySvBtug==
 
-dash@^2.0.0:
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/dash/-/dash-2.0.0.tgz#e9ffd94aa3d8c5f1ed75c300e466ac60069b0e74"
-  integrity sha512-8xPz3MbL54FyEnYXMfsmukch6/sapso113wVl2rCKYwYAHOLEwV+bdCL71JGDkIcxFrvswCkkph8czd46Vr6Zw==
+dash@3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/dash/-/dash-3.0.0.tgz#c90f6b775e35270f4f1a8fa94d170b6072ee8adb"
+  integrity sha512-/4Cdwf8GtRp9pH2DSu08YOJ1Z69/w88p8sUd1m328/Hlpl5/3e4iG5Z+x+Gd4AxKt8wWeZhMFiQZNtQvtA3gLw==
   dependencies:
-    "@dashevo/dapi-client" "~0.11.0"
+    "@dashevo/dapi-client" "~0.12.0"
     "@dashevo/dashcore-lib" "^0.18.0"
-    "@dashevo/dpp" "~0.11.1"
-    "@dashevo/wallet-lib" "^6.0.1"
+    "@dashevo/dpp" "~0.12.1"
+    "@dashevo/wallet-lib" "^6.1.0"
     bs58 "^4.0.1"
 
 dashdash@^1.12.0:
@@ -6655,15 +6668,6 @@ json-parse-better-errors@^1.0.1, json-parse-better-errors@^1.0.2:
   resolved "https://registry.yarnpkg.com/json-parse-better-errors/-/json-parse-better-errors-1.0.2.tgz#bb867cfb3450e69107c131d1c514bab3dc8bcaa9"
   integrity sha512-mrqyZKfX5EhL7hvqcV6WG1yYjnjeuYDzDhhcAAUrq8Po85NBQBJP+ZDUT75qZQ98IkUoBqdkExkukOU7Ts2wrw==
 
-json-schema-ref-parser@^7.1.3:
-  version "7.1.4"
-  resolved "https://registry.yarnpkg.com/json-schema-ref-parser/-/json-schema-ref-parser-7.1.4.tgz#abb3f2613911e9060dc2268477b40591753facf0"
-  integrity sha512-AD7bvav0vak1/63w3jH8F7eHId/4E4EPdMAEZhGxtjktteUv9dnNB/cJy6nVnMyoTPBJnLwFK6tiQPSTeleCtQ==
-  dependencies:
-    call-me-maybe "^1.0.1"
-    js-yaml "^3.13.1"
-    ono "^6.0.0"
-
 json-schema-traverse@^0.4.1:
   version "0.4.1"
   resolved "https://registry.yarnpkg.com/json-schema-traverse/-/json-schema-traverse-0.4.1.tgz#69f6a87d9513ab8bb8fe63bdb0979c448e684660"
@@ -7472,7 +7476,7 @@ multicast-dns@^6.0.1:
     dns-packet "^1.3.1"
     thunky "^1.0.2"
 
-multihashes@^0.4.15:
+multihashes@^0.4.19:
   version "0.4.19"
   resolved "https://registry.yarnpkg.com/multihashes/-/multihashes-0.4.19.tgz#d7493cf028e48747122f350908ea13d12d204813"
   integrity sha512-ej74GAfA20imjj00RO5h34aY3pGUFyzn9FJZFWwdeUHlHTkKmv90FrNpvYT4jYf1XXCy5O/5EjVnxTaESgOM6A==
@@ -7884,11 +7888,6 @@ onetime@^5.1.0:
   integrity sha512-5NcSkPHhwTVFIQN+TUqXoS5+dlElHXdpAWu9I0HP20YOtIi+aZ0Ct82jdlILDxjLEAWwvm+qj1m6aEtsDVmm6Q==
   dependencies:
     mimic-fn "^2.1.0"
-
-ono@^6.0.0:
-  version "6.0.1"
-  resolved "https://registry.yarnpkg.com/ono/-/ono-6.0.1.tgz#1bc14ffb8af1e5db3f7397f75b88e4a2d64bbd71"
-  integrity sha512-5rdYW/106kHqLeG22GE2MHKq+FlsxMERZev9DCzQX1zwkxnFwBivSn5i17a5O/rDmOJOdf4Wyt80UZljzx9+DA==
 
 open@^7.0.2:
   version "7.0.3"
