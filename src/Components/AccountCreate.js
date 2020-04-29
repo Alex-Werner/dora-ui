@@ -42,4 +42,7 @@ const dispatchToProps = dispatch => {
   };
 };
 
-export default connect(stateToProps)(React.memo(AccountCreate));
+export default connect(
+  stateToProps,
+  dispatchToProps
+)(React.memo(AccountCreate));

@@ -1,35 +1,60 @@
 const initial = {
-  isLoading: true,
-  availableAccounts: {},
-  selectedAccountId: null,
-  isCreating: false,
-  newWallet: null,
-  apps: {}
+  loading: {},
+  showWizard: true,
+  isReady: false,
+  current: {},
+  available: {},
+  selectedId: null,
+  account: {}
 };
 
 export default (state = initial, action) => {
   switch (action.type) {
-    case "AVAILABLE_ACCOUNTS_LOADED":
+    case "ACCOUNTS_LOADED":
       return {
         ...state,
-        availableAccounts: action.payload,
-        isLoading: false
+        isReady: true,
+        available: action.payload.available,
+        selectedId: action.payload.selectedId
       };
 
-    case "DO_CREATE_ACCOUNT":
+    case "SELECT_ACCOUNT":
       return {
         ...state,
-        isCreating: true
+        current: {
+          ...state.available[action.payload],
+          id: action.payload
+        }
+      };
+
+    case "CREATE_ACCOUNT":
+      return {
+        ...state,
+        loading: {
+          ...state.loading,
+          createWallet: true
+        }
       };
 
     case "ACCOUNT_CREATED":
       return {
         ...state,
-        isLoading: false,
-        newWallet: {
+        loading: {
+          ...state.loading,
+          createWallet: false
+        },
+        current: {
           id: new Date().getTime(),
-          mnemonic: action.payload
+          mnemonic: action.payload,
+          username: null,
+          identity: null
         }
+      };
+
+    case "DO_HIDE_WIZARD":
+      return {
+        ...state,
+        showWizard: false
       };
 
     case "DO_START_ACCOUNT_IMPORT":
@@ -42,8 +67,7 @@ export default (state = initial, action) => {
     case "DO_CLOSE_ACCOUNT_MODAL":
       return {
         ...state,
-        isCreating: false,
-        isImporting: false,
+        isModalClosed: true,
         newWallet: null
       };
 
@@ -66,13 +90,15 @@ export default (state = initial, action) => {
         ...state,
         isLoading: true,
         selectedAccountId: action.payload || state.lastAdded,
-        account: null
+        account: {}
       };
 
     case "ACCOUNT_READY":
       return {
         ...state,
         isLoading: false,
+        isCreating: false,
+        isImporting: false,
         account: action.payload.account,
         username: action.payload.username
       };

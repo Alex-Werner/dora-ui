@@ -1,12 +1,17 @@
 import React from "react";
 import { connect } from "react-redux";
+import { ThemeProvider } from "emotion-theming";
 
-import "./App.css";
 import Account from "./Components/Account";
-import AccountModal from "./Components/AccountModal";
+import AccountSetupWizard from "./Components/AccountSetupWizard";
+import Logo from "./Components/Logo";
+import URL from "./Components/URL";
 // import PageCreateApplication from "./Components/PageCreateApplication";
 // import PageEditApplications from "./Components/PageEditApplications";
 // import DevOnlyCharacterApp from "./Components/DevOnlyCharacterApp";
+import Container from "./Components/Container";
+
+import theme from "./theme";
 
 function App({ init }) {
   React.useEffect(() => {
@@ -14,18 +19,27 @@ function App({ init }) {
   }, [init]);
 
   return (
-    <div id="dora">
-      <AccountModal />
-      <header>
-        <Account />
-      </header>
-      <div className="container">
-        <React.Suspense fallback={"Loading..."}>
-          {/* <PageCreateApplication /> */}
-          {/* <PageEditApplications /> */}
-        </React.Suspense>
-      </div>
-    </div>
+    <React.Fragment>
+      <ThemeProvider theme={theme}>
+        <AccountSetupWizard />
+        <Container
+          bg="dash"
+          alignItems="center"
+          py={[2, 0]}
+          justifyContent="space-between"
+        >
+          <Logo />
+          <URL />
+          <Account />
+        </Container>
+        <div className="container">
+          <React.Suspense fallback={"Loading..."}>
+            {/* <PageCreateApplication /> */}
+            {/* <PageEditApplications /> */}
+          </React.Suspense>
+        </div>
+      </ThemeProvider>
+    </React.Fragment>
   );
 }
 

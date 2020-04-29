@@ -1,11 +1,12 @@
 import React from "react";
 import { connect } from "react-redux";
+import { Box } from "rebass";
 
 const AccountMenu = React.lazy(() => import("./AccountMenu"));
 
 function Account({ isLoading, selectedAccountId }) {
   return (
-    <div className="account">
+    <Box flex="0 0 200px" ml={[0, 6]} px={3}>
       <React.Suspense fallback={<span>Loading...</span>}>
         {isLoading ? (
           <span>Loading...</span>
@@ -13,7 +14,7 @@ function Account({ isLoading, selectedAccountId }) {
           <AccountMenu />
         ) : null}
       </React.Suspense>
-    </div>
+    </Box>
   );
 }
 

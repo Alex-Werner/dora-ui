@@ -8,9 +8,9 @@ let client;
 
 const fns = {
   INIT,
-  DO_CREATE_ACCOUNT,
-  DO_SAVE_NEW_ACCOUNT,
-  DO_SELECT_ACCOUNT
+  CREATE_ACCOUNT,
+  ACCOUNTS_LOADED,
+  SELECT_ACCOUNT
 };
 
 export default store => next => action => {
@@ -22,17 +22,21 @@ export default store => next => action => {
 };
 
 export async function INIT(payload, dispatch) {
-  const availableAccounts = lsGet("saved_accounts", {});
-  const selectedAccountId = lsGet("selected_account_id");
+  const available = lsGet("saved_accounts", {});
+  const selectedId = lsGet("selected_account_id", null);
 
-  dispatch({ type: "AVAILABLE_ACCOUNTS_LOADED", payload: availableAccounts });
+  dispatch({ type: "ACCOUNTS_LOADED", payload: { available, selectedId } });
+}
 
-  if (selectedAccountId) {
-    dispatch({ type: "DO_SELECT_ACCOUNT", payload: selectedAccountId });
+export async function ACCOUNTS_LOADED(payload, dispatch) {
+  if (payload.selectedId) {
+    dispatch({ type: "SELECT_ACCOUNT", payload: payload.selectedId });
+  } else if (Object.keys(payload.available).length === 0) {
+    dispatch({ type: "CREATE_ACCOUNT" });
   }
 }
 
-export async function DO_CREATE_ACCOUNT(payload, dispatch) {
+export async function CREATE_ACCOUNT(payload, dispatch, state) {
   client = new Dash.Client({
     network: DASH_NETWORK,
     mnemonic: null
@@ -44,15 +48,12 @@ export async function DO_CREATE_ACCOUNT(payload, dispatch) {
   dispatch({ type: "ACCOUNT_CREATED", payload: newWalletMnemonic });
 }
 
-export async function DO_SAVE_NEW_ACCOUNT(payload, dispatch, state) {
-  lsSet("saved_accounts", state.account.availableAccounts);
-}
-
-export async function DO_SELECT_ACCOUNT(payload, dispatch, state) {
+export async function SELECT_ACCOUNT(payload, dispatch, state) {
+  if (!payload) return;
   const accountId = state.account.selectedAccountId;
   lsSet("selected_account_id", accountId);
 
-  const { mnemonic } = state.account.availableAccounts[accountId];
+  const { mnemonic, username } = state.account.availableAccounts[accountId];
 
   client = new Dash.Client({
     network: DASH_NETWORK,
@@ -61,13 +62,22 @@ export async function DO_SELECT_ACCOUNT(payload, dispatch, state) {
 
   await client.isReady();
 
+  const confirmedBalance = client.account.getConfirmedBalance();
+  const unconfirmedBalance = client.account.getUnconfirmedBalance();
+
   const account = {
     address: client.account.getUnusedAddress().address,
-    confirmedBalance: client.account.getConfirmedBalance(),
-    unconfirmedBalance: client.account.getUnconfirmedBalance()
+    balance: confirmedBalance + unconfirmedBalance,
+    confirmedBalance,
+    unconfirmedBalance
   };
 
-  dispatch({ type: "ACCOUNT_READY", payload: account });
+  const loadedAccount = {
+    account,
+    username
+  };
+
+  dispatch({ type: "ACCOUNT_READY", payload: loadedAccount });
 }
 
 /*
@@ -83,6 +93,6 @@ function lsGet(key, defaultValue) {
 
 function lsSet(key, value) {
   const valueToSave =
-    !!value && typeof value === "object" ? JSON.stringify(value) : value;
-  ls.set(key, value);
+    !!value && typeof value === "object" ? JSON.stringify(value) : `${value}`;
+  ls.set(key, valueToSave);
 }
