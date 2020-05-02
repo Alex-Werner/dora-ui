@@ -44,10 +44,33 @@ export default (state = initial, action) => {
           createWallet: false
         },
         current: {
+          ...state.current,
           id: new Date().getTime(),
-          mnemonic: action.payload,
-          username: null,
-          identity: null
+          ...action.payload
+        }
+      };
+
+    case "ACCOUNT_SELECTED":
+      return {
+        ...state,
+        current: action.payload
+      };
+
+    case "DO_SELECT_NEW_ACCOUNT_FROM":
+      return {
+        ...state,
+        current: {
+          ...state.current,
+          from: action.payload
+        }
+      };
+
+    case "DO_CONFIRM_NEW_WALLET":
+      return {
+        ...state,
+        current: {
+          ...state.current,
+          confirmed: true
         }
       };
 
@@ -57,50 +80,10 @@ export default (state = initial, action) => {
         showWizard: false
       };
 
-    case "DO_START_ACCOUNT_IMPORT":
+    case "DO_SHOW_WIZARD":
       return {
         ...state,
-        isImporting: true
-      };
-
-    // All possible resets
-    case "DO_CLOSE_ACCOUNT_MODAL":
-      return {
-        ...state,
-        isModalClosed: true,
-        newWallet: null
-      };
-
-    case "DO_SAVE_NEW_ACCOUNT":
-      return {
-        ...state,
-        newWallet: null,
-        lastAdded: state.newWallet.id,
-        availableAccounts: {
-          ...state.availableAccounts,
-          [state.newWallet.id]: {
-            mnemonic: state.newWallet.mnemonic,
-            username: null
-          }
-        }
-      };
-
-    case "DO_SELECT_ACCOUNT":
-      return {
-        ...state,
-        isLoading: true,
-        selectedAccountId: action.payload || state.lastAdded,
-        account: {}
-      };
-
-    case "ACCOUNT_READY":
-      return {
-        ...state,
-        isLoading: false,
-        isCreating: false,
-        isImporting: false,
-        account: action.payload.account,
-        username: action.payload.username
+        showWizard: true
       };
 
     default:

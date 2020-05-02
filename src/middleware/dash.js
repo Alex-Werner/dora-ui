@@ -44,17 +44,14 @@ export async function CREATE_ACCOUNT(payload, dispatch, state) {
 
   await client.isReady();
 
-  const newWalletMnemonic = client.wallet.exportWallet();
-  dispatch({ type: "ACCOUNT_CREATED", payload: newWalletMnemonic });
+  const account = getAccount();
+  dispatch({ type: "ACCOUNT_CREATED", payload: account });
 }
 
 export async function SELECT_ACCOUNT(payload, dispatch, state) {
-  if (!payload) return;
-  const accountId = state.account.selectedAccountId;
-  lsSet("selected_account_id", accountId);
+  lsSet("selected_account_id", payload);
 
-  const { mnemonic, username } = state.account.availableAccounts[accountId];
-
+  const { mnemonic, username, id } = state.account.available[payload];
   client = new Dash.Client({
     network: DASH_NETWORK,
     mnemonic
@@ -62,28 +59,31 @@ export async function SELECT_ACCOUNT(payload, dispatch, state) {
 
   await client.isReady();
 
-  const confirmedBalance = client.account.getConfirmedBalance();
-  const unconfirmedBalance = client.account.getUnconfirmedBalance();
-
   const account = {
-    address: client.account.getUnusedAddress().address,
-    balance: confirmedBalance + unconfirmedBalance,
-    confirmedBalance,
-    unconfirmedBalance
+    ...getAccount(),
+    username,
+    mnemonic,
+    id
   };
 
-  const loadedAccount = {
-    account,
-    username
-  };
-
-  dispatch({ type: "ACCOUNT_READY", payload: loadedAccount });
+  dispatch({ type: "ACCOUNT_SELECTED", payload: account });
 }
 
 /*
  * Utility functions
  */
-function lsGet(key, defaultValue) {
+
+export function getAccount() {
+  const mnemonic = client.wallet.exportWallet();
+  const address = client.account.getUnusedAddress().address;
+  const confirmedBalance = client.account.getConfirmedBalance();
+  const unconfirmedBalance = client.account.getUnconfirmedBalance();
+  const balance = confirmedBalance + unconfirmedBalance;
+
+  return { address, mnemonic, balance, confirmedBalance, unconfirmedBalance };
+}
+
+export function lsGet(key, defaultValue) {
   const result = ls.get(key);
   if (!result || !result.length) return defaultValue;
 
@@ -91,7 +91,7 @@ function lsGet(key, defaultValue) {
   return firstChar === "{" || firstChar === "[" ? JSON.parse(result) : result;
 }
 
-function lsSet(key, value) {
+export function lsSet(key, value) {
   const valueToSave =
     !!value && typeof value === "object" ? JSON.stringify(value) : `${value}`;
   ls.set(key, valueToSave);

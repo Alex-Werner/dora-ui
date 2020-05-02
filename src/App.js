@@ -6,6 +6,7 @@ import AccountMenu from "./Components/AccountMenu";
 import AccountSetupWizard from "./Components/AccountSetupWizard";
 import Logo from "./Components/Logo";
 import URL from "./Components/URL";
+import AccountIncompleteWarning from "./Components/AccountIncompleteWarning";
 // import PageCreateApplication from "./Components/PageCreateApplication";
 // import PageEditApplications from "./Components/PageEditApplications";
 // import DevOnlyCharacterApp from "./Components/DevOnlyCharacterApp";
@@ -32,6 +33,7 @@ function App({ init }) {
           <URL />
           <AccountMenu />
         </Container>
+        <AccountIncompleteWarning />
         <div className="container">
           <React.Suspense fallback={"Loading..."}>
             {/* <PageCreateApplication /> */}

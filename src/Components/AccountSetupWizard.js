@@ -2,9 +2,12 @@ import React from "react";
 import { connect } from "react-redux";
 
 import accountStatus from "../selectors/accountStatus";
+import AccountWizardLoading from "./AccountWizardLoading";
 import Modal from "./Modal";
 
 const SelectNewAccountFrom = React.lazy(() => import("./SelectNewAccountFrom"));
+const NewWallet = React.lazy(() => import("./NewWallet"));
+const FundsRequired = React.lazy(() => import("./FundsRequired"));
 // const AccountCreate = React.lazy(() => import("./AccountCreate"));
 // const AccountImport = React.lazy(() => import("./AccountImport"));
 // const AccountAddFunds = React.lazy(() => import("./AccountAddFunds"));
@@ -14,31 +17,29 @@ const SelectNewAccountFrom = React.lazy(() => import("./SelectNewAccountFrom"));
 
 const modalContentByStatus = {
   HIDDEN: {
-    Component: null,
-    ProgressComponent: null,
-    title: null
+    Component: null
   },
   SELECT_NEW_ACCOUNT_FROM: {
-    Component: SelectNewAccountFrom,
-    ProgressComponent: null,
-    title: "Let's get started"
+    Component: SelectNewAccountFrom
+  },
+  NEW_WALLET: {
+    Component: NewWallet
+  },
+  FUNDS_REQUIRED: {
+    Component: FundsRequired
   }
 };
 
 function AccountModal({ status, closeModal }) {
-  const { Component, title, ProgressComponent } = modalContentByStatus[status];
+  const { Component, ProgressComponent } = modalContentByStatus[status];
   const content = Component ? (
-    <React.Fragment>
+    <React.Suspense fallback={<AccountWizardLoading />}>
       <Component />
       {ProgressComponent && <ProgressComponent />}
-    </React.Fragment>
+    </React.Suspense>
   ) : null;
 
-  return (
-    <Modal onClose={closeModal} title={title}>
-      {content}
-    </Modal>
-  );
+  return <Modal onClose={closeModal}>{content}</Modal>;
 }
 
 const stateToProps = state => {

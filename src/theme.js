@@ -4,6 +4,8 @@ export default {
     dash: "#008DE4",
     action: "#fcec35",
     actionHighlight: "#ffeb17",
+    error: "#ffb940",
+    body: "#402d00",
     white: "#fffefa",
     light: [
       "rgba(255, 255, 255, 0.1)",
@@ -45,7 +47,8 @@ export default {
       py: 2,
       background: "transparent",
       border: "none",
-      cursor: "pointer"
+      cursor: "pointer",
+      color: "body"
     },
     action: {
       bg: "action",
@@ -62,8 +65,15 @@ export default {
       borderTopColor: "light.0",
       borderLeftColor: "light.0",
       outline: "none",
+      ":disabled": {
+        opacity: 0.6,
+        cursor: "default"
+      },
       "&:hover": {
-        bg: "actionHighlight"
+        ":not(:disabled)": {
+          bg: "actionHighlight",
+          color: "black"
+        }
       },
       "&:active": {
         borderLeftWidth: 2,
@@ -74,6 +84,36 @@ export default {
     }
   },
   variants: {
+    list: {
+      mt: 3,
+      ml: 4,
+      p: 0,
+      fontSize: 2,
+      listStylePosition: "outside",
+      li: {
+        mt: 2
+      }
+    },
+    mnemonic: {
+      display: "flex",
+      flexWrap: "wrap",
+      justifyContent: "space-between",
+      listStyle: "none",
+      m: 0,
+      mt: 2,
+      p: 0,
+      li: {
+        m: 0,
+        py: 1,
+        flex: "0 0 30%",
+        bg: "light.4",
+        textAlign: "center",
+        borderWidth: 1,
+        borderStyle: "dashed",
+        borderColor: "dark.0",
+        mt: 2
+      }
+    },
     formRow: {
       p: 0,
       mt: 3,
@@ -93,6 +133,11 @@ export default {
     input: {
       fontFamily: "body",
       padding: 2
+    },
+    textarea: {
+      borderColor: "dark.1",
+      bg: "light.4",
+      resize: "none"
     },
     label: {
       fontSize: 1,
@@ -121,15 +166,21 @@ export default {
     }
   },
   text: {
+    color: "body",
     p: {
       fontSize: 2,
-      color: "dark.4",
+      color: "body",
       mt: 3,
       lineHeight: 1.4
     },
     heading: {
       fontWeight: "bold",
       lineHeight: 1
+    }
+  },
+  styles: {
+    h4: {
+      fontSize: 1
     }
   },
   shadows: {

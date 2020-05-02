@@ -45,7 +45,7 @@ function Modal({ children, onClose, title }) {
         <Button
           variant="ghost"
           onClick={onClose}
-          color="black"
+          color="body"
           sx={{
             position: "absolute",
             top: 0,
@@ -54,7 +54,7 @@ function Modal({ children, onClose, title }) {
         >
           <Close size={20} />
         </Button>
-        <React.Suspense fallback="Loading...">{children}</React.Suspense>
+        {children}
       </Box>
     </Box>
   );

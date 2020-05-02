@@ -1,6 +1,6 @@
 import React from "react";
 import { connect } from "react-redux";
-import { Box, Button } from "rebass";
+import { Box, Button, Heading } from "rebass";
 
 import P from "./P";
 import RadioSet from "./RadioSet";
@@ -18,11 +18,12 @@ const accountFromOptions = [
   }
 ];
 
-function AccountSetup({ createAccount, importAccount }) {
+function AccountSetup({ next }) {
   const [accountFrom, setAccountFrom] = React.useState("CREATE");
 
   return (
-    <React.Fragment>
+    <form onSubmit={e => e.preventDefault() || next(accountFrom)}>
+      <Heading as="h2">Let's get started</Heading>
       <P>
         To be able to interract fully with dapps, you need to setup an account.
       </P>
@@ -42,7 +43,7 @@ function AccountSetup({ createAccount, importAccount }) {
           Next
         </Button>
       </Box>
-    </React.Fragment>
+    </form>
   );
 }
 
@@ -52,11 +53,8 @@ const stateToProps = state => {
 
 const dispatchToProps = dispatch => {
   return {
-    createAccount() {
-      dispatch({ type: "DO_CREATE_ACCOUNT" });
-    },
-    importAccount() {
-      dispatch({ type: "DO_START_ACCOUNT_IMPORT" });
+    next(from) {
+      dispatch({ type: "DO_SELECT_NEW_ACCOUNT_FROM", payload: from });
     }
   };
 };
