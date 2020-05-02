@@ -5,7 +5,12 @@ import { Box } from "rebass";
 
 function URL() {
   return (
-    <Box flex="1 0 200px" maxWidth={1000} order={[3, 0]} mt={[2, 0]}>
+    <Box
+      flex={["0 0 100%", "0 0 50%"]}
+      maxWidth={1000}
+      order={[3, 0]}
+      mt={[2, 0]}
+    >
       <Input type="text" value="dora.dash" variant="lightOnDark" />
     </Box>
   );

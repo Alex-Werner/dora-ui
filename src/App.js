@@ -2,7 +2,7 @@ import React from "react";
 import { connect } from "react-redux";
 import { ThemeProvider } from "emotion-theming";
 
-import Account from "./Components/Account";
+import AccountMenu from "./Components/AccountMenu";
 import AccountSetupWizard from "./Components/AccountSetupWizard";
 import Logo from "./Components/Logo";
 import URL from "./Components/URL";
@@ -23,14 +23,14 @@ function App({ init }) {
       <ThemeProvider theme={theme}>
         <AccountSetupWizard />
         <Container
-          bg="dash"
+          bg="primary"
           alignItems="center"
           py={[2, 0]}
           justifyContent="space-between"
         >
           <Logo />
           <URL />
-          <Account />
+          <AccountMenu />
         </Container>
         <div className="container">
           <React.Suspense fallback={"Loading..."}>

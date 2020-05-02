@@ -1,20 +1,41 @@
 import React from "react";
 import { connect } from "react-redux";
+import { Box, Text } from "rebass";
+import { Person } from "@styled-icons/evaicons-solid/Person";
 
 import DashAmount from "./DashAmount";
 
-function AccountMenu({ balance }) {
+function Account({ account }) {
+  const user = {
+    username: account.username || "anonymous",
+    balance: account.balance || 0,
+    isIncomplete: !account.username
+  };
+
+  const displayName =
+    user.username.length > 10
+      ? `${user.username.substring(0, 10)}...`
+      : user.username;
+
   return (
-    <p>
-      Balance: <DashAmount>{balance}</DashAmount>
-    </p>
+    <Box
+      flex={["0 0 75%", "0 0 25%"]}
+      color="white"
+      textAlign="right"
+      fontSize={2}
+    >
+      <Text as="strong" fontSize={18} maxWidth="70%">
+        {displayName}
+      </Text>
+      <DashAmount ml={3}>{user.balance}</DashAmount>
+    </Box>
   );
 }
 
 const stateToProps = state => {
   return {
-    balance: state.account.account.balance
+    account: state.account.current
   };
 };
 
-export default connect(stateToProps)(React.memo(AccountMenu));
+export default connect(stateToProps)(React.memo(Account));
