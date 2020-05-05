@@ -4,7 +4,7 @@ import { Text, Box, Heading, Button } from "rebass";
 import { Wallet } from "@styled-icons/entypo/Wallet";
 
 import AccountWizardLoading from "./AccountWizardLoading";
-import P from "./P";
+import { P } from "./Element";
 import Mnemonic from "./Mnemonic";
 
 function NewWallet({ mnemonic, confirm }) {

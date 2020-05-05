@@ -1,12 +1,21 @@
 export default {
+  fonts: {
+    body: "'Roboto', sans-serif",
+    heading: "'Roboto', sans-serif",
+    brand: "'Nova Round', serif",
+    mono: "monospace"
+  },
   colors: {
+    text: "#402d00",
+    body: "#fffefa",
+    background: "#fffefa",
     primary: "#5c8cbf",
+    secondary: "light.5",
+    accent: "#fcec35",
+    highlight: "#ffeb17",
+    muted: "dark.0",
     dash: "#008DE4",
-    action: "#fcec35",
-    actionHighlight: "#ffeb17",
     error: "#ffb940",
-    body: "#402d00",
-    white: "#fffefa",
     light: [
       "rgba(255, 255, 255, 0.1)",
       "rgba(255, 255, 255, 0.2)",
@@ -22,24 +31,38 @@ export default {
       "rgba(0, 0, 0, 0.8)"
     ]
   },
-  fontSizes: [12, 14, 16, 20, 24, 32, 48, 64],
-  space: [0, 4, 8, 16, 32, 64, 128, 256],
-  fonts: {
-    body: "'Roboto', sans-serif",
-    heading: "'Roboto', sans-serif",
-    brand: "'Nova Round', serif",
-    mono: "monospace"
-  },
+  fontSizes: [11, 12, 13, 14, 16, 20, 24, 33, 46],
+  space: [0, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89],
   fontWeights: {
-    heading: 400,
-    body: 400
+    heading: "bold",
+    body: "normal"
   },
   lineHeights: {
-    body: 1.5,
-    heading: 1.25
+    text: 1.4,
+    regular: 1,
+    heading: 1,
+    body: 1
   },
   radii: {
     default: 2
+  },
+  text: {
+    body: {
+      fontSize: 3
+    },
+    heading: {
+      fontWeight: "heading"
+    }
+  },
+  styles: {
+    root: {
+      fontFamily: "body",
+      margin: 0,
+      padding: 0
+    },
+    p: {
+      lineHeight: "text"
+    }
   },
   buttons: {
     ghost: {
@@ -48,10 +71,10 @@ export default {
       background: "transparent",
       border: "none",
       cursor: "pointer",
-      color: "body"
+      color: "text"
     },
     action: {
-      bg: "action",
+      bg: "highlight",
       px: 3,
       py: 2,
       fontSize: 3,
@@ -123,6 +146,12 @@ export default {
       }
     }
   },
+  layout: {
+    container: {
+      px: [6, 7],
+      flexWrap: "wrap"
+    }
+  },
   forms: {
     lightOnDark: {
       bg: "dark.1",
@@ -132,7 +161,7 @@ export default {
     },
     input: {
       fontFamily: "body",
-      padding: 2
+      padding: 4
     },
     textarea: {
       borderColor: "dark.1",
@@ -163,24 +192,6 @@ export default {
       "&:checked": {
         color: "primary"
       }
-    }
-  },
-  text: {
-    color: "body",
-    p: {
-      fontSize: 2,
-      color: "body",
-      mt: 3,
-      lineHeight: 1.4
-    },
-    heading: {
-      fontWeight: "bold",
-      lineHeight: 1
-    }
-  },
-  styles: {
-    h4: {
-      fontSize: 1
     }
   },
   shadows: {

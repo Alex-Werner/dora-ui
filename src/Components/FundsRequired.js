@@ -2,7 +2,7 @@ import React from "react";
 import { connect } from "react-redux";
 import { Heading, Link, Box, Button } from "rebass";
 
-import P from "./P";
+import { P } from "./Element";
 import SubHeading from "./SubHeading";
 import DashAddress from "./DashAddress";
 import TextDropdown from "./TextDropdown";

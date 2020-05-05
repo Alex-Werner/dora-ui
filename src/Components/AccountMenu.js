@@ -1,7 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
-import { Box, Text } from "rebass";
 
+import { AccountMenu, GhostButton } from "../Styles";
 import DashAmount from "./DashAmount";
 
 function Account({ account }) {
@@ -17,19 +17,12 @@ function Account({ account }) {
       : user.username;
 
   return (
-    <Box
-      flex={["0 0 75%", "0 0 25%"]}
-      color="white"
-      textAlign="right"
-      position="relative"
-      fontSize={2}
-      sx={{ position: "relative" }}
-    >
-      <Text as="strong" fontSize={18} maxWidth="70%">
+    <AccountMenu>
+      <GhostButton>
         {displayName}
-      </Text>
-      <DashAmount ml={3}>{user.balance}</DashAmount>
-    </Box>
+        <DashAmount>{user.balance}</DashAmount>
+      </GhostButton>
+    </AccountMenu>
   );
 }
 

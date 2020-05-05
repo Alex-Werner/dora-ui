@@ -1,17 +1,17 @@
 import React from "react";
-import { Text } from "rebass";
+
+import { DashAmount } from "../Styles";
 import { Dash } from "@styled-icons/crypto/Dash";
 
-function DashAmount({ children: amount, ...props }) {
+function DashAmountComponent({ children: amount, size = 14 }) {
+  console.log(amount);
   if (typeof amount !== "number") return amount;
   return (
-    <Text as="span" {...props} px={2} color="white" lineHeight={"22px"}>
-      <Dash size={props.fontSize || 16} />
-      <Text as="span" fontSize={props.fontSize || 15} ml={1}>
-        {(amount / 100000000).toFixed(4)}
-      </Text>
-    </Text>
+    <DashAmount style={{ fontSize: size }}>
+      <Dash size={size} />
+      <span>{(amount / 100000000).toFixed(4)}</span>
+    </DashAmount>
   );
 }
 
-export default React.memo(DashAmount);
+export default React.memo(DashAmountComponent);

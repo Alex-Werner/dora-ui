@@ -1,18 +1,18 @@
 import React from "react";
 import { connect } from "react-redux";
-import { Input } from "@rebass/forms";
-import { Box } from "rebass";
+
+import { Input, URLForm } from "../Styles";
 
 function URL() {
   return (
-    <Box
-      flex={["0 0 100%", "0 0 50%"]}
-      maxWidth={1000}
-      order={[3, 0]}
-      mt={[2, 0]}
-    >
-      <Input type="text" value="dora.dash" variant="lightOnDark" />
-    </Box>
+    <URLForm onSubmit={e => e.preventDefault()}>
+      <Input
+        type="text"
+        onChange={e => {}}
+        value="dora.dash"
+        variant="lightOnDark"
+      />
+    </URLForm>
   );
 }
 
