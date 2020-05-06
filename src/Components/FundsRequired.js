@@ -1,43 +1,39 @@
 import React from "react";
 import { connect } from "react-redux";
-import { Heading, Link, Box, Button } from "rebass";
 
-import { P } from "./Element";
-import SubHeading from "./SubHeading";
+import { OrderedList, ActionButton } from "../Styles";
 import DashAddress from "./DashAddress";
 import TextDropdown from "./TextDropdown";
 
 function FundsRequired({ address }) {
   return (
-    <React.Fragment>
-      <Heading as="h2">Fund your Wallet</Heading>
-      <P>
+    <>
+      <h2>Fund your Wallet</h2>
+      <p>
         To be able to interract fully with the Dash Platform and create a
         username you'll need some Dash in your wallet.
-      </P>
+      </p>
       <TextDropdown title="Get some Dash instantly">
-        <P>To get some free Dash instantly, follow these steps:</P>
-        <Box as="ol" variant="list">
-          <Box as="li">
-            <Link href="http://faucet.evonet.networks.dash.org" target="_blank">
+        <p>To get some free Dash instantly, follow these steps:</p>
+        <OrderedList>
+          <li>
+            <a
+              href="http://faucet.evonet.networks.dash.org"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
               Go to the Dash Faucet here
-            </Link>
-          </Box>
-          <Box as="li">
-            Copy your wallet address below and paste into the faucet
-          </Box>
-          <Box as="li">Fill in the verification letters on the Faucet</Box>
-          <Box as="li">Click "Get coins". Your balance will update below.</Box>
-        </Box>
+            </a>
+          </li>
+          <li>Copy your wallet address below and paste into the faucet</li>
+          <li>Fill in the verification letters on the Faucet</li>
+          <li>Click "Get coins". Your balance will update below.</li>
+        </OrderedList>
       </TextDropdown>
-      <SubHeading>Your Dash Address</SubHeading>
+      <h3>Your Dash Address</h3>
       <DashAddress>{address}</DashAddress>
-      <Box variant="formRow">
-        <Button variant="action" disabled={true}>
-          Next
-        </Button>
-      </Box>
-    </React.Fragment>
+      <ActionButton disabled={true}>Next</ActionButton>
+    </>
   );
 }
 

@@ -1,34 +1,28 @@
 import React from "react";
-import { Label, Radio } from "@rebass/forms";
-import { Box, Text } from "rebass";
+
+import Checkbox from "./Checkbox";
+import { Fieldset, Label, FieldInfo } from "../Styles";
 
 function RadioSet({ options, value, onChange, name }) {
   return (
-    <Box as="fieldset" variant="formRow">
+    <Fieldset>
       {options.map(o => {
         return (
-          <Label variant="check">
-            <Radio
+          <Label checked={value === o.value} key={o.value}>
+            <Checkbox
+              type="radio"
               name={name}
               onChange={e => onChange(o.value)}
               checked={value === o.value}
             />
-            <Box>
+            <span>
               {o.label}
-              <Text
-                as="small"
-                fontSize={0}
-                mt={1}
-                fontWeight="normal"
-                sx={{ display: "block" }}
-              >
-                {o.smallText}
-              </Text>
-            </Box>
+              <FieldInfo>{o.info}</FieldInfo>
+            </span>
           </Label>
         );
       })}
-    </Box>
+    </Fieldset>
   );
 }
 

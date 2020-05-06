@@ -1,7 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
 
-// import AccountSetupWizard from "./Components/AccountSetupWizard";
+import AccountSetupWizard from "./Components/AccountSetupWizard";
 import AccountIncompleteWarning from "./Components/AccountIncompleteWarning";
 // import PageCreateApplication from "./Components/PageCreateApplication";
 // import PageEditApplications from "./Components/PageEditApplications";
@@ -19,7 +19,7 @@ function App({ init }) {
   return (
     <>
       <GlobalStyle />
-      {/* <AccountSetupWizard /> */}
+      <AccountSetupWizard />
       <Header>
         <Logo />
         <URL />

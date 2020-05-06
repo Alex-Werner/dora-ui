@@ -1,34 +1,29 @@
 import React from "react";
 import { connect } from "react-redux";
-import { Text, Box, Heading, Button } from "rebass";
 import { Wallet } from "@styled-icons/entypo/Wallet";
 
+import { ActionButton, Form } from "../Styles";
 import AccountWizardLoading from "./AccountWizardLoading";
-import { P } from "./Element";
 import Mnemonic from "./Mnemonic";
 
 function NewWallet({ mnemonic, confirm }) {
   return !!mnemonic ? (
-    <form onSubmit={e => e.preventDefault() || confirm()}>
-      <Heading as="h2">Your new wallet</Heading>
-      <P>Your account's wallet has been created successfully.</P>
-      <P>
+    <Form onSubmit={e => e.preventDefault() || confirm()}>
+      <h2>Your new wallet</h2>
+      <p>Your account's wallet has been created successfully.</p>
+      <p>
         Below is a collection of words called a <strong>mnemonic</strong>. This{" "}
         <strong>mnemonic</strong> will serve as a backup of this wallet.
-      </P>
-      <P>
+      </p>
+      <p>
         Write these words down on paper and keep them somewhere safe and secure:
-      </P>
+      </p>
       <Mnemonic>{mnemonic}</Mnemonic>
-      <Box variant="formRow">
-        <Button variant="action">Next</Button>
-      </Box>
-    </form>
+      <ActionButton>Next</ActionButton>
+    </Form>
   ) : (
     <AccountWizardLoading Icon={Wallet}>
-      <Text as="p" fontSize={4}>
-        Creating your wallet...
-      </Text>
+      <p>Creating your wallet...</p>
     </AccountWizardLoading>
   );
 }

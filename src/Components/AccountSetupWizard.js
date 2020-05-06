@@ -39,7 +39,7 @@ function AccountModal({ status, closeModal }) {
     </React.Suspense>
   ) : null;
 
-  return <Modal onClose={closeModal}>{content}</Modal>;
+  return <Modal close={closeModal}>{content}</Modal>;
 }
 
 const stateToProps = state => {

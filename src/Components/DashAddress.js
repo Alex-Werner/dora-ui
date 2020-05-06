@@ -1,10 +1,10 @@
 import React from "react";
-import { Box, Button } from "rebass";
-import { Textarea } from "@rebass/forms";
 import { Copy } from "@styled-icons/fa-regular/Copy";
 import { CheckmarkOutline } from "@styled-icons/evaicons-outline/CheckmarkOutline";
 
-function DashAddress({ children: address, ...props }) {
+import { DashAddressContainer, Textarea, GhostButton } from "../Styles";
+
+function DashAddress({ children: address }) {
   const [copySuccess, setCopySuccess] = React.useState(false);
   const textAreaRef = React.useRef();
   const buttonRef = React.useRef();
@@ -23,41 +23,15 @@ function DashAddress({ children: address, ...props }) {
   if (typeof address !== "string") return null;
 
   return (
-    <Box
-      mt={3}
-      {...props}
-      sx={{ position: "relative", cursor: "pointer" }}
-      onClick={copy}
-    >
+    <DashAddressContainer onClick={copy}>
       {document.queryCommandSupported("copy") && (
-        <Button
-          variant="ghost"
-          ref={buttonRef}
-          color="primary"
-          title="Copy to clipboard"
-          sx={{ position: "absolute", top: 0, right: 0 }}
-        >
+        <GhostButton ref={buttonRef} title="Copy to clipboard">
           <Copy size={16} />
-        </Button>
+        </GhostButton>
       )}
-      <Box
-        sx={{
-          opacity: copySuccess ? 1 : 0,
-          position: "absolute",
-          bottom: "100%",
-          right: 0,
-          transition: "opacity 150ms ease-in-out",
-          borderRadiusTopLeft: "default",
-          borderRadiusTopRight: "default"
-        }}
-        px={2}
-        fontSize={1}
-        py={2}
-        bg="primary"
-        color="white"
-      >
+      <div>
         <CheckmarkOutline size={16} /> Copied to clipboard
-      </Box>
+      </div>
       <Textarea
         readOnly
         ref={textAreaRef}
@@ -67,7 +41,7 @@ function DashAddress({ children: address, ...props }) {
       >
         {address}
       </Textarea>
-    </Box>
+    </DashAddressContainer>
   );
 }
 

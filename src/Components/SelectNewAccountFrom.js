@@ -1,20 +1,19 @@
 import React from "react";
 import { connect } from "react-redux";
-import { Box, Button } from "rebass";
 
-import { P, H2, Em } from "./Element";
+import { Form, ActionButton } from "../Styles";
 import RadioSet from "./RadioSet";
 
 const accountFromOptions = [
   {
     value: "CREATE",
     label: "Create a new account",
-    smallText: "If you're new to Dash or want to start from a blank slate"
+    info: "If you're new to Dash or want to start from a blank slate"
   },
   {
     value: "IMPORT",
     label: "Import an account",
-    smallText: "If you've created a wallet elsewhere and want to use it here"
+    info: "If you've created a wallet elsewhere and want to use it here"
   }
 ];
 
@@ -22,15 +21,15 @@ function AccountSetup({ next }) {
   const [accountFrom, setAccountFrom] = React.useState("CREATE");
 
   return (
-    <form onSubmit={e => e.preventDefault() || next(accountFrom)}>
-      <H2>Let's get started</H2>
-      <P>
+    <Form onSubmit={e => e.preventDefault() || next(accountFrom)}>
+      <h2>Let's get started</h2>
+      <p>
         To be able to interract fully with dapps, you need to setup an account.
-      </P>
-      <P>
-        An account is made up of a <Em>wallet</Em>, where funds are stored and a{" "}
-        <Em>username</Em> which is used to identify you.
-      </P>
+      </p>
+      <p>
+        An account is made up of a <em>wallet</em>, where funds are stored and a{" "}
+        <em>username</em> which is used to identify you.
+      </p>
 
       <RadioSet
         name="accountFrom"
@@ -38,12 +37,8 @@ function AccountSetup({ next }) {
         onChange={setAccountFrom}
         options={accountFromOptions}
       />
-      <Box variant="formRow">
-        <Button type="submit" variant="action">
-          Next
-        </Button>
-      </Box>
-    </form>
+      <ActionButton type="submit">Next</ActionButton>
+    </Form>
   );
 }
 

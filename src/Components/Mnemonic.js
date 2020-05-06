@@ -1,5 +1,6 @@
 import React from "react";
-import { Box } from "rebass";
+
+import { MnemonicList } from "../Styles";
 
 function Mnemonic({ children }) {
   if (typeof children !== "string") return null;
@@ -7,11 +8,11 @@ function Mnemonic({ children }) {
   const mnemonic = children.split(" ");
 
   return (
-    <Box as="ul" variant="mnemonic">
+    <MnemonicList>
       {mnemonic.map(word => {
-        return <Box as="li">{word}</Box>;
+        return <li>{word}</li>;
       })}
-    </Box>
+    </MnemonicList>
   );
 }
 
