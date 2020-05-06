@@ -7,7 +7,7 @@ import TextDropdown from "./TextDropdown";
 
 function FundsRequired({ address }) {
   return (
-    <>
+    <div>
       <h2>Fund your Wallet</h2>
       <p>
         To be able to interract fully with the Dash Platform and create a
@@ -32,8 +32,10 @@ function FundsRequired({ address }) {
       </TextDropdown>
       <h3>Your Dash Address</h3>
       <DashAddress>{address}</DashAddress>
-      <ActionButton disabled={true}>Next</ActionButton>
-    </>
+      <ActionButton disabled={true} ownRow={true}>
+        Next
+      </ActionButton>
+    </div>
   );
 }
 
@@ -43,7 +45,9 @@ const stateToProps = state => {
   };
 };
 
-const dispatchToProps = dispatch => {};
+const dispatchToProps = dispatch => {
+  return {};
+};
 
 export default connect(
   stateToProps,

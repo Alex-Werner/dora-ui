@@ -7,8 +7,14 @@ function Modal({ children, close, title }) {
   const isVisible = !!children;
 
   return (
-    <ModalOverlay onClick={close} isVisible={isVisible}>
-      <ModalContent onClick={e => e.stopPropagation()} isVisible={isVisible}>
+    <ModalOverlay
+      onClick={e => console.log("clicked overlay") || close()}
+      isVisible={isVisible}
+    >
+      <ModalContent
+        onClick={e => console.log("clicked modal") || e.stopPropagation()}
+        isVisible={isVisible}
+      >
         {title && <h2>{title}</h2>}
         <GhostButton onClick={close}>
           <Close size={20} />

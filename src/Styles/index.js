@@ -67,6 +67,11 @@ export const inputStyle = `
   border-radius: ${borderRadius};
   font-family: ${fonts.body};
   margin: 0;
+  background: ${light(5)};
+  &:focus{
+    outline: 2px solid ${colors.primary};
+    border-color: ${dark(2)};
+  }
 `;
 
 export const Input = styled.input`
@@ -116,6 +121,7 @@ export const URLForm = styled.form`
   ${Input} {
     background: ${dark(2)};
     color: ${colors.white};
+    font-size: ${fontSize(4)};
   }
 `;
 
@@ -126,15 +132,25 @@ export const GhostButton = styled.button`
   cursor: pointer;
 `;
 
-export const TextDropdownContainer = styled.p`
+export const TextDropdownContainer = styled.div`
+  margin: ${margin} 0 0 0;
   ${GhostButton} {
     text-decoration: underline;
+    color: ${colors.primary};
+    padding: 0;
+    font-size: ${fontSize(5)};
+    font-weight: bold;
+    svg {
+      margin-right: ${space(4)};
+    }
   }
 `;
 
 export const TextDropdownContent = styled.div`
   overflow: hidden;
   height: ${props => (props.isVisible ? "auto" : "0px")};
+  padding: ${space(5)} 0 0 ${space(5)};
+  font-size: ${fontSize(4)};
   transition: height 100ms ease-in-out;
 `;
 
@@ -145,7 +161,7 @@ export const AccountMenu = styled.div`
     flex: 0 0 75%;
   `)}
   > ${GhostButton}{
-    padding: ${space(5)} ${space(6)};
+    padding: ${space(6)} ${space(6)};
     outline: none;
     cursor: pointer;
     color: ${colors.white};
@@ -232,6 +248,13 @@ export const Button = styled.button`
   border-top: 1px solid ${light(1)};
   border-left: 1px solid ${light(1)};
   outline: none;
+  ${props =>
+    props.ownRow
+      ? `
+    margin-top: ${margin};
+    float: right;
+  `
+      : ``}
 
   &:disabled {
     opacity: 0.4;
@@ -258,8 +281,8 @@ export const ActionButton = styled(Button)`
 
 export const Form = styled.form`
   > label,
-  button,
-  fieldset {
+  > button,
+  > fieldset {
     margin-top: ${margin};
   }
   ${ActionButton} {
@@ -311,6 +334,7 @@ export const ModalLoadingIcon = styled.div`
   position: absolute;
   top: 20px;
   left: 0;
+  width: 100%;
   opacity: 0.4;
 `;
 
@@ -324,17 +348,20 @@ export const ModalLoading = styled.div`
 
 export const MnemonicList = styled.ul`
   display: flex;
-  flew-wrap: wrap;
+  flex-wrap: wrap;
   justify-content: space-between;
   list-style: none;
   margin: ${margin} 0 0 0;
   padding: 0;
   li {
     background: ${light(5)};
+    padding: ${space(4)} 0;
     flex: 0 0 30%;
     text-align: center;
     border: 1px dashed ${dark(1)};
-    margin: ${space(3)} 0 0 0;
+    &:nth-child(n + 4) {
+      margin: ${space(5)} 0 0 0;
+    }
   }
 `;
 
@@ -368,6 +395,7 @@ export const Fieldset = styled.fieldset`
     padding: ${space(6)};
     box-shadow: ${shadows.small};
     > span {
+      flex: 1;
       margin-left: ${space(5)};
     }
     &:first-child {
@@ -377,6 +405,9 @@ export const Fieldset = styled.fieldset`
   ${FieldInfo} {
     font-weight: normal;
     display: block;
+  }
+  ${CheckboxContainer} {
+    flex: 0 0 ${fontSize(4)};
   }
 `;
 
@@ -398,6 +429,7 @@ export const UnorderedList = styled.ul`
 `;
 
 export const DashAddressContainer = styled.div`
+  margin: ${space(4)} 0 0 0;
   position: relative;
   > div {
     position: absolute;
@@ -409,7 +441,15 @@ export const DashAddressContainer = styled.div`
     font-size: ${fontSize(2)};
     color: ${colors.white};
   }
-  ${Textarea} {
+  &:hover ${Textarea} {
+    cursor: pointer;
+    border-color: ${colors.primary};
+  }
+  ${GhostButton} {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translate(0, -50%);
   }
 `;
 
@@ -434,6 +474,10 @@ export const GlobalStyle = createGlobalStyle`
   }
   p{
     line-height: 1.4;
+  }
+  button, input, textarea{
+    font-family: ${fonts.body};
+    font-size: ${fontSize(4)};
   }
   h2{
     font-size: ${fontSize(6)};

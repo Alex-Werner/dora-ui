@@ -29,18 +29,19 @@ function DashAddress({ children: address }) {
           <Copy size={16} />
         </GhostButton>
       )}
-      <div>
-        <CheckmarkOutline size={16} /> Copied to clipboard
-      </div>
+      {copySuccess && (
+        <div>
+          <CheckmarkOutline size={16} /> Copied to clipboard
+        </div>
+      )}
       <Textarea
         readOnly
         ref={textAreaRef}
         rows={1}
         fontFamily="monospace"
         fontSize={0}
-      >
-        {address}
-      </Textarea>
+        value={address}
+      ></Textarea>
     </DashAddressContainer>
   );
 }

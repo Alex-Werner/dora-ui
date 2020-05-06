@@ -7,8 +7,7 @@ function AccountWizardLoading({ children, Icon }) {
   return (
     <ModalLoading>
       <Spinner size={80} />
-      <ModalLoadingIcon />
-      {Icon && <Icon size={40} />}
+      <ModalLoadingIcon>{Icon && <Icon size={40} />}</ModalLoadingIcon>
       {children}
     </ModalLoading>
   );

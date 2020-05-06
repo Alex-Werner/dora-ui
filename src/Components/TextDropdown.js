@@ -18,7 +18,9 @@ function TextDropdown({ children, title }) {
         <Chevron size={20} />
         {title}
       </GhostButton>
-      <TextDropdownContent>{children}</TextDropdownContent>
+      <TextDropdownContent isVisible={isVisible}>
+        {children}
+      </TextDropdownContent>
     </TextDropdownContainer>
   );
 }

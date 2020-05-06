@@ -19,7 +19,7 @@ function NewWallet({ mnemonic, confirm }) {
         Write these words down on paper and keep them somewhere safe and secure:
       </p>
       <Mnemonic>{mnemonic}</Mnemonic>
-      <ActionButton>Next</ActionButton>
+      <ActionButton type="submit">Next</ActionButton>
     </Form>
   ) : (
     <AccountWizardLoading Icon={Wallet}>
