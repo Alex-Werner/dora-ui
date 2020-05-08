@@ -13,7 +13,13 @@ export default (state = initial, action) => {
     case "ACCOUNTS_LOADED":
       return {
         ...state,
-        isReady: true,
+        available: action.payload.available,
+        selectedId: action.payload.selectedId
+      };
+
+    case "UPDATE_ACCOUNTS_FROM_LOCAL_STORAGE":
+      return {
+        ...state,
         available: action.payload.available,
         selectedId: action.payload.selectedId
       };
@@ -21,6 +27,7 @@ export default (state = initial, action) => {
     case "SELECT_ACCOUNT":
       return {
         ...state,
+        isReady: false,
         current: {
           ...state.available[action.payload],
           id: action.payload
@@ -53,10 +60,23 @@ export default (state = initial, action) => {
     case "ACCOUNT_SELECTED":
       return {
         ...state,
-        current: action.payload
+        isReady: true,
+        current: {
+          ...state.current,
+          ...action.payload
+        }
       };
 
-    case "DO_SELECT_NEW_ACCOUNT_FROM":
+    case "ACCOUNT_UPDATED":
+      return {
+        ...state,
+        current: {
+          ...state.current,
+          ...action.payload
+        }
+      };
+
+    case "SELECT_NEW_ACCOUNT_FROM":
       return {
         ...state,
         current: {
@@ -65,7 +85,7 @@ export default (state = initial, action) => {
         }
       };
 
-    case "DO_CONFIRM_NEW_WALLET":
+    case "CONFIRM_NEW_WALLET":
       return {
         ...state,
         current: {
@@ -74,13 +94,45 @@ export default (state = initial, action) => {
         }
       };
 
-    case "DO_HIDE_WIZARD":
+    case "CREATE_USERNAME":
+      return {
+        ...state,
+        isCreatingUsername: true,
+        usernameCreationError: null
+      };
+
+    case "IDENTITY_CREATED":
+      return {
+        ...state,
+        current: {
+          ...state.current,
+          identity: action.payload
+        }
+      };
+
+    case "USERNAME_CREATED":
+      return {
+        ...state,
+        isCreatingUsername: false,
+        current: {
+          ...state.current,
+          username: action.payload
+        }
+      };
+
+    case "USERNAME_CREATION_FAILED":
+      return {
+        ...state,
+        isCreatingUsername: false,
+        usernameCreationError: action.payload
+      };
+    case "HIDE_WIZARD":
       return {
         ...state,
         showWizard: false
       };
 
-    case "DO_SHOW_WIZARD":
+    case "SHOW_WIZARD":
       return {
         ...state,
         showWizard: true

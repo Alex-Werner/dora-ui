@@ -366,9 +366,14 @@ export const MnemonicList = styled.ul`
 `;
 
 export const Label = styled.label`
+  display: block;
   font-weight: bold;
   cursor: pointer;
+  font-size: ${fontSize(3)};
   background: ${props => (props.checked ? light(5) : "transparent")};
+  + input {
+    margin-top: ${space(4)};
+  }
   &:hover {
     ${props =>
       props.checked
@@ -382,6 +387,10 @@ export const Label = styled.label`
 export const FieldInfo = styled.small`
   font-size: ${fontSize(2)};
   margin: ${space(2)} 0 0 0;
+`;
+
+export const FieldError = styled.span`
+  color: ${colors.error};
 `;
 
 export const Fieldset = styled.fieldset`
@@ -429,7 +438,7 @@ export const UnorderedList = styled.ul`
 `;
 
 export const DashAddressContainer = styled.div`
-  margin: ${space(4)} 0 0 0;
+  margin: ${space(5)} 0 0 0;
   position: relative;
   > div {
     position: absolute;
@@ -441,8 +450,14 @@ export const DashAddressContainer = styled.div`
     font-size: ${fontSize(2)};
     color: ${colors.white};
   }
-  &:hover ${Textarea} {
+  ${Textarea} {
+    padding-right: ${space(7)};
     cursor: pointer;
+    ${mobile(`
+      font-size: ${fontSize(3)};
+    `)}
+  }
+  &:hover ${Textarea} {
     border-color: ${colors.primary};
   }
   ${GhostButton} {
@@ -469,7 +484,7 @@ export const GlobalStyle = createGlobalStyle`
   p, h2, h3, h4, h5, ul, ol{
     margin: ${margin} 0 0 0;
     &:first-child{
-      margin: 0;
+      margin-top: 0;
     }
   }
   p{

@@ -41,7 +41,6 @@ const stateToProps = state => {
 const dispatchToProps = dispatch => {
   return {
     onChange(value) {
-      console.log(value);
       dispatch({ type: "SET_CONTRACT_FROM", payload: value });
     }
   };

@@ -8,12 +8,10 @@ import Modal from "./Modal";
 const SelectNewAccountFrom = React.lazy(() => import("./SelectNewAccountFrom"));
 const NewWallet = React.lazy(() => import("./NewWallet"));
 const FundsRequired = React.lazy(() => import("./FundsRequired"));
+const CreateUsername = React.lazy(() => import("./CreateUsername"));
 // const AccountCreate = React.lazy(() => import("./AccountCreate"));
 // const AccountImport = React.lazy(() => import("./AccountImport"));
 // const AccountAddFunds = React.lazy(() => import("./AccountAddFunds"));
-// const AccountCreateUsername = React.lazy(() =>
-//   import("./AccountCreateUsername")
-// );
 
 const modalContentByStatus = {
   HIDDEN: {
@@ -27,6 +25,12 @@ const modalContentByStatus = {
   },
   FUNDS_REQUIRED: {
     Component: FundsRequired
+  },
+  USERNAME_REQUIRED: {
+    Component: CreateUsername
+  },
+  LOADING: {
+    Component: AccountWizardLoading
   }
 };
 
@@ -51,7 +55,7 @@ const stateToProps = state => {
 const dispatchToProps = dispatch => {
   return {
     closeModal() {
-      dispatch({ type: "DO_HIDE_WIZARD" });
+      dispatch({ type: "HIDE_WIZARD" });
     }
   };
 };

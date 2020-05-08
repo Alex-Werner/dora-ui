@@ -4,7 +4,6 @@ import { DashAmount } from "../Styles";
 import { Dash } from "@styled-icons/crypto/Dash";
 
 function DashAmountComponent({ children: amount, size = 14 }) {
-  console.log(amount);
   if (typeof amount !== "number") return amount;
   return (
     <DashAmount style={{ fontSize: size }}>

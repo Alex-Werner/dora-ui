@@ -21,7 +21,7 @@ const stateToProps = state => {
 const dispatchToProps = dispatch => {
   return {
     showWizard() {
-      dispatch({ type: "DO_SHOW_WIZARD" });
+      dispatch({ type: "SHOW_WIZARD" });
     }
   };
 };

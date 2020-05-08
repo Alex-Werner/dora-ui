@@ -1,9 +1,10 @@
 import React from "react";
 import { connect } from "react-redux";
 
-import { OrderedList, ActionButton } from "../Styles";
+import { OrderedList } from "../Styles";
 import DashAddress from "./DashAddress";
 import TextDropdown from "./TextDropdown";
+import AwaitPayment from "./AwaitPayment";
 
 function FundsRequired({ address }) {
   return (
@@ -14,7 +15,6 @@ function FundsRequired({ address }) {
         username you'll need some Dash in your wallet.
       </p>
       <TextDropdown title="Get some Dash instantly">
-        <p>To get some free Dash instantly, follow these steps:</p>
         <OrderedList>
           <li>
             <a
@@ -32,9 +32,7 @@ function FundsRequired({ address }) {
       </TextDropdown>
       <h3>Your Dash Address</h3>
       <DashAddress>{address}</DashAddress>
-      <ActionButton disabled={true} ownRow={true}>
-        Next
-      </ActionButton>
+      <AwaitPayment />
     </div>
   );
 }

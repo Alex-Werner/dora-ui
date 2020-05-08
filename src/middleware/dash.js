@@ -1,16 +1,18 @@
 import Dash from "dash";
-import SecureLS from "secure-ls";
 
 import { DASH_NETWORK } from "../dora.config";
 
-const ls = new SecureLS();
 let client;
+let watcher;
 
 const fns = {
-  INIT,
   CREATE_ACCOUNT,
   ACCOUNTS_LOADED,
-  SELECT_ACCOUNT
+  SELECT_ACCOUNT,
+  ACCOUNT_CREATED,
+  ACCOUNT_SELECTED,
+  WATCH_ACCOUNT,
+  CREATE_USERNAME
 };
 
 export default store => next => action => {
@@ -20,13 +22,6 @@ export default store => next => action => {
     fns[action.type](action.payload, store.dispatch, store.getState());
   }
 };
-
-export async function INIT(payload, dispatch) {
-  const available = lsGet("saved_accounts", {});
-  const selectedId = lsGet("selected_account_id", null);
-
-  dispatch({ type: "ACCOUNTS_LOADED", payload: { available, selectedId } });
-}
 
 export async function ACCOUNTS_LOADED(payload, dispatch) {
   if (payload.selectedId) {
@@ -42,57 +37,85 @@ export async function CREATE_ACCOUNT(payload, dispatch, state) {
     mnemonic: null
   });
 
-  await client.isReady();
-
   const account = getAccount();
   dispatch({ type: "ACCOUNT_CREATED", payload: account });
 }
 
 export async function SELECT_ACCOUNT(payload, dispatch, state) {
-  lsSet("selected_account_id", payload);
-
-  const { mnemonic, username, id } = state.account.available[payload];
+  const current = state.account.current;
   client = new Dash.Client({
     network: DASH_NETWORK,
-    mnemonic
+    mnemonic: current.mnemonic
   });
 
   await client.isReady();
 
   const account = {
     ...getAccount(),
-    username,
-    mnemonic,
-    id
+    ...current
   };
 
   dispatch({ type: "ACCOUNT_SELECTED", payload: account });
+}
+
+export async function ACCOUNT_CREATED(payload, dispatch) {
+  dispatch({ type: "WATCH_ACCOUNT" });
+}
+
+export async function ACCOUNT_SELECTED(payload, dispatch) {
+  dispatch({ type: "WATCH_ACCOUNT" });
+}
+
+export async function WATCH_ACCOUNT(payload, dispatch) {
+  window.clearTimeout(watcher);
+  updateAccount(dispatch);
+}
+
+export async function CREATE_USERNAME(payload, dispatch, state) {
+  const { current } = state.account;
+  if (current.username) return;
+
+  const { platform } = client;
+  console.log(client);
+  return;
+  const identity = current.identity || (await platform.identities.register());
+  console.log(identity, client.account.getIdentityHDKey(), client.wallet);
+  dispatch({ type: "IDENTITY_CREATED", payload: identity.id });
+
+  let applyAction;
+  console.log("creating name");
+  try {
+    const nameRegistration = await platform.names.register(payload, identity);
+    applyAction = () => dispatch({ type: "USERNAME_CREATED", payload });
+  } catch (e) {
+    applyAction = () =>
+      dispatch({ type: "USERNAME_CREATION_FAILED", payload: e.message });
+  }
+  console.log("name created");
+
+  applyAction();
 }
 
 /*
  * Utility functions
  */
 
+export async function updateAccount(dispatch) {
+  if (!client) return;
+  await client.isReady();
+  const updatedAccount = getAccount();
+  dispatch({ type: "ACCOUNT_UPDATED", payload: updatedAccount });
+  watcher = setTimeout(() => {
+    updateAccount(dispatch);
+  }, 1000);
+}
+
 export function getAccount() {
   const mnemonic = client.wallet.exportWallet();
   const address = client.account.getUnusedAddress().address;
   const confirmedBalance = client.account.getConfirmedBalance();
   const unconfirmedBalance = client.account.getUnconfirmedBalance();
-  const balance = confirmedBalance + unconfirmedBalance;
+  const balance = client.account.getTotalBalance();
 
   return { address, mnemonic, balance, confirmedBalance, unconfirmedBalance };
-}
-
-export function lsGet(key, defaultValue) {
-  const result = ls.get(key);
-  if (!result || !result.length) return defaultValue;
-
-  const firstChar = result[0];
-  return firstChar === "{" || firstChar === "[" ? JSON.parse(result) : result;
-}
-
-export function lsSet(key, value) {
-  const valueToSave =
-    !!value && typeof value === "object" ? JSON.stringify(value) : `${value}`;
-  ls.set(key, valueToSave);
 }

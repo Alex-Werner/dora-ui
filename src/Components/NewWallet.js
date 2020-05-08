@@ -37,7 +37,7 @@ const stateToProps = state => {
 const dispatchToProps = dispatch => {
   return {
     confirm() {
-      dispatch({ type: "DO_CONFIRM_NEW_WALLET" });
+      dispatch({ type: "CONFIRM_NEW_WALLET" });
     }
   };
 };
