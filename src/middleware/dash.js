@@ -3,119 +3,94 @@ import Dash from "dash";
 import { DASH_NETWORK } from "../dora.config";
 
 let client;
-let watcher;
 
-const fns = {
-  CREATE_ACCOUNT,
-  ACCOUNTS_LOADED,
-  SELECT_ACCOUNT,
-  ACCOUNT_CREATED,
-  ACCOUNT_SELECTED,
-  WATCH_ACCOUNT,
-  CREATE_USERNAME
-};
-
-export default store => next => action => {
+export default store => next => async action => {
   next(action);
 
-  if (fns[action.type]) {
-    fns[action.type](action.payload, store.dispatch, store.getState());
+  const args = [action.payload, store.dispatch, store.getState()];
+  switch (action.type) {
+    case "WALLET_FOUND_IN_LOCAL_STORAGE":
+      await initialiseWallet(...args);
+      break;
+
+    case "WALLET_NOT_FOUND_IN_LOCAL_STORAGE":
+      await createWallet(...args);
+      break;
+
+    case "SELECTED_ACCOUNT_FOUND_IN_LOCAL_STORAGE":
+    case "SELECT_ACCOUNT":
+      await selectAccount(...args);
+      break;
+
+    case "WALLET_CREATED":
+      await initialiseAccountOnNewWallet(0, store.dispatch);
+      break;
+
+    case "IDENTITY_ID_NOT_FOUND_IN_LOCAL_STORAGE":
+      await createIdentity(...args);
+      break;
+
+    case "ACCOUNT_LOADED":
+      updateAccountBalances(...args);
+      updateAddress(...args);
+      break;
+
+    default:
+      return;
   }
 };
 
-export async function ACCOUNTS_LOADED(payload, dispatch) {
-  if (payload.selectedId) {
-    dispatch({ type: "SELECT_ACCOUNT", payload: payload.selectedId });
-  } else if (Object.keys(payload.available).length === 0) {
-    dispatch({ type: "CREATE_ACCOUNT" });
-  }
+export async function createIdentity(payload, dispatch) {
+  const identity = await client.platform.identities.register();
 }
 
-export async function CREATE_ACCOUNT(payload, dispatch, state) {
+export async function updateAccountBalances(payload, dispatch) {
+  const balance = {
+    total: client.account.getTotalBalance(),
+    unconfirmed: client.account.getUnconfirmedBalance(),
+    confirmed: client.account.getConfirmedBalance()
+  };
+
+  dispatch({ type: "ACCOUNT_BALANCE_UPDATED", payload: balance });
+}
+
+export async function updateAddress(payload, dispatch) {
+  const address = client.account.getUnusedAddress().address;
+  dispatch({ type: "ACCOUNT_ADDRESS_UPDATED", payload: address });
+}
+
+export async function initialiseWallet(payload, dispatch) {
+  client = new Dash.Client({
+    network: DASH_NETWORK,
+    mnemonic: payload.mnemonic || null
+  });
+
+  dispatch({ type: "WALLET_LOADED", payload });
+}
+
+export async function createWallet(payload, dispatch) {
   client = new Dash.Client({
     network: DASH_NETWORK,
     mnemonic: null
   });
 
-  const account = getAccount();
-  dispatch({ type: "ACCOUNT_CREATED", payload: account });
-}
-
-export async function SELECT_ACCOUNT(payload, dispatch, state) {
-  const current = state.account.current;
-  client = new Dash.Client({
-    network: DASH_NETWORK,
-    mnemonic: current.mnemonic
-  });
-
-  await client.isReady();
-
-  const account = {
-    ...getAccount(),
-    ...current
-  };
-
-  dispatch({ type: "ACCOUNT_SELECTED", payload: account });
-}
-
-export async function ACCOUNT_CREATED(payload, dispatch) {
-  dispatch({ type: "WATCH_ACCOUNT" });
-}
-
-export async function ACCOUNT_SELECTED(payload, dispatch) {
-  dispatch({ type: "WATCH_ACCOUNT" });
-}
-
-export async function WATCH_ACCOUNT(payload, dispatch) {
-  window.clearTimeout(watcher);
-  updateAccount(dispatch);
-}
-
-export async function CREATE_USERNAME(payload, dispatch, state) {
-  const { current } = state.account;
-  if (current.username) return;
-
-  const { platform } = client;
-  console.log(client);
-  return;
-  const identity = current.identity || (await platform.identities.register());
-  console.log(identity, client.account.getIdentityHDKey(), client.wallet);
-  dispatch({ type: "IDENTITY_CREATED", payload: identity.id });
-
-  let applyAction;
-  console.log("creating name");
-  try {
-    const nameRegistration = await platform.names.register(payload, identity);
-    applyAction = () => dispatch({ type: "USERNAME_CREATED", payload });
-  } catch (e) {
-    applyAction = () =>
-      dispatch({ type: "USERNAME_CREATION_FAILED", payload: e.message });
-  }
-  console.log("name created");
-
-  applyAction();
-}
-
-/*
- * Utility functions
- */
-
-export async function updateAccount(dispatch) {
-  if (!client) return;
-  await client.isReady();
-  const updatedAccount = getAccount();
-  dispatch({ type: "ACCOUNT_UPDATED", payload: updatedAccount });
-  watcher = setTimeout(() => {
-    updateAccount(dispatch);
-  }, 1000);
-}
-
-export function getAccount() {
+  const id = `${new Date().getTime()}`;
   const mnemonic = client.wallet.exportWallet();
-  const address = client.account.getUnusedAddress().address;
-  const confirmedBalance = client.account.getConfirmedBalance();
-  const unconfirmedBalance = client.account.getUnconfirmedBalance();
-  const balance = client.account.getTotalBalance();
 
-  return { address, mnemonic, balance, confirmedBalance, unconfirmedBalance };
+  dispatch({ type: "WALLET_CREATED", payload: { id, mnemonic } });
+}
+
+export async function initialiseAccountOnNewWallet(payload, dispatch) {
+  dispatch({ type: "ACCOUNT_CREATED_ON_NEW_WALLET", payload: 0 });
+  await selectAccount(0, dispatch);
+}
+
+export async function selectAccount(payload, dispatch) {
+  dispatch({ type: "LOADING_ACCOUNT" });
+
+  client.account = client.wallet.getAccount({ index: payload });
+  await client.account.isReady();
+
+  console.log(client.account);
+  dispatch({ type: "ACCOUNT_LOADED", payload });
 }

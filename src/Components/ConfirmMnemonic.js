@@ -6,11 +6,11 @@ import { ActionButton, Form } from "../Styles";
 import AccountWizardLoading from "./AccountWizardLoading";
 import Mnemonic from "./Mnemonic";
 
-function NewWallet({ mnemonic, confirm }) {
-  return !!mnemonic ? (
+function NewWallet({ isLoading, mnemonic, confirm }) {
+  return !isLoading ? (
     <Form onSubmit={e => e.preventDefault() || confirm()}>
       <h2>Your new wallet</h2>
-      <p>Your account's wallet has been created successfully.</p>
+      <p>Your wallet has been created successfully.</p>
       <p>
         Below is a collection of words called a <strong>mnemonic</strong>. This{" "}
         <strong>mnemonic</strong> will serve as a backup of this wallet.
@@ -30,14 +30,15 @@ function NewWallet({ mnemonic, confirm }) {
 
 const stateToProps = state => {
   return {
-    mnemonic: state.account.current.mnemonic
+    mnemonic: state.wallet.mnemonic,
+    isLoading: state.loading.wallet
   };
 };
 
 const dispatchToProps = dispatch => {
   return {
     confirm() {
-      dispatch({ type: "CONFIRM_NEW_WALLET" });
+      dispatch({ type: "CONFIRM_MNEMONIC" });
     }
   };
 };

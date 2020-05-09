@@ -5,8 +5,8 @@ import accountStatus from "../selectors/accountStatus";
 import AccountWizardLoading from "./AccountWizardLoading";
 import Modal from "./Modal";
 
-const SelectNewAccountFrom = React.lazy(() => import("./SelectNewAccountFrom"));
-const NewWallet = React.lazy(() => import("./NewWallet"));
+const SelectWizardType = React.lazy(() => import("./SelectWizardType"));
+const ConfirmMnemonic = React.lazy(() => import("./ConfirmMnemonic"));
 const FundsRequired = React.lazy(() => import("./FundsRequired"));
 const CreateUsername = React.lazy(() => import("./CreateUsername"));
 // const AccountCreate = React.lazy(() => import("./AccountCreate"));
@@ -17,11 +17,11 @@ const modalContentByStatus = {
   HIDDEN: {
     Component: null
   },
-  SELECT_NEW_ACCOUNT_FROM: {
-    Component: SelectNewAccountFrom
+  SELECT_WIZARD_TYPE: {
+    Component: SelectWizardType
   },
-  NEW_WALLET: {
-    Component: NewWallet
+  CONFIRM_MNEMONIC: {
+    Component: ConfirmMnemonic
   },
   FUNDS_REQUIRED: {
     Component: FundsRequired

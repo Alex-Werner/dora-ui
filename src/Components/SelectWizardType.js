@@ -49,7 +49,7 @@ const stateToProps = state => {
 const dispatchToProps = dispatch => {
   return {
     next(from) {
-      dispatch({ type: "SELECT_NEW_ACCOUNT_FROM", payload: from });
+      dispatch({ type: "SELECT_WIZARD_TYPE", payload: from });
     }
   };
 };

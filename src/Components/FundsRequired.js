@@ -39,7 +39,7 @@ function FundsRequired({ address }) {
 
 const stateToProps = state => {
   return {
-    address: state.account.current.address
+    address: state.account.address
   };
 };
 

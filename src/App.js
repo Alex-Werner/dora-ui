@@ -1,7 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
 
-import AccountSetupWizard from "./Components/AccountSetupWizard";
+import AccountWizard from "./Components/AccountWizard";
 import AccountIncompleteWarning from "./Components/AccountIncompleteWarning";
 // import PageCreateApplication from "./Components/PageCreateApplication";
 // import PageEditApplications from "./Components/PageEditApplications";
@@ -19,13 +19,15 @@ function App({ init }) {
   return (
     <>
       <GlobalStyle />
-      <AccountSetupWizard />
+      <AccountWizard />
+      {/*
       <Header>
         <Logo />
         <URL />
         <AccountMenu />
       </Header>
-      <AccountIncompleteWarning />
+      */}
+      {/* <AccountIncompleteWarning /> */}
       <React.Suspense fallback={"Loading..."}>
         {/* <PageCreateApplication /> */}
         {/* <PageEditApplications /> */}
