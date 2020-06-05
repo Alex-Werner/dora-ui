@@ -27,6 +27,44 @@ export default (state = initial, action) => {
         account: false
       };
 
+    case "WALLET_IMPORT_STARTED":
+      return {
+        ...state,
+        walletImport: true
+      };
+
+    case "WALLET_IMPORT_COMPLETED":
+    case "WALLET_IMPORT_FAILED":
+      return {
+        ...state,
+        walletImport: false
+      };
+
+    case "IMPORTING_PLATFORM_DATA":
+      return {
+        ...state,
+        platformImport: true
+      };
+
+    case "PLATFORM_DATA_IMPORTED":
+      return {
+        ...state,
+        platformImport: false
+      };
+
+    case "CREATE_USERNAME":
+      return {
+        ...state,
+        createUsername: true
+      };
+
+    case "CREATE_USERNAME_FAILED":
+    case "USERNAME_CREATED":
+      return {
+        ...state,
+        createUsername: false
+      };
+
     default:
       return state;
   }

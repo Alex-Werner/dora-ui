@@ -31,6 +31,9 @@ export default (state = initial, action) => {
         address: action.payload
       };
 
+    case "WALLET_IMPORT_COMPLETED":
+      return initial;
+
     default:
       return state;
   }

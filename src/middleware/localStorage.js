@@ -1,6 +1,11 @@
 import SecureLS from "secure-ls";
+import get from "lodash/get";
+import set from "lodash/set";
+import update from "lodash/update";
 
 const ls = new SecureLS();
+
+const ROOT_KEY = "lsv1";
 
 export default store => next => action => {
   next(action);
@@ -19,11 +24,12 @@ export default store => next => action => {
       break;
 
     case "CONFIRM_MNEMONIC":
+    case "WALLET_IMPORT_COMPLETED":
       lsSet("wallet", getState().wallet);
       break;
 
     case "WALLET_LOADED":
-      const lastSelected = lsGet("wallet.selectedAccount");
+      const lastSelected = lsGet("selectedAccount");
 
       if (typeof lastSelected !== "number") return;
 
@@ -35,7 +41,8 @@ export default store => next => action => {
 
     case "SELECT_ACCOUNT":
     case "ACCOUNT_CREATED_ON_NEW_WALLET":
-      lsSet("wallet.selectedAccount", payload);
+    case "ACCOUNT_SELECTED_ON_IMPORTED_WALLET":
+      lsSet("selectedAccount", payload);
       break;
 
     case "ACCOUNT_CREATED_ON_NEW_WALLET":
@@ -58,7 +65,9 @@ export default store => next => action => {
     case "ACCOUNT_NAMES_NOT_FOUND_IN_LOCAL_STORAGE":
       // If user has already created an identity but not username, unlikely
       // occurrance. In this case, the created identity will be available for use.
-      const createdIdentity = lsGet(`accounts.${payload}.createdIdentity`);
+      const createdIdentity = lsGet(
+        `accounts.${getState().account.selected}.createdIdentity`
+      );
       const createdIdentityLoadType = createdIdentity
         ? "CREATED_IDENTITY_FOUND_IN_LOCAL_STORAGE"
         : "CREATED_IDENTITY_NOT_FOUND_IN_LOCAL_STORAGE";
@@ -66,8 +75,28 @@ export default store => next => action => {
       dispatch({ type: createdIdentityLoadType, payload: createdIdentity });
       break;
 
+    case "CREATED_IDENTITY":
+      lsSet(
+        `accounts.${getState().account.selected}.createdIdentity`,
+        action.payload
+      );
+      break;
+
+    case "USERNAME_CREATED":
+      lsUpdate(`accounts.${getState().account.selected}.names`, names => {
+        const original = names || [];
+        return [...original, payload];
+      });
+
+    case "SELECT_USERNAME":
+      lsSet(`accounts.${getState().account.selected}.selectedName`, payload);
+
+    case "PLATFORM_DATA_IMPORTED":
+      lsSet("wallet.requiresPlatformImport", false);
+      break;
+
     case "CONFIRM_MNEMONIC":
-      lsUpdate("wallet", { mnemonicConfirmed: true });
+      lsUpdate("wallet.mnemonicConfirmed", v => true);
       break;
 
     default:
@@ -76,28 +105,18 @@ export default store => next => action => {
 };
 
 export function lsGet(key, defaultValue = null) {
-  const result = ls.get(key);
-  if (!result || !result.length) return defaultValue;
-
-  const firstChar = result[0];
-  return firstChar === "{" || firstChar === "["
-    ? JSON.parse(result)
-    : `${parseFloat(result)}` === result
-    ? parseFloat(result)
-    : result;
+  const root = JSON.parse(ls.get(ROOT_KEY) || "{}");
+  return get(root, key, defaultValue);
 }
 
 export function lsSet(key, value) {
-  const valueToSave =
-    !!value && typeof value === "object" ? JSON.stringify(value) : `${value}`;
-  ls.set(key, valueToSave);
+  const root = JSON.parse(ls.get(ROOT_KEY) || "{}");
+  const updated = set(root, key, value);
+  ls.set(ROOT_KEY, JSON.stringify(updated));
 }
 
-export function lsUpdate(key, update) {
-  const currentValue = lsGet(key);
-
-  lsSet(key, {
-    ...currentValue,
-    ...update
-  });
+export function lsUpdate(key, updater) {
+  const root = JSON.parse(ls.get(ROOT_KEY) || "{}");
+  const updated = update(root, key, updater);
+  ls.set(ROOT_KEY, JSON.stringify(updated));
 }

@@ -9,6 +9,8 @@ const SelectWizardType = React.lazy(() => import("./SelectWizardType"));
 const ConfirmMnemonic = React.lazy(() => import("./ConfirmMnemonic"));
 const FundsRequired = React.lazy(() => import("./FundsRequired"));
 const CreateUsername = React.lazy(() => import("./CreateUsername"));
+const ImportFromMnemonic = React.lazy(() => import("./ImportFromMnemonic"));
+const ImportPlatformData = React.lazy(() => import("./ImportPlatformData"));
 // const AccountCreate = React.lazy(() => import("./AccountCreate"));
 // const AccountImport = React.lazy(() => import("./AccountImport"));
 // const AccountAddFunds = React.lazy(() => import("./AccountAddFunds"));
@@ -26,8 +28,14 @@ const modalContentByStatus = {
   FUNDS_REQUIRED: {
     Component: FundsRequired
   },
-  USERNAME_REQUIRED: {
+  CREATE_USERNAME: {
     Component: CreateUsername
+  },
+  IMPORT_FROM_MNEMONIC: {
+    Component: ImportFromMnemonic
+  },
+  IMPORT_PLATFORM_DATA: {
+    Component: ImportPlatformData
   },
   LOADING: {
     Component: AccountWizardLoading
@@ -35,6 +43,7 @@ const modalContentByStatus = {
 };
 
 function AccountModal({ status, closeModal }) {
+  console.log({ status });
   const { Component, ProgressComponent } = modalContentByStatus[status];
   const content = Component ? (
     <React.Suspense fallback={<AccountWizardLoading />}>

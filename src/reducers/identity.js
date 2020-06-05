@@ -14,9 +14,25 @@ export default (state = initial, action) => {
       };
 
     case "CREATED_IDENTITY_FOUND_IN_LOCAL_STORAGE":
+    case "CREATED_IDENTITY":
       return {
         ...state,
         createdIdentity: action.payload
+      };
+
+    case "SELECT_ACCOUNT":
+      return initial;
+
+    case "USERNAME_CREATED":
+      return {
+        ...state,
+        names: [...state.names, action.payload]
+      };
+
+    case "SELECT_USERNAME":
+      return {
+        ...state,
+        selectedName: state.names.find(n => n.username === action.payload)
       };
 
     default:

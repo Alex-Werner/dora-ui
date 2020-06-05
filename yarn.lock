@@ -4347,10 +4347,10 @@ damerau-levenshtein@^1.0.4:
   resolved "https://registry.yarnpkg.com/damerau-levenshtein/-/damerau-levenshtein-1.0.6.tgz#143c1641cb3d85c60c32329e26899adea8701791"
   integrity sha512-JVrozIeElnj3QzfUIt8tB8YMluBJom4Vw9qTPpjGYQ9fYlB3D/rb6OordUxf3xeFB35LKWs0xqcO5U6ySvBtug==
 
-dash@3.0.0:
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/dash/-/dash-3.0.0.tgz#c90f6b775e35270f4f1a8fa94d170b6072ee8adb"
-  integrity sha512-/4Cdwf8GtRp9pH2DSu08YOJ1Z69/w88p8sUd1m328/Hlpl5/3e4iG5Z+x+Gd4AxKt8wWeZhMFiQZNtQvtA3gLw==
+dash@3.0.2:
+  version "3.0.2"
+  resolved "https://registry.yarnpkg.com/dash/-/dash-3.0.2.tgz#82b3f7964befd5d1489d331d2557152ebd19f91e"
+  integrity sha512-9vxdie32mw7bvtkctN4F5N8MVGcyruMHhLXqfoeR3lc12CM8zWUZxuSNgtBJroQgJWomgxO92hxoZSrRdO7qZg==
   dependencies:
     "@dashevo/dapi-client" "~0.12.0"
     "@dashevo/dashcore-lib" "^0.18.0"
@@ -12305,6 +12305,13 @@ worker-rpc@^0.1.0:
   integrity sha512-P1WjMrUB3qgJNI9jfmpZ/htmBEjFh//6l/5y8SD9hg1Ef5zTTVVoRjTrTEzPrNBQvmhMxkoTsjOXN10GWU7aCg==
   dependencies:
     microevent.ts "~0.1.1"
+
+workerize-loader@^1.2.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/workerize-loader/-/workerize-loader-1.2.0.tgz#0592d432ed58d9d12a7f2fa6cf8f9dc3b6326412"
+  integrity sha512-2RCaug+2QeLOepJNaI51ziYbjII4hvcbWEynTbyYGaCtYPbB3MNhAMebWoZCGGTmAJN0ORFCKP7eo5LCeRZqPg==
+  dependencies:
+    loader-utils "^1.2.3"
 
 wrap-ansi@^2.0.0:
   version "2.1.0"

@@ -15,7 +15,7 @@ const errorText = {
     "That username already exists, please try something else."
 };
 
-function AccountCreateUsername({ createUsername, isCreating, error }) {
+function AccountCreateUsername({ createUsername, isLoading, error }) {
   const [username, setUsername] = React.useState("");
 
   return (
@@ -32,13 +32,13 @@ function AccountCreateUsername({ createUsername, isCreating, error }) {
           name="username"
           id="username"
           value={username}
-          disabled={isCreating}
+          disabled={isLoading}
           onChange={e => setUsername(e.target.value)}
           placeholder="Choose a username"
         />
         <FieldError isVisible={!!error}>{error && errorText[error]}</FieldError>
         <FieldInfo>Info about validation</FieldInfo>
-        <ActionButton type="submit" disabled={isCreating}>
+        <ActionButton type="submit" disabled={isLoading}>
           Confirm Username
         </ActionButton>
       </Form>
@@ -48,8 +48,8 @@ function AccountCreateUsername({ createUsername, isCreating, error }) {
 
 const stateToProps = state => {
   return {
-    isCreating: state.account.isCreatingUsername,
-    error: state.account.usernameCreationError
+    isLoading: state.loading.createUsername,
+    error: state.error.createUsername
   };
 };
 

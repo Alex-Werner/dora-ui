@@ -17,13 +17,19 @@ export default createSelector(selectors, (...args) => {
 
   if (!wizard.mnemonicConfirmed && !wizard.type) return "SELECT_WIZARD_TYPE";
 
+  if (wallet.requiresPlatformImport) return "IMPORT_PLATFORM_DATA";
+  if (wizard.type === "IMPORT" && !wallet.requiresPlatformImport) {
+    return "IMPORT_FROM_MNEMONIC";
+  }
+
   if (wizard.type === "CREATE" && !wizard.mnemonicConfirmed) {
     return "CONFIRM_MNEMONIC";
   }
 
-  if (loading.account) return "HIDDEN";
-
-  if (account.balance.total === 0) return "FUNDS_REQUIRED";
+  if (account.balance.total === 0 && !loading.account) return "FUNDS_REQUIRED";
+  if (identity.names.length === 0 && account.balance.total > 0) {
+    return "CREATE_USERNAME";
+  }
 
   // if (account.current.username) return "HIDDEN";
 
