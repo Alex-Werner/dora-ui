@@ -19,6 +19,7 @@ export default store => next => async action => {
 
     case "SELECTED_ACCOUNT_FOUND_IN_LOCAL_STORAGE":
     case "SELECT_ACCOUNT":
+    case "ACCOUNT_CREATED":
       await selectAccount(...args);
       break;
 
@@ -28,14 +29,15 @@ export default store => next => async action => {
 
     case "WALLET_IMPORT_COMPLETED":
       await initialiseAccountOnImportedWallet(0, store.dispatch);
-
-    case "IDENTITY_ID_NOT_FOUND_IN_LOCAL_STORAGE":
-      await createIdentity(...args);
       break;
 
     case "ACCOUNT_LOADED":
       updateAccountBalances(...args);
       updateAddress(...args);
+      break;
+
+    case "CREATE_ACCOUNT":
+      createAccount(...args);
       break;
 
     case "CREATE_USERNAME":
@@ -50,19 +52,23 @@ export default store => next => async action => {
       importPlatformData(...args);
       break;
 
+    case "UPDATE_ACCOUNT_BALANCES":
+      updateAccountBalances(...args);
+      break;
+
     default:
       return;
   }
 };
 
 export async function updateAccountBalances(payload, dispatch) {
-  const balance = {
-    total: client.account.getTotalBalance(),
-    unconfirmed: client.account.getUnconfirmedBalance(),
-    confirmed: client.account.getConfirmedBalance()
-  };
+  const balances = client.wallet.accounts.map(account => ({
+    total: account.getTotalBalance(),
+    unconfirmed: account.getUnconfirmedBalance(),
+    confirmed: account.getConfirmedBalance()
+  }));
 
-  dispatch({ type: "ACCOUNT_BALANCE_UPDATED", payload: balance });
+  dispatch({ type: "ACCOUNT_BALANCE_UPDATED", payload: balances });
 }
 
 export async function updateAddress(payload, dispatch) {
@@ -128,22 +134,47 @@ export async function selectAccount(payload, dispatch) {
   dispatch({ type: "LOADING_ACCOUNT" });
 
   client.account = client.wallet.getAccount({ index: payload });
-  await client.account.isReady();
+
+  await client.isReady();
 
   dispatch({ type: "ACCOUNT_LOADED", payload });
 }
 
-export async function importPlatformData(payload, dispatch) {
+export async function importPlatformData(payload, dispatch, state) {
   dispatch({ type: "IMPORTING_PLATFORM_DATA" });
 
+  const debugAcc = client.wallet.accounts[0];
   const accounts = client.wallet.accounts.map(a => ({
     transactions: a.getTransactions(),
     index: a.index
   }));
   const workerInstance = worker();
-  const identityIds = await workerInstance.getWalletIdentities(accounts);
+  const identities = await workerInstance.getWalletIdentities(accounts);
 
-  dispatch({ type: "PLATFORM_DATA_IMPORTED" });
+  const identitiesByAccount = [];
+  for (const accountIdentities of identities) {
+    const names = [];
+    for (const identityId of accountIdentities) {
+      const usernames = await getUsernamesFromIdentityId(identityId);
+      names.push(...usernames.map(username => ({ username, identityId })));
+    }
+
+    identitiesByAccount.push(names);
+  }
+
+  dispatch({ type: "PLATFORM_DATA_IMPORTED", payload: identitiesByAccount });
+
+  const accountIdentity = identitiesByAccount[state.account.selected] || [];
+  dispatch({ type: "ACCOUNT_IDENTITY_FOUND", payload: accountIdentity });
+}
+
+export async function getUsernamesFromIdentityId(identityId) {
+  const identity = await client.platform.identities.get(identityId);
+  const names = await client.platform.documents.get("dpns.domain", {
+    where: [["records.dashIdentity", "==", identityId]]
+  });
+
+  return names.map(n => n.data.label);
 }
 
 export async function createIdentity(payload, dispatch) {
@@ -169,4 +200,16 @@ export async function createUsername(payload, dispatch, state) {
   } catch (e) {
     dispatch({ type: "CREATE_USERNAME_FAILED", payload: e.message });
   }
+}
+
+export async function createAccount(payload, dispatch) {
+  console.log("before", client.wallet.accounts.length);
+  const index = client.wallet.accounts.length;
+  const account = client.wallet.createAccount({ index });
+  console.log("init", new Date().getTime(), client);
+  await client.isReady();
+  console.log("done", new Date().getTime());
+  client.wallet.accounts[index] = account;
+  console.log("after", client.wallet.accounts.length, account);
+  dispatch({ type: "ACCOUNT_CREATED", payload: index });
 }

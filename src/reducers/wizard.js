@@ -1,7 +1,8 @@
 const initial = {
   isHidden: false,
   type: null,
-  mnemonicConfirmed: false
+  mnemonicConfirmed: false,
+  showAccountManagement: false
 };
 
 export default (state = initial, action) => {
@@ -22,13 +23,26 @@ export default (state = initial, action) => {
     case "HIDE_WIZARD":
       return {
         ...state,
-        isHidden: true
+        isHidden: true,
+        showAccountManagement: false
       };
 
     case "SELECT_WIZARD_TYPE":
       return {
         ...state,
         type: action.payload
+      };
+
+    case "OPEN_ACCOUNT_MANAGEMENT":
+      return {
+        ...state,
+        showAccountManagement: true
+      };
+
+    case "CLOSE_ACCOUNT_MANAGEMENT":
+      return {
+        ...state,
+        showAccountManagement: false
       };
 
     default:

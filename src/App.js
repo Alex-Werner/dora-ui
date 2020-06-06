@@ -20,14 +20,12 @@ function App({ init }) {
     <>
       <GlobalStyle />
       <AccountWizard />
-      {/*
       <Header>
         <Logo />
         <URL />
         <AccountMenu />
       </Header>
-      */}
-      {/* <AccountIncompleteWarning /> */}
+      <AccountIncompleteWarning />
       <React.Suspense fallback={"Loading..."}>
         {/* <PageCreateApplication /> */}
         {/* <PageEditApplications /> */}

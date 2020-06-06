@@ -14,7 +14,7 @@ function AccountIncompleteWarning({ isIncomplete, showWizard }) {
 
 const stateToProps = state => {
   return {
-    isIncomplete: !state.account.current.username
+    isIncomplete: !state.loading.account && !state.identity.selectedName
   };
 };
 

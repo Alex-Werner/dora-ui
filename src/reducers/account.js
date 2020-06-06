@@ -1,11 +1,8 @@
 const initial = {
   selected: null,
   address: null,
-  balance: {
-    total: 0,
-    confirmed: 0,
-    unconfirmed: 0
-  }
+  available: [],
+  balances: []
 };
 
 export default (state = initial, action) => {
@@ -22,13 +19,19 @@ export default (state = initial, action) => {
     case "ACCOUNT_BALANCE_UPDATED":
       return {
         ...state,
-        balance: action.payload
+        balances: action.payload
       };
 
     case "ACCOUNT_ADDRESS_UPDATED":
       return {
         ...state,
         address: action.payload
+      };
+
+    case "AVAILABLE_ACCOUNTS_FOUND_IN_LOCAL_STORAGE":
+      return {
+        ...state,
+        available: action.payload
       };
 
     case "WALLET_IMPORT_COMPLETED":

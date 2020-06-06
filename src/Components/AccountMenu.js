@@ -1,34 +1,36 @@
 import React from "react";
 import { connect } from "react-redux";
 
-import { AccountMenu, GhostButton } from "../Styles";
+import { AccountMenu, GhostButton, DisplayName, DropdownIcon } from "../Styles";
 import DashAmount from "./DashAmount";
+import AccountDropdownMenu from "./AccountDropdownMenu";
 
-function Account({ account }) {
-  const user = {
-    username: account.username || "anonymous",
-    balance: account.balance || 0,
-    isIncomplete: !account.username
-  };
-
-  const displayName =
-    user.username.length > 10
-      ? `${user.username.substring(0, 10)}...`
-      : user.username;
+function Account({ username, balance }) {
+  const [dropdownIsVisible, setDropdownIsVisible] = React.useState(false);
+  const displayName = username
+    ? `${username.length > 20 ? `${username.substring(0, 20)}...` : username}`
+    : "(anonymous)";
 
   return (
     <AccountMenu>
-      <GhostButton>
-        {displayName}
-        <DashAmount>{user.balance}</DashAmount>
+      <GhostButton onClick={e => setDropdownIsVisible(!dropdownIsVisible)}>
+        <DisplayName>{displayName}</DisplayName>
+        <DashAmount>{balance}</DashAmount>
+        <DropdownIcon />
+        <AccountDropdownMenu
+          hide={e => setDropdownIsVisible(false)}
+          isVisible={dropdownIsVisible}
+        />
       </GhostButton>
     </AccountMenu>
   );
 }
 
 const stateToProps = state => {
+  const balance = state.account.balances[state.account.selected];
   return {
-    account: state.account.current
+    username: state.identity.selectedName,
+    balance: balance ? balance.total : 0
   };
 };
 

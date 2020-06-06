@@ -35,6 +35,14 @@ export default (state = initial, action) => {
         selectedName: state.names.find(n => n.username === action.payload)
       };
 
+    case "ACCOUNT_IDENTITY_FOUND":
+      return {
+        ...state,
+        names: action.payload,
+        selectedName: action.payload[0] ? action.payload[0].username : null,
+        createdIdentity: action.payload[0] ? action.payload[0].identityId : null
+      };
+
     default:
       return state;
   }

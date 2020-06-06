@@ -12,6 +12,7 @@ export default store => next => action => {
 
   const { dispatch, getState } = store;
   const { payload } = action;
+  const selected = getState().account.selected || 0;
 
   switch (action.type) {
     case "INIT":
@@ -29,9 +30,15 @@ export default store => next => action => {
       break;
 
     case "WALLET_LOADED":
+      const availableAccounts = lsGet("accounts");
       const lastSelected = lsGet("selectedAccount");
 
       if (typeof lastSelected !== "number") return;
+
+      dispatch({
+        type: "AVAILABLE_ACCOUNTS_FOUND_IN_LOCAL_STORAGE",
+        payload: availableAccounts
+      });
 
       dispatch({
         type: "SELECTED_ACCOUNT_FOUND_IN_LOCAL_STORAGE",
@@ -47,8 +54,12 @@ export default store => next => action => {
 
     case "ACCOUNT_CREATED_ON_NEW_WALLET":
     case "ACCOUNT_CREATED":
-      lsSet(`accounts.${payload}.names`, []);
-      lsSet(`accounts.${payload}.selectedName`, null);
+      lsSet("selectedAccount", payload);
+      lsSet(`accounts.${payload}`, {
+        names: [],
+        selectedName: null,
+        createdIdentity: null
+      });
       break;
 
     case "ACCOUNT_LOADED":
@@ -65,9 +76,7 @@ export default store => next => action => {
     case "ACCOUNT_NAMES_NOT_FOUND_IN_LOCAL_STORAGE":
       // If user has already created an identity but not username, unlikely
       // occurrance. In this case, the created identity will be available for use.
-      const createdIdentity = lsGet(
-        `accounts.${getState().account.selected}.createdIdentity`
-      );
+      const createdIdentity = lsGet(`accounts.${selected}.createdIdentity`);
       const createdIdentityLoadType = createdIdentity
         ? "CREATED_IDENTITY_FOUND_IN_LOCAL_STORAGE"
         : "CREATED_IDENTITY_NOT_FOUND_IN_LOCAL_STORAGE";
@@ -76,23 +85,29 @@ export default store => next => action => {
       break;
 
     case "CREATED_IDENTITY":
-      lsSet(
-        `accounts.${getState().account.selected}.createdIdentity`,
-        action.payload
-      );
+      lsSet(`accounts.${selected}.createdIdentity`, action.payload);
       break;
 
     case "USERNAME_CREATED":
-      lsUpdate(`accounts.${getState().account.selected}.names`, names => {
+      lsUpdate(`accounts.${selected}.names`, names => {
         const original = names || [];
         return [...original, payload];
       });
+      break;
 
     case "SELECT_USERNAME":
-      lsSet(`accounts.${getState().account.selected}.selectedName`, payload);
+      lsSet(`accounts.${selected}.selectedName`, payload);
+      break;
 
     case "PLATFORM_DATA_IMPORTED":
       lsSet("wallet.requiresPlatformImport", false);
+      payload.forEach((accountNames, i) => {
+        lsSet(`accounts.${i}`, {
+          names: accountNames,
+          createdIdentity: accountNames[0] ? accountNames[0].identityId : null,
+          selectedName: accountNames[0] ? accountNames[0].username : null
+        });
+      });
       break;
 
     case "CONFIRM_MNEMONIC":

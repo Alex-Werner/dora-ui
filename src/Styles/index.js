@@ -1,4 +1,5 @@
 import styled, { createGlobalStyle, keyframes } from "styled-components";
+import { ChevronDown } from "@styled-icons/boxicons-regular/ChevronDown";
 
 export const mobileWidth = 760;
 export const mobile = str => `
@@ -154,6 +155,23 @@ export const TextDropdownContent = styled.div`
   transition: height 100ms ease-in-out;
 `;
 
+export const DashAmount = styled.span`
+  color: ${colors.white};
+  font-size: ${fontSize(4)};
+  span {
+    padding-left: ${space(4)};
+  }
+`;
+
+export const DropdownIcon = styled(ChevronDown)`
+  width: ${fontSize(5)};
+  height: ${fontSize(5)};
+  ${mobile(`
+    width: ${fontSize(4)};
+    height: ${fontSize(4)};
+  `)}
+`;
+
 export const AccountMenu = styled.div`
   flex: 0 0 25%;
   text-align: right;
@@ -161,28 +179,73 @@ export const AccountMenu = styled.div`
     flex: 0 0 75%;
   `)}
   > ${GhostButton}{
-    padding: ${space(6)} ${space(6)};
+  position:relative;
+    margin: ${space(4)} ${space(6)};
+    border-radius:${borderRadius};
     outline: none;
     cursor: pointer;
+    text-align: right;
     color: ${colors.white};
-    font-size: ${fontSize(4)};
+    font-size: ${fontSize(5)};
+    font-weight:bold;
+    padding: ${space(2)} ${space(7)} ${space(2)} ${space(2)};
+    ${mobile(`
+      background:${dark(1)};
+      padding: ${space(3)} ${space(6)};
+    `)}
     > span{
-      margin-left: ${space(7)};
       svg{
         margin-top:-${space(3)};
       }
     }
     &:focus{
-      background: ${dark(1)};
+      background: ${dark(2)};
     }
+  }
+  ${DropdownIcon}{
+    position:absolute;
+    right:-${space(2)};
+    top: 50%;
+    margin-top: -${space(5)};
   }
 `;
 
-export const DashAmount = styled.span`
-  color: ${colors.white};
-  font-size: ${fontSize(4)};
-  span {
-    padding-left: ${space(4)};
+export const DisplayName = styled.span`
+  display: block;
+  margin: 0 0 ${space(1)} 0;
+  font-size: ${fontSize(2)};
+  font-weight: normal;
+  ${mobile(`
+    display:none;
+  `)}
+`;
+
+export const AccountDropdown = styled.nav`
+  position: absolute;
+  top: 100%;
+  right: 0;
+  height: ${props => (props.isVisible ? "auto" : 0)};
+  transition: height 100ms ease-in-out;
+  overflow: hidden;
+  background: ${colors.primary};
+  width: 200px;
+  box-shadow: ${shadows.large};
+  border-radius: ${borderRadius};
+  ul {
+    list-style: none;
+    padding: ${space(3)} 0;
+  }
+  ul + ul {
+    padding: ${space(4)} 0 0 0;
+    margin: ${space(4)} 0 0 0;
+    border-top: 1px solid ${dark(1)};
+  }
+  button {
+    text-align: left;
+    width: 100%;
+    padding: ${space(4)} ${space(4)};
+    color: ${colors.white};
+    font-size: ${fontSize(3)};
   }
 `;
 
@@ -211,6 +274,7 @@ export const ModalOverlay = styled.div`
   width: 100vw;
   height: 100vh;
   background: ${light(5)};
+  z-index: 9;
 `;
 
 export const ModalContent = styled.div`
@@ -465,6 +529,30 @@ export const DashAddressContainer = styled.div`
     right: 0;
     top: 50%;
     transform: translate(0, -50%);
+  }
+`;
+
+export const AccountList = styled.ul`
+  margin: ${margin} 0 0 0;
+  list-style: none;
+  padding: 0;
+  li {
+    background: ${props => (props.selected ? light(5) : "transparent")};
+    margin: ${space(5)} 0 0 0;
+    align-items: center;
+    padding: ${space(6)};
+    box-shadow: ${shadows.small};
+    > strong {
+      font-size: ${fontSize(4)};
+    }
+    > small {
+      font-size: ${fontSize(1)};
+      margin: ${space(4)};
+      font-style: italic;
+    }
+    &:hover {
+      background-color: ${light(5)};
+    }
   }
 `;
 
