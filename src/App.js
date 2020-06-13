@@ -10,6 +10,8 @@ import { Header, GlobalStyle } from "./Styles";
 import Logo from "./Components/Logo";
 import URL from "./Components/URL";
 import AccountMenu from "./Components/AccountMenu";
+import Page from "./Components/Page";
+import ExamplePage from "./Components/ExamplePage";
 
 function App({ init }) {
   React.useEffect(() => {
@@ -22,11 +24,14 @@ function App({ init }) {
       <AccountWizard />
       <Header>
         <Logo />
-        <URL />
         <AccountMenu />
       </Header>
       <AccountIncompleteWarning />
       <React.Suspense fallback={"Loading..."}>
+        <Page>
+          {/* <URL /> */}
+          <ExamplePage />
+        </Page>
         {/* <PageCreateApplication /> */}
         {/* <PageEditApplications /> */}
       </React.Suspense>

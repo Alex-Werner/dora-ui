@@ -5,7 +5,7 @@ import { AccountMenu, GhostButton, DisplayName, DropdownIcon } from "../Styles";
 import DashAmount from "./DashAmount";
 import AccountDropdownMenu from "./AccountDropdownMenu";
 
-function Account({ username, balance }) {
+function Account({ username, balance, isLoading }) {
   const [dropdownIsVisible, setDropdownIsVisible] = React.useState(false);
   const displayName = username
     ? `${username.length > 20 ? `${username.substring(0, 20)}...` : username}`
@@ -15,7 +15,7 @@ function Account({ username, balance }) {
     <AccountMenu>
       <GhostButton onClick={e => setDropdownIsVisible(!dropdownIsVisible)}>
         <DisplayName>{displayName}</DisplayName>
-        <DashAmount>{balance}</DashAmount>
+        <DashAmount>{isLoading ? "Loading..." : balance}</DashAmount>
         <DropdownIcon />
         <AccountDropdownMenu
           hide={e => setDropdownIsVisible(false)}
@@ -29,6 +29,7 @@ function Account({ username, balance }) {
 const stateToProps = state => {
   const balance = state.account.balances[state.account.selected];
   return {
+    isLoading: state.loading.account,
     username: state.identity.selectedName,
     balance: balance ? balance.total : 0
   };

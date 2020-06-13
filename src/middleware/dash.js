@@ -79,7 +79,9 @@ export async function updateAddress(payload, dispatch) {
 export async function initialiseWallet(payload, dispatch) {
   client = new Dash.Client({
     ...DASH_CONFIG,
-    mnemonic: payload.mnemonic || null
+    wallet: {
+      mnemonic: payload.mnemonic || null
+    }
   });
 
   dispatch({ type: "WALLET_LOADED", payload });
@@ -89,11 +91,13 @@ export async function importWallet(payload, dispatch) {
   dispatch({ type: "WALLET_IMPORT_STARTED" });
   try {
     client = new Dash.Client({
-      ...DASH_CONFIG,
-      mnemonic: payload
+      network: "testnet",
+      wallet: {
+        mnemonic: payload
+      }
     });
 
-    await client.isReady();
+    await client.wallet.getAccount({ index: 0 });
 
     const id = `${new Date().getTime()}`;
     const newWallet = {
@@ -109,11 +113,14 @@ export async function importWallet(payload, dispatch) {
 }
 
 export async function createWallet(payload, dispatch) {
-  client = new Dash.Client({
-    ...DASH_CONFIG,
+  const wallet = {
     mnemonic: null
-  });
+  };
 
+  console.log(wallet);
+  client = new Dash.Client({ wallet });
+
+  console.log(client);
   const id = `${new Date().getTime()}`;
   const mnemonic = client.wallet.exportWallet();
 
@@ -133,9 +140,7 @@ export async function initialiseAccountOnImportedWallet(payload, dispatch) {
 export async function selectAccount(payload, dispatch) {
   dispatch({ type: "LOADING_ACCOUNT" });
 
-  client.account = client.wallet.getAccount({ index: payload });
-
-  await client.isReady();
+  client.account = await client.wallet.getAccount({ index: payload });
 
   dispatch({ type: "ACCOUNT_LOADED", payload });
 }
@@ -150,6 +155,7 @@ export async function importPlatformData(payload, dispatch, state) {
   }));
   const workerInstance = worker();
   const identities = await workerInstance.getWalletIdentities(accounts);
+  console.log(identities);
 
   const identitiesByAccount = [];
   for (const accountIdentities of identities) {
@@ -179,7 +185,8 @@ export async function getUsernamesFromIdentityId(identityId) {
 
 export async function createIdentity(payload, dispatch) {
   dispatch({ type: "CREATING_IDENTITY" });
-  const identity = await client.platform.identities.register();
+  console.log("b4 identity", client);
+  const identity = await client.platform.identities.register(1000000);
   dispatch({ type: "CREATED_IDENTITY", payload: identity.id });
 
   return identity.id;
@@ -198,6 +205,7 @@ export async function createUsername(payload, dispatch, state) {
     dispatch({ type: "USERNAME_CREATED", payload: { username, identityId } });
     dispatch({ type: "SELECT_USERNAME", payload: username });
   } catch (e) {
+    console.error(e);
     dispatch({ type: "CREATE_USERNAME_FAILED", payload: e.message });
   }
 }

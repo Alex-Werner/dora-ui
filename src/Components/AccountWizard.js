@@ -12,6 +12,8 @@ const CreateUsername = React.lazy(() => import("./CreateUsername"));
 const ImportFromMnemonic = React.lazy(() => import("./ImportFromMnemonic"));
 const ImportPlatformData = React.lazy(() => import("./ImportPlatformData"));
 const AccountManagement = React.lazy(() => import("./AccountManagement"));
+const Send = React.lazy(() => import("./Send"));
+const Receive = React.lazy(() => import("./Receive"));
 // const AccountCreate = React.lazy(() => import("./AccountCreate"));
 // const AccountImport = React.lazy(() => import("./AccountImport"));
 // const AccountAddFunds = React.lazy(() => import("./AccountAddFunds"));
@@ -34,6 +36,12 @@ const modalContentByStatus = {
   },
   ACCOUNT_MANAGEMENT: {
     Component: AccountManagement
+  },
+  SEND: {
+    Component: Send
+  },
+  RECEIVE: {
+    Component: Receive
   },
   IMPORT_FROM_MNEMONIC: {
     Component: ImportFromMnemonic

@@ -24,7 +24,9 @@ export default (state = initial, action) => {
       return {
         ...state,
         isHidden: true,
-        showAccountManagement: false
+        showAccountManagement: false,
+        showSend: false,
+        showReceive: false
       };
 
     case "SELECT_WIZARD_TYPE":
@@ -43,6 +45,30 @@ export default (state = initial, action) => {
       return {
         ...state,
         showAccountManagement: false
+      };
+
+    case "OPEN_SEND":
+      return {
+        ...state,
+        showSend: true
+      };
+
+    case "CLOSE_SEND":
+      return {
+        ...state,
+        showSend: false
+      };
+
+    case "OPEN_RECEIVE":
+      return {
+        ...state,
+        showReceive: true
+      };
+
+    case "CLOSE_RECEIVE":
+      return {
+        ...state,
+        showReceive: false
       };
 
     default:

@@ -12,6 +12,8 @@ export default createSelector(selectors, (...args) => {
   const [account, wallet, wizard, loading, identity] = args;
 
   if (wizard.showAccountManagement) return "ACCOUNT_MANAGEMENT";
+  if (wizard.showSend) return "SEND";
+  if (wizard.showReceive) return "RECEIVE";
   if (wizard.isHidden || loading.wallet) return "HIDDEN";
 
   // if (typeof account.selected !== "number") return "SELECT_ACCOUNT";

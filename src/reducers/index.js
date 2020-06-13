@@ -8,6 +8,7 @@ import loading from "./loading";
 import create from "./create";
 import apps from "./apps";
 import error from "./error";
+import transactions from "./transactions";
 
 export default combineReducers({
   account,
@@ -17,5 +18,6 @@ export default combineReducers({
   wizard,
   loading,
   identity,
-  error
+  error,
+  transactions
 });

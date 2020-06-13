@@ -1,25 +1,43 @@
 import React from "react";
 import { connect } from "react-redux";
 
-import { AccountDropdown, GhostButton } from "../Styles";
+import { AccountDropdown } from "../Styles";
 
-function AccountDropdownMenu({ isVisible, manageAccounts, hide }) {
+function AccountDropdownMenu({
+  isVisible,
+  manageAccounts,
+  hide,
+  send,
+  receive,
+  available
+}) {
   return (
     <AccountDropdown isVisible={isVisible} onClick={hide}>
       <ul>
         <li>
-          <GhostButton onClick={manageAccounts}>Manage Accounts</GhostButton>
+          <a onClick={send}>Send</a>
         </li>
         <li>
-          <GhostButton>Create New Username</GhostButton>
+          <a onClick={receive}>Receive</a>
+        </li>
+        {/* {available.length > 1 && ( */}
+        {/*   <li onClick={transfer}>Transfer Between Accounts</li> */}
+        {/* )} */}
+      </ul>
+      <ul>
+        <li>
+          <a onClick={manageAccounts}>Manage Accounts</a>
         </li>
         <li>
-          <GhostButton>Select Username</GhostButton>
+          <a>Create New Username</a>
+        </li>
+        <li>
+          <a>Select Username</a>
         </li>
       </ul>
       <ul>
         <li>
-          <GhostButton>Discard Wallet</GhostButton>
+          <a>Discard Wallet</a>
         </li>
       </ul>
     </AccountDropdown>
@@ -28,7 +46,8 @@ function AccountDropdownMenu({ isVisible, manageAccounts, hide }) {
 
 const stateToProps = (state, ownProps) => {
   return {
-    isVisible: ownProps.isVisible
+    isVisible: ownProps.isVisible,
+    accounts: state.account.available
   };
 };
 
@@ -36,6 +55,12 @@ const dispatchToProps = (dispatch, ownProps) => {
   return {
     manageAccounts() {
       dispatch({ type: "OPEN_ACCOUNT_MANAGEMENT" });
+    },
+    send() {
+      dispatch({ type: "OPEN_SEND" });
+    },
+    receive() {
+      dispatch({ type: "OPEN_RECEIVE" });
     },
     hide: ownProps.hide
   };

@@ -1,5 +1,6 @@
 import styled, { createGlobalStyle, keyframes } from "styled-components";
 import { ChevronDown } from "@styled-icons/boxicons-regular/ChevronDown";
+import { Qrcode } from "@styled-icons/icomoon/Qrcode";
 
 export const mobileWidth = 760;
 export const mobile = str => `
@@ -13,12 +14,13 @@ export const space = n => fib(n) + "px";
 export const margin = space(7);
 export const fontSize = n => 11 + fib(n) + "px";
 export const colors = {
-  text: "#402d00",
-  white: "#fffefa",
-  background: "#fffefa",
-  primary: "#5c8cbf",
-  secondary: "light.5",
-  accent: "#fcec35",
+  text: "#5e6d89",
+  white: "#fff",
+  link: "#284db5",
+  background: "#f2faf8",
+  primary: "#4287f5",
+  secondary: "#42f5ce",
+  accent: "#2ac78d",
   highlight: "#ffeb17",
   dash: "#008DE4",
   error: "#ffb940"
@@ -28,14 +30,14 @@ export const fonts = {
   brand: "'Nova Round', serif"
 };
 
-export const borderRadius = "2px";
+export const borderRadius = "4px";
 export const border = color => `1px solid ${color}`;
 export const shadows = {
   small: "0 0 4px rgba(0, 0, 0, .125)",
   large: "0 0 24px rgba(0, 0, 0, .125)"
 };
 
-export const light = n => `rgba(255,255,255,${0.1 * fib(n)})`;
+export const light = n => `rgba(242, 250, 248,${0.1 * fib(n)})`;
 export const dark = n => `rgba(0,0,0,${0.1 * fib(n)})`;
 
 export const Container = styled.div`
@@ -44,8 +46,8 @@ export const Container = styled.div`
 `;
 
 export const Header = styled(Container)`
+  width: 100%;
   display: flex;
-  flex-wrap: wrap;
   background: ${colors.primary};
   padding-right: 0;
   align-items: center;
@@ -53,30 +55,59 @@ export const Header = styled(Container)`
   color: ${colors.white};
 `;
 
+export const PageContainer = styled.div`
+  background: ${light(5)};
+  padding: ${margin} ${space(6)};
+`;
+
 export const Logo = styled.h1`
-  flex: 0 0 25%;
+  flex: 0;
   font-size: ${fontSize(7)};
   font-family: ${fonts.brand};
   font-weight: normal;
   margin: 0;
 `;
 
+export const inputFocus = `
+  outline: 2px solid ${colors.primary};
+  border-color: ${dark(2)};
+`;
+
 export const inputStyle = `
   width: 100%;
   padding: ${space(4)} ${space(5)};
+  line-height: 1.4;
   border: ${border(dark(1))};
   border-radius: ${borderRadius};
   font-family: ${fonts.body};
   margin: 0;
-  background: ${light(5)};
+  background: ${light(2)};
   &:focus{
-    outline: 2px solid ${colors.primary};
-    border-color: ${dark(2)};
+    ${inputFocus}
   }
 `;
 
 export const Input = styled.input`
   ${inputStyle};
+`;
+
+export const QrIcon = styled(Qrcode)`
+  width: ${fontSize(3)};
+  height: ${fontSize(3)};
+`;
+
+export const InputGroup = styled.div`
+  display: flex;
+  ${inputStyle};
+  &:focus-within {
+    ${inputFocus}
+  }
+  ${Input} {
+    background: none;
+    outline: none;
+    border: none;
+    flex: 1;
+  }
 `;
 
 export const Textarea = styled.textarea`
@@ -109,19 +140,18 @@ export const CheckboxContainer = styled.div`
 `;
 
 export const URLForm = styled.form`
-  flex: 0 0 50%;
+  width: 50%;
   max-width: 1000px;
   ${mobile(`
-    order: 3;
-    flex: 0 0 100%;
-    padding-right: ${space(6)};
-    padding-bottom: ${space(5)};
-    padding-top: ${space(4)};
+    width: 100%;
   `)}
-
+  background: ${colors.primary};
+  padding: 0 ${space(6)};
   ${Input} {
-    background: ${dark(2)};
     color: ${colors.white};
+    padding:0;
+    background:transparent;
+    border:none;
     font-size: ${fontSize(4)};
   }
 `;
@@ -139,6 +169,7 @@ export const TextDropdownContainer = styled.div`
     text-decoration: underline;
     color: ${colors.primary};
     padding: 0;
+    margin: 0 0 ${margin} 0;
     font-size: ${fontSize(5)};
     font-weight: bold;
     svg {
@@ -150,7 +181,6 @@ export const TextDropdownContainer = styled.div`
 export const TextDropdownContent = styled.div`
   overflow: hidden;
   height: ${props => (props.isVisible ? "auto" : "0px")};
-  padding: ${space(5)} 0 0 ${space(5)};
   font-size: ${fontSize(4)};
   transition: height 100ms ease-in-out;
 `;
@@ -173,24 +203,22 @@ export const DropdownIcon = styled(ChevronDown)`
 `;
 
 export const AccountMenu = styled.div`
-  flex: 0 0 25%;
+  flex: 0;
   text-align: right;
   ${mobile(`
     flex: 0 0 75%;
   `)}
   > ${GhostButton}{
   position:relative;
-    margin: ${space(4)} ${space(6)};
-    border-radius:${borderRadius};
+    margin: 0 ${space(6)};
     outline: none;
     cursor: pointer;
     text-align: right;
     color: ${colors.white};
     font-size: ${fontSize(5)};
     font-weight:bold;
-    padding: ${space(2)} ${space(7)} ${space(2)} ${space(2)};
+    padding: ${space(4)} ${space(7)} ${space(4)} ${space(2)};
     ${mobile(`
-      background:${dark(1)};
       padding: ${space(3)} ${space(6)};
     `)}
     > span{
@@ -199,7 +227,7 @@ export const AccountMenu = styled.div`
       }
     }
     &:focus{
-      background: ${dark(2)};
+      background: ${colors.secondary};
     }
   }
   ${DropdownIcon}{
@@ -230,7 +258,6 @@ export const AccountDropdown = styled.nav`
   background: ${colors.primary};
   width: 200px;
   box-shadow: ${shadows.large};
-  border-radius: ${borderRadius};
   ul {
     list-style: none;
     padding: ${space(3)} 0;
@@ -240,7 +267,7 @@ export const AccountDropdown = styled.nav`
     margin: ${space(4)} 0 0 0;
     border-top: 1px solid ${dark(1)};
   }
-  button {
+  a {
     text-align: left;
     width: 100%;
     padding: ${space(4)} ${space(4)};
@@ -278,7 +305,7 @@ export const ModalOverlay = styled.div`
 `;
 
 export const ModalContent = styled.div`
-  background: ${colors.background};
+  background: #fff;
   position: fixed;
   cursor: default;
   top: ${space(7)};
@@ -291,6 +318,9 @@ export const ModalContent = styled.div`
   width: 600px;
   max-width: 90%;
 
+  h2 {
+    margin: 0;
+  }
   > ${GhostButton} {
     position: absolute;
     top: 0;
@@ -300,6 +330,7 @@ export const ModalContent = styled.div`
 `;
 
 export const Button = styled.button`
+  text-transform: uppercase;
   padding: ${space(5)} ${space(6)};
   font-size: ${fontSize(5)};
   cursor: pointer;
@@ -340,7 +371,7 @@ export const Button = styled.button`
 
 export const ActionButton = styled(Button)`
   background: ${colors.accent};
-  color: ${dark(5)};
+  color: #fff;
 `;
 
 export const Form = styled.form`
@@ -434,7 +465,7 @@ export const Label = styled.label`
   font-weight: bold;
   cursor: pointer;
   font-size: ${fontSize(3)};
-  background: ${props => (props.checked ? light(5) : "transparent")};
+  background: ${props => (props.checked ? light(3) : "transparent")};
   + input {
     margin-top: ${space(4)};
   }
@@ -518,7 +549,7 @@ export const DashAddressContainer = styled.div`
     padding-right: ${space(7)};
     cursor: pointer;
     ${mobile(`
-      font-size: ${fontSize(3)};
+      font-size: ${fontSize(2)};
     `)}
   }
   &:hover ${Textarea} {
@@ -575,7 +606,13 @@ export const GlobalStyle = createGlobalStyle`
       margin-top: 0;
     }
   }
+  a, a:link, a:visited{
+    color: ${colors.link};
+  }
   p{
+    line-height: 1.4;
+  }
+  li{
     line-height: 1.4;
   }
   button, input, textarea{
