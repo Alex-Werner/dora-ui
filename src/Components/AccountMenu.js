@@ -4,15 +4,18 @@ import { connect } from "react-redux";
 import { AccountMenu, DisplayName, DropdownIcon } from "../Styles";
 import DashAmount from "./DashAmount";
 import AccountDropdownMenu from "./AccountDropdownMenu";
+import { useWindowClick } from "../hooks";
 
 function Account({ username, balance, isLoading }) {
   const [dropdownIsVisible, setDropdownIsVisible] = React.useState(false);
+  useWindowClick(e => setDropdownIsVisible(false));
+
   const displayName = username
     ? `${username.length > 20 ? `${username.substring(0, 20)}...` : username}`
     : "(anonymous)";
 
   return (
-    <AccountMenu>
+    <AccountMenu onClick={e => e.stopPropagation()}>
       <a
         href="/user.dora.dash"
         onClick={e =>

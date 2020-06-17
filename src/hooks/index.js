@@ -45,3 +45,16 @@ export function useWindowKeyup(key, fn) {
     };
   }, [key]);
 }
+
+export function useWindowClick(fn) {
+  const handleKeyup = useCallback(fn);
+
+  useEffect(() => {
+    window.removeEventListener("click", handleKeyup);
+    window.addEventListener("click", handleKeyup);
+
+    return function cleanupKeyupListener() {
+      window.removeEventListener("click", handleKeyup);
+    };
+  }, [fn]);
+}
