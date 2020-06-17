@@ -10,7 +10,9 @@ export default (state = initial, action) => {
       return {
         ...state,
         names: action.payload.names,
-        selectedName: action.payload.selectedName
+        selectedName: action.payload.names.find(
+          n => n.username === action.payload.selectedName
+        )
       };
 
     case "CREATED_IDENTITY_FOUND_IN_LOCAL_STORAGE":

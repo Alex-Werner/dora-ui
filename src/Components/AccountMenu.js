@@ -30,7 +30,8 @@ const stateToProps = state => {
   const balance = state.account.balances[state.account.selected];
   return {
     isLoading: state.loading.account,
-    username: state.identity.selectedName,
+    username:
+      state.identity.selectedName && state.identity.selectedName.username,
     balance: balance ? balance.total : 0
   };
 };

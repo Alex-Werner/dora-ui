@@ -1,11 +1,7 @@
-import Dash from "dash";
-import { PrivateKey, Transaction } from "@dashevo/dashcore-lib";
-import { utils } from "@dashevo/wallet-lib";
 import worker from "workerize-loader!../workers"; // eslint-disable-line import/no-webpack-loader-syntax
 
-import { Buffer } from "buffer";
 import { DASH_CONFIG } from "../dora.config";
-window.Buffer = Buffer;
+const Dash = window.Dash;
 let client;
 
 export default store => next => async action => {
@@ -66,11 +62,13 @@ export default store => next => async action => {
 };
 
 export async function updateAccountBalances(payload, dispatch) {
-  const balances = client.wallet.accounts.map(account => ({
-    total: account.getTotalBalance(),
-    unconfirmed: account.getUnconfirmedBalance(),
-    confirmed: account.getConfirmedBalance()
-  }));
+  const balances = client.wallet.accounts
+    .sort((a, b) => a.index - b.index)
+    .map(account => ({
+      total: account.getTotalBalance(),
+      unconfirmed: account.getUnconfirmedBalance(),
+      confirmed: account.getConfirmedBalance()
+    }));
 
   dispatch({ type: "ACCOUNT_BALANCE_UPDATED", payload: balances });
 }
@@ -88,6 +86,7 @@ export async function initialiseWallet(payload, dispatch) {
     }
   });
 
+  console.log(payload.mnemonic);
   dispatch({ type: "WALLET_LOADED", payload });
 }
 
@@ -159,7 +158,6 @@ export async function importPlatformData(payload, dispatch, state) {
   }));
   const workerInstance = worker();
   const identities = await workerInstance.getWalletIdentities(accounts);
-  console.log(identities);
 
   const identitiesByAccount = [];
   for (const accountIdentities of identities) {
@@ -189,79 +187,6 @@ export async function getUsernamesFromIdentityId(identityId) {
 
 export async function createIdentity(payload, dispatch) {
   dispatch({ type: "CREATING_IDENTITY" });
-  console.log(client.platform.client);
-  const account = await client.platform.client.getWalletAccount();
-  const identityAddressInfo = account.getUnusedAddress();
-  const [identityHDPrivateKey] = account.getPrivateKeys([
-    identityAddressInfo.address
-  ]);
-
-  const assetLockPrivateKey = identityHDPrivateKey.privateKey;
-  const assetLockPublicKey = assetLockPrivateKey.toPublicKey();
-
-  const identityAddress = assetLockPublicKey
-    .toAddress(client.network)
-    .toString();
-  const changeAddress = account.getUnusedAddress("internal").address;
-  const lockTransaction = new Transaction(undefined);
-  const fundingAmount = 10000;
-  const output = {
-    satoshis: fundingAmount,
-    address: identityAddress
-  };
-
-  const outputToMarkItUsed = {
-    satoshis: 10000,
-    address: identityAddress
-  };
-
-  const utxos = account.getUTXOS();
-  const balance = account.getTotalBalance();
-
-  const selection = utils.coinSelection(utxos, [output, outputToMarkItUsed]);
-
-  // FIXME : Usage with a single utxo had estimated fee of 205.
-  // But network failed us with 66: min relay fee not met.
-  // Over-writing the value for now.
-  selection.estimatedFee = 680;
-
-  lockTransaction
-    .from(selection.utxos)
-    // @ts-ignore
-    .addBurnOutput(output.satoshis, assetLockPublicKey._getID())
-    // @ts-ignore
-    .to(identityAddressInfo.address, 10000)
-    // @ts-ignore
-    .change(changeAddress)
-    .fee(selection.estimatedFee);
-
-  const utxoAddresses = selection.utxos.map((utxo: any) =>
-    utxo.address.toString()
-  );
-
-  // @ts-ignore
-  const utxoHDPrivateKey = account.getPrivateKeys(utxoAddresses);
-
-  // @ts-ignore
-  const signingKeys = utxoHDPrivateKey.map(
-    hdprivateKey => hdprivateKey.privateKey
-  );
-
-  if (balance < output.satoshis) {
-    throw new Error(
-      `Not enough balance (${balance}) to cover burn amount of ${fundingAmount}`
-    );
-  }
-  console.log(identityAddressInfo.address, assetLockPublicKey._getID());
-  console.log(
-    selection.estimatedFee,
-    changeAddress,
-    selection.utxos,
-    typeof Buffer
-  );
-  const transaction = lockTransaction.sign(signingKeys);
-  console.log(transaction);
-
   const identity = await client.platform.identities.register(1000000);
   dispatch({ type: "CREATED_IDENTITY", payload: identity.id });
 

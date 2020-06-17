@@ -12,6 +12,10 @@ export default () => {
         code with the Dash Platform integrated. The UI will work with HTTP-like
         URL's using DPNS (e.g. mywebsite.dash).
       </p>
+      <p>
+        The Dora UI will be available as an Electron desktop app, a Progressive
+        Web App and as a standard website.
+      </p>
       <p>While somewhat inefficient, doing this has the following benefits:</p>
       <UnorderedList>
         <li>
