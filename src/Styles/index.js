@@ -19,7 +19,7 @@ export const colors = {
   link: "#284db5",
   background: "#f2faf8",
   primary: "#4287f5",
-  secondary: "#42f5ce",
+  secondary: "#4257f5",
   accent: "#2ac78d",
   highlight: "#ffeb17",
   dash: "#008DE4",
@@ -208,31 +208,32 @@ export const AccountMenu = styled.div`
   ${mobile(`
     flex: 0 0 75%;
   `)}
-  > ${GhostButton}{
-  position:relative;
+  > a {
+    position: relative;
     margin: 0 ${space(6)};
     outline: none;
     cursor: pointer;
     text-align: right;
     color: ${colors.white};
+    text-decoration: none;
     font-size: ${fontSize(5)};
-    font-weight:bold;
+    font-weight: bold;
     padding: ${space(4)} ${space(7)} ${space(4)} ${space(2)};
     ${mobile(`
       padding: ${space(3)} ${space(6)};
     `)}
-    > span{
-      svg{
-        margin-top:-${space(3)};
+    > span {
+      svg {
+        margin-top: -${space(3)};
       }
     }
-    &:focus{
+    &:focus {
       background: ${colors.secondary};
     }
   }
-  ${DropdownIcon}{
-    position:absolute;
-    right:-${space(2)};
+  ${DropdownIcon} {
+    position: absolute;
+    right: -${space(2)};
     top: 50%;
     margin-top: -${space(5)};
   }
@@ -255,7 +256,7 @@ export const AccountDropdown = styled.nav`
   height: ${props => (props.isVisible ? "auto" : 0)};
   transition: height 100ms ease-in-out;
   overflow: hidden;
-  background: ${colors.primary};
+  background: ${colors.secondary};
   width: 200px;
   box-shadow: ${shadows.large};
   ul {
@@ -267,7 +268,7 @@ export const AccountDropdown = styled.nav`
     margin: ${space(4)} 0 0 0;
     border-top: 1px solid ${dark(1)};
   }
-  a {
+  ${GhostButton} {
     text-align: left;
     width: 100%;
     padding: ${space(4)} ${space(4)};
@@ -606,7 +607,7 @@ export const GlobalStyle = createGlobalStyle`
       margin-top: 0;
     }
   }
-  a, a:link, a:visited{
+  a{
     color: ${colors.link};
   }
   p{

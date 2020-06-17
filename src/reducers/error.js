@@ -1,6 +1,6 @@
 const initial = {};
 
-export default (state = {}, action) => {
+export default (state = initial, action) => {
   switch (action.type) {
     case "WALLET_IMPORT_FAILED":
       return {

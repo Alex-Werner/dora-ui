@@ -8,7 +8,7 @@ import AccountIncompleteWarning from "./Components/AccountIncompleteWarning";
 // import DevOnlyCharacterApp from "./Components/DevOnlyCharacterApp";
 import { Header, GlobalStyle } from "./Styles";
 import Logo from "./Components/Logo";
-import URL from "./Components/URL";
+// import URL from "./Components/URL";
 import AccountMenu from "./Components/AccountMenu";
 import Page from "./Components/Page";
 import ExamplePage from "./Components/ExamplePage";

@@ -1,14 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
 
-import {
-  Form,
-  Textarea,
-  Label,
-  FieldInfo,
-  ActionButton,
-  FieldError
-} from "../Styles";
+import { Form, Textarea, Label, ActionButton, FieldError } from "../Styles";
 
 function ImportFromMnemonic({ isLoading, importWallet, error }) {
   const [mnemonic, setMnemonic] = React.useState("");

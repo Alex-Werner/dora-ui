@@ -1,7 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
 
-import { AccountDropdown } from "../Styles";
+import { AccountDropdown, GhostButton } from "../Styles";
 
 function AccountDropdownMenu({
   isVisible,
@@ -15,10 +15,10 @@ function AccountDropdownMenu({
     <AccountDropdown isVisible={isVisible} onClick={hide}>
       <ul>
         <li>
-          <a onClick={send}>Send</a>
+          <GhostButton onClick={send}>Send</GhostButton>
         </li>
         <li>
-          <a onClick={receive}>Receive</a>
+          <GhostButton onClick={receive}>Receive</GhostButton>
         </li>
         {/* {available.length > 1 && ( */}
         {/*   <li onClick={transfer}>Transfer Between Accounts</li> */}
@@ -26,18 +26,18 @@ function AccountDropdownMenu({
       </ul>
       <ul>
         <li>
-          <a onClick={manageAccounts}>Manage Accounts</a>
+          <GhostButton onClick={manageAccounts}>Manage Accounts</GhostButton>
         </li>
         <li>
-          <a>Create New Username</a>
+          <GhostButton>Create New Username</GhostButton>
         </li>
         <li>
-          <a>Select Username</a>
+          <GhostButton>Select Username</GhostButton>
         </li>
       </ul>
       <ul>
         <li>
-          <a>Discard Wallet</a>
+          <GhostButton>Discard Wallet</GhostButton>
         </li>
       </ul>
     </AccountDropdown>

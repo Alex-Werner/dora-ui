@@ -151,7 +151,6 @@ export async function selectAccount(payload, dispatch) {
 export async function importPlatformData(payload, dispatch, state) {
   dispatch({ type: "IMPORTING_PLATFORM_DATA" });
 
-  const debugAcc = client.wallet.accounts[0];
   const accounts = client.wallet.accounts.map(a => ({
     transactions: a.getTransactions(),
     index: a.index
@@ -177,7 +176,6 @@ export async function importPlatformData(payload, dispatch, state) {
 }
 
 export async function getUsernamesFromIdentityId(identityId) {
-  const identity = await client.platform.identities.get(identityId);
   const names = await client.platform.documents.get("dpns.domain", {
     where: [["records.dashIdentity", "==", identityId]]
   });

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 
 export function useWindowSize() {
   const isClient = typeof window === "object";
@@ -26,4 +26,22 @@ export function useWindowSize() {
   }, []); // Empty array ensures that effect is only run on mount and unmount
 
   return windowSize;
+}
+
+export function useWindowKeyup(key, fn) {
+  const handleKeyup = useCallback(
+    e => {
+      if (e.key === key) fn();
+    },
+    [key, fn]
+  );
+
+  useEffect(() => {
+    window.removeEventListener("keyup", handleKeyup);
+    window.addEventListener("keyup", handleKeyup);
+
+    return function cleanupKeyupListener() {
+      window.removeEventListener("keyup", handleKeyup);
+    };
+  }, [key]);
 }

@@ -1,7 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
 
-import { AccountMenu, GhostButton, DisplayName, DropdownIcon } from "../Styles";
+import { AccountMenu, DisplayName, DropdownIcon } from "../Styles";
 import DashAmount from "./DashAmount";
 import AccountDropdownMenu from "./AccountDropdownMenu";
 
@@ -13,7 +13,12 @@ function Account({ username, balance, isLoading }) {
 
   return (
     <AccountMenu>
-      <GhostButton onClick={e => setDropdownIsVisible(!dropdownIsVisible)}>
+      <a
+        href="/user.dora.dash"
+        onClick={e =>
+          e.preventDefault() || setDropdownIsVisible(!dropdownIsVisible)
+        }
+      >
         <DisplayName>{displayName}</DisplayName>
         <DashAmount>{isLoading ? "Loading..." : balance}</DashAmount>
         <DropdownIcon />
@@ -21,7 +26,7 @@ function Account({ username, balance, isLoading }) {
           hide={e => setDropdownIsVisible(false)}
           isVisible={dropdownIsVisible}
         />
-      </GhostButton>
+      </a>
     </AccountMenu>
   );
 }

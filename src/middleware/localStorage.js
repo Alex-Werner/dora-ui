@@ -25,6 +25,10 @@ export default store => next => action => {
       break;
 
     case "CONFIRM_MNEMONIC":
+      lsUpdate("wallet.mnemonicConfirmed", v => true);
+      lsSet("wallet", getState().wallet);
+      break;
+
     case "WALLET_IMPORT_COMPLETED":
       lsSet("wallet", getState().wallet);
       break;
@@ -46,13 +50,21 @@ export default store => next => action => {
       });
       break;
 
-    case "SELECT_ACCOUNT":
     case "ACCOUNT_CREATED_ON_NEW_WALLET":
+      lsSet("selectedAccount", payload);
+      lsSet("selectedAccount", payload);
+      lsSet(`accounts.${payload}`, {
+        names: [],
+        selectedName: null,
+        createdIdentity: null
+      });
+      break;
+
+    case "SELECT_ACCOUNT":
     case "ACCOUNT_SELECTED_ON_IMPORTED_WALLET":
       lsSet("selectedAccount", payload);
       break;
 
-    case "ACCOUNT_CREATED_ON_NEW_WALLET":
     case "ACCOUNT_CREATED":
       lsSet("selectedAccount", payload);
       lsSet(`accounts.${payload}`, {
@@ -108,10 +120,6 @@ export default store => next => action => {
           selectedName: accountNames[0] ? accountNames[0].username : null
         });
       });
-      break;
-
-    case "CONFIRM_MNEMONIC":
-      lsUpdate("wallet.mnemonicConfirmed", v => true);
       break;
 
     default:
