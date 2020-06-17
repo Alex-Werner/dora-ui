@@ -15,11 +15,15 @@ function Account({ username, balance, isLoading }) {
     : "(anonymous)";
 
   return (
-    <AccountMenu onClick={e => e.stopPropagation()}>
+    <AccountMenu
+      onClick={e => e.stopPropagation()}
+      isActive={dropdownIsVisible}
+    >
       <a
         href="/user.dora.dash"
         onClick={e =>
-          e.preventDefault() || setDropdownIsVisible(!dropdownIsVisible)
+          e.preventDefault() ||
+          (!isLoading && setDropdownIsVisible(!dropdownIsVisible))
         }
       >
         <DisplayName>{displayName}</DisplayName>

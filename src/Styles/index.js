@@ -215,6 +215,7 @@ export const AccountMenu = styled.div`
     cursor: pointer;
     text-align: right;
     color: ${colors.white};
+    background: ${props => (props.isActive ? colors.secondary : "transparent")};
     text-decoration: none;
     font-size: ${fontSize(5)};
     font-weight: bold;
@@ -226,9 +227,6 @@ export const AccountMenu = styled.div`
       svg {
         margin-top: -${space(3)};
       }
-    }
-    &:focus {
-      background: ${colors.secondary};
     }
   }
   ${DropdownIcon} {

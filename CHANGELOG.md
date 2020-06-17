@@ -6,3 +6,6 @@ The goal of this changelog is to track all changes made and to stand as the reco
 2. Got username creation working
 3. Fixed minor bug where the wrong account index was getting selected
 4. Built useWindowKeyup hook to capture escape press for modal
+5. Built useWindowClick hook to capture click for account menu
+6. Fixed active style on account menu
+7. 
