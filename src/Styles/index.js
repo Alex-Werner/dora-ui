@@ -384,62 +384,6 @@ export const Form = styled.form`
   }
 `;
 
-export const ripple = size => keyframes`
-  0% {
-    top: ${size / 2 - 4}px;
-    left: ${size / 2 - 4}px;
-    width: 0;
-    height: 0;
-    opacity: 1;
-  }
-  100% {
-    top: 0px;
-    left: 0px;
-    width: ${size - 8}px;
-    height: ${size - 8}px;
-    opacity: 0;
-  }
-`;
-
-export const AnimatedWave = styled.div`
-  display: inline-block;
-  position: absolute;
-  top: 0;
-  left: 0;
-  border: 4px solid ${colors.text};
-  border-radius: 50%;
-  opacity: 1;
-  animation: ${props => ripple(props.size)} 1s cubic-bezier(0, 0.2, 0.8, 1)
-    infinite;
-`;
-
-export const SpinnerContainer = styled.div`
-  display: inline-block;
-  position: relative;
-  width: ${props => props.size}px;
-  height: ${props => props.size}px;
-  margin-left: ${props => props.size / 8}px;
-  ${AnimatedWave}:last-child {
-    animation-delay: -0.5s !important;
-  }
-`;
-
-export const ModalLoadingIcon = styled.div`
-  position: absolute;
-  top: 20px;
-  left: 0;
-  width: 100%;
-  opacity: 0.4;
-`;
-
-export const ModalLoading = styled.div`
-  text-align: center;
-  position: relative;
-  p {
-    font-size: ${fontSize(6)};
-  }
-`;
-
 export const MnemonicList = styled.ul`
   display: flex;
   flex-wrap: wrap;
@@ -582,6 +526,66 @@ export const AccountList = styled.ul`
     }
     &:hover {
       background-color: ${light(5)};
+    }
+  }
+`;
+
+const InlineEllipsis1 = keyframes`
+  0% {
+    transform: scale(0);
+  }
+  100% {
+    transform: scale(1);
+  }
+`;
+
+const InlineEllipsis2 = keyframes`
+  0% {
+    transform: translate(0, 0);
+  }
+  100% {
+    transform: translate(24px, 0);
+  }
+`;
+
+const InlineEllipsis3 = keyframes`
+  0% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(0);
+  }
+`;
+
+export const LoadingInlineContainer = styled.div`
+  display: inline-block;
+  position: relative;
+  width: 80px;
+  height: 13px;
+  transform: scale(${props => props.scale});
+
+  div {
+    position: absolute;
+    width: 13px;
+    height: 13px;
+    border-radius: 50%;
+    background: #fff;
+    animation-timing-function: cubic-bezier(0, 1, 1, 0);
+    &:nth-child(1) {
+      left: 8px;
+      animation: ${InlineEllipsis1} 0.6s infinite;
+    }
+    &:nth-child(2) {
+      left: 8px;
+      animation: ${InlineEllipsis2} 0.6s infinite;
+    }
+    &:nth-child(3) {
+      left: 32px;
+      animation: ${InlineEllipsis2} 0.6s infinite;
+    }
+    &:nth-child(4) {
+      left: 56px;
+      animation: ${InlineEllipsis3} 0.6s infinite;
     }
   }
 `;

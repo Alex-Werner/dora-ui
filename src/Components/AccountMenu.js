@@ -4,6 +4,7 @@ import { connect } from "react-redux";
 import { AccountMenu, DisplayName, DropdownIcon } from "../Styles";
 import DashAmount from "./DashAmount";
 import AccountDropdownMenu from "./AccountDropdownMenu";
+import LoadingInline from "./LoadingInline";
 import { useWindowClick } from "../hooks";
 
 function Account({ username, balance, isLoading }) {
@@ -19,21 +20,25 @@ function Account({ username, balance, isLoading }) {
       onClick={e => e.stopPropagation()}
       isActive={dropdownIsVisible}
     >
-      <a
-        href="/user.dora.dash"
-        onClick={e =>
-          e.preventDefault() ||
-          (!isLoading && setDropdownIsVisible(!dropdownIsVisible))
-        }
-      >
-        <DisplayName>{displayName}</DisplayName>
-        <DashAmount>{isLoading ? "Loading..." : balance}</DashAmount>
-        <DropdownIcon />
-        <AccountDropdownMenu
-          hide={e => setDropdownIsVisible(false)}
-          isVisible={dropdownIsVisible}
-        />
-      </a>
+      {isLoading || !isLoading ? (
+        <LoadingInline size={0.6} />
+      ) : (
+        <a
+          href="/user.dora.dash"
+          onClick={e =>
+            e.preventDefault() ||
+            (!isLoading && setDropdownIsVisible(!dropdownIsVisible))
+          }
+        >
+          <DisplayName>{displayName}</DisplayName>
+          <DashAmount>{balance}</DashAmount>
+          <DropdownIcon />
+          <AccountDropdownMenu
+            hide={e => setDropdownIsVisible(false)}
+            isVisible={dropdownIsVisible}
+          />
+        </a>
+      )}
     </AccountMenu>
   );
 }
