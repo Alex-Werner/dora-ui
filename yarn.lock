@@ -1112,10 +1112,10 @@
     lodash "^4.17.15"
     unorm "^1.6.0"
 
-"@dashevo/dpp@^0.13.0", "@dashevo/dpp@~0.13.0":
-  version "0.13.0"
-  resolved "https://registry.yarnpkg.com/@dashevo/dpp/-/dpp-0.13.0.tgz#8902ad775b7a28e59bc7dee195dfa54cad7747b3"
-  integrity sha512-0SrJNvpUZ4J6WOkQB61LYsmNTUNlNOjDt+JVcOJ9JlWnzLke2KyAuE6sP477Wokosqn+RjrV655zypSA0Hq0vw==
+"@dashevo/dpp@^0.13.1", "@dashevo/dpp@~0.13.0":
+  version "0.13.1"
+  resolved "https://registry.yarnpkg.com/@dashevo/dpp/-/dpp-0.13.1.tgz#f414c9a26351d6c7d6c1030706a16ea87b569d8e"
+  integrity sha512-4OFyRnyjE0m4Hx9hY5WC8KcEopJZJKeWP7T1celToairZwhyAnomlIC4XehNB6FFGwBHvUCct6TfNgF6KwHncw==
   dependencies:
     "@apidevtools/json-schema-ref-parser" "^8.0.0"
     "@dashevo/dashcore-lib" "~0.18.1"
@@ -1138,10 +1138,10 @@
     lodash.get "^4.4.2"
     semver "^7.3.2"
 
-"@dashevo/wallet-lib@7.13.0":
-  version "7.13.0"
-  resolved "https://registry.yarnpkg.com/@dashevo/wallet-lib/-/wallet-lib-7.13.0.tgz#fbb9a56e354a66101062959077399f3917b92a66"
-  integrity sha512-Go0VGciQGvDj+ZGZeB3qifUwgHXvP/e6hEdoQg2tG00fVtGjnEZnuKL6LHQgFGji+h5DxadEWYj3+8OmDef1HA==
+"@dashevo/wallet-lib@7.13.3":
+  version "7.13.3"
+  resolved "https://registry.yarnpkg.com/@dashevo/wallet-lib/-/wallet-lib-7.13.3.tgz#355c24330fe8f8de2efc5fd5b805b4723e1ec202"
+  integrity sha512-EGvztuUqg/IUy9QZ0z2LjZLaHPZW+gk1o90OYscygSGtY5XfvEA1qTi3JH5LpPATrq82cg27JEtGs+2wVmeXJw==
   dependencies:
     "@dashevo/dapi-client" "^0.13.2"
     "@dashevo/dashcore-lib" "^0.18.4"
@@ -3151,7 +3151,7 @@ bluebird@^3.5.5:
   resolved "https://registry.yarnpkg.com/bluebird/-/bluebird-3.7.2.tgz#9f229c15be272454ffa973ace0dbee79a1b0c36f"
   integrity sha512-XpNj6GDQzdfW+r2Wnn7xiSAd7TM3jzkxGXBGTtWKuSXv1xUV+azxAm8jdWZN06QTQk+2N2XB9jRDkvbmQmcRtg==
 
-bn.js@4.11.8, bn.js@=4.11.8, bn.js@^4.0.0, bn.js@^4.1.0, bn.js@^4.1.1:
+bn.js@=4.11.8, bn.js@^4.0.0, bn.js@^4.1.0, bn.js@^4.1.1:
   version "4.11.8"
   resolved "https://registry.yarnpkg.com/bn.js/-/bn.js-4.11.8.tgz#2cde09eb5ee341f484746bb0309b3253b1b1442f"
   integrity sha512-ItfYfPLkWHUjckQCk8xC+LwxgK8NYcXywGigJgSwOP8Y2iyWT4f2vsZnoOXTTbo+o5yXmIUJ4gn5538SO5S3gA==
@@ -4370,15 +4370,15 @@ damerau-levenshtein@^1.0.4:
   resolved "https://registry.yarnpkg.com/damerau-levenshtein/-/damerau-levenshtein-1.0.6.tgz#143c1641cb3d85c60c32329e26899adea8701791"
   integrity sha512-JVrozIeElnj3QzfUIt8tB8YMluBJom4Vw9qTPpjGYQ9fYlB3D/rb6OordUxf3xeFB35LKWs0xqcO5U6ySvBtug==
 
-dash@3.13.2:
-  version "3.13.2"
-  resolved "https://registry.yarnpkg.com/dash/-/dash-3.13.2.tgz#0e3269607be27f812e30a97b6a3dd70ec6770edc"
-  integrity sha512-l9JBp1bLwZIkhybSH+30R0R/zrZJLU9sFF62WU9DIFNUVadHp1tt5UPf7IxsPeBWsK5CEuDqHBXo+d3d0cIrnQ==
+dash@3.13.3:
+  version "3.13.3"
+  resolved "https://registry.yarnpkg.com/dash/-/dash-3.13.3.tgz#44bc0a4edf151aee88ad091e0a379d7c0de4355f"
+  integrity sha512-nylSaiIrbjmm1/ZyzJZ7R8zZqkEjjgxzY4GB/DAglhekf1ztNa4nWigGW4TNbq2Zf/yQvH0lIj5P29uKG4D6Mw==
   dependencies:
     "@dashevo/dapi-client" "^0.13.2"
     "@dashevo/dashcore-lib" "^0.18.4"
-    "@dashevo/dpp" "^0.13.0"
-    "@dashevo/wallet-lib" "7.13.0"
+    "@dashevo/dpp" "^0.13.1"
+    "@dashevo/wallet-lib" "7.13.3"
     bs58 "^4.0.1"
 
 dashdash@^1.12.0:
