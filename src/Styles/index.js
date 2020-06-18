@@ -1,6 +1,10 @@
 import styled, { createGlobalStyle, keyframes } from "styled-components";
 import { ChevronDown } from "@styled-icons/boxicons-regular/ChevronDown";
+import { ChevronRight } from "@styled-icons/boxicons-regular/ChevronRight";
+import { UserAstronaut } from "@styled-icons/fa-solid/UserAstronaut";
 import { Qrcode } from "@styled-icons/icomoon/Qrcode";
+import { Coins } from "@styled-icons/fa-solid/Coins";
+import { Dash } from "@styled-icons/crypto/Dash";
 
 export const mobileWidth = 760;
 export const mobile = str => `
@@ -34,7 +38,7 @@ export const borderRadius = "4px";
 export const border = color => `1px solid ${color}`;
 export const shadows = {
   small: "0 0 4px rgba(0, 0, 0, .125)",
-  large: "0 0 24px rgba(0, 0, 0, .125)"
+  large: "0px 5px 5px 2px rgba(0,0,0,0.19)"
 };
 
 export const light = n => `rgba(242, 250, 248,${0.1 * fib(n)})`;
@@ -185,12 +189,25 @@ export const TextDropdownContent = styled.div`
   transition: height 100ms ease-in-out;
 `;
 
+export const DashIcon = styled(Dash)`
+  width: ${props => fontSize(props.size)};
+  height: ${props => fontSize(props.size)};
+`;
+
 export const DashAmount = styled.span`
   color: ${colors.white};
-  font-size: ${fontSize(4)};
-  span {
-    padding-left: ${space(4)};
+  font-size: ${props => fontSize(props.size)};
+  display: block;
+  strong {
+    padding: 0 ${space(3)};
   }
+  small {
+    display: block;
+      font-weight: normal;
+      margin: ${space(4)};
+  }
+  svg{
+    margin-top: -${space(3)};
 `;
 
 export const DropdownIcon = styled(ChevronDown)`
@@ -202,26 +219,34 @@ export const DropdownIcon = styled(ChevronDown)`
   `)}
 `;
 
+export const MenuIcon = styled(ChevronRight)`
+  color: ${colors.white};
+`;
+
+export const UserIcon = styled(UserAstronaut)`
+  width: ${fontSize(3)};
+  height: ${fontSize(3)};
+`;
+
 export const AccountMenu = styled.div`
-  flex: 0;
-  text-align: right;
-  ${mobile(`
-    flex: 0 0 75%;
-  `)}
+  flex: 0 0 70%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
   > a {
     position: relative;
     margin: 0 ${space(6)};
     outline: none;
     cursor: pointer;
-    text-align: right;
     color: ${colors.white};
     background: ${props => (props.isActive ? colors.secondary : "transparent")};
+    transition: background 100ms ease-in-out;
     text-decoration: none;
     font-size: ${fontSize(5)};
     font-weight: bold;
-    padding: ${space(4)} ${space(7)} ${space(4)} ${space(2)};
+    padding: ${space(5)} ${space(7)} ${space(5)} ${space(5)};
     ${mobile(`
-      padding: ${space(3)} ${space(6)};
+      padding-right: ${space(6)};
     `)}
     > span {
       svg {
@@ -233,7 +258,7 @@ export const AccountMenu = styled.div`
     position: absolute;
     right: -${space(2)};
     top: 50%;
-    margin-top: -${space(5)};
+    transform: translate(0, -50%);
   }
 `;
 
@@ -241,38 +266,77 @@ export const DisplayName = styled.span`
   display: block;
   margin: 0 0 ${space(1)} 0;
   font-size: ${fontSize(2)};
-  font-weight: normal;
-  ${mobile(`
-    display:none;
-  `)}
+  font-weight: bold;
 `;
 
 export const AccountDropdown = styled.nav`
   position: absolute;
   top: 100%;
   right: 0;
-  height: ${props => (props.isVisible ? "auto" : 0)};
-  transition: height 100ms ease-in-out;
+  pointer-events: ${props => (props.isVisible ? "all" : "none")};
+  opacity: ${props => (props.isVisible ? 1 : 0)};
+  transition: opacity 100ms ease-in-out;
   overflow: hidden;
   background: ${colors.secondary};
-  width: 200px;
   box-shadow: ${shadows.large};
+  width: 200px;
+  font-weight: normal;
   ul {
     list-style: none;
-    padding: ${space(3)} 0;
+    padding: 0 0 ${space(3)} 0;
+    background: ${light(0)};
+    margin: -${space(6)} 0 ${space(3)} 0;
   }
-  ul + ul {
-    padding: ${space(4)} 0 0 0;
-    margin: ${space(4)} 0 0 0;
-    border-top: 1px solid ${dark(1)};
+  h5 {
+    margin: ${space(6)} 0 ${space(6)} 0;
+    font-weight: normal;
+    text-transform: uppercase;
+    font-size: ${fontSize(0)};
+    color: ${light(4)};
+    border-bottom: 1px dashed ${light(2)};
+    padding: ${space(3)};
+  }
+  h5:first-child {
+    margin-top: ${space(5)};
   }
   ${GhostButton} {
     text-align: left;
     width: 100%;
-    padding: ${space(4)} ${space(4)};
+    padding: ${space(6)} ${space(5)};
     color: ${colors.white};
-    font-size: ${fontSize(3)};
+    font-size: ${fontSize(2)};
+    border-bottom: 1px solid ${light(1)};
+    position: relative;
+    transition: background 100ms ease-in-out;
+    &:hover {
+      background: ${dark(1)};
+      color: #fff;
+    }
   }
+  ${DashAmount} {
+    text-align: center;
+  }
+  ${MenuIcon} {
+    top: ${space(6)};
+    right: ${space(5)};
+    width: ${fontSize(2)};
+    height: ${fontSize(2)};
+  }
+`;
+
+export const CreditIcon = styled(Coins)`
+  width: ${fontSize(4)};
+  height: ${fontSize(4)};
+`;
+
+export const IdentityCreditDisplay = styled.span`
+  text-align: center;
+  display: block;
+  color: ${colors.white};
+  strong {
+    padding: 0 ${space(3)};
+  }
+  font-size: ${fontSize(4)};
 `;
 
 export const WarningBanner = styled(Container)`

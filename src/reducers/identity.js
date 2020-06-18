@@ -1,7 +1,8 @@
 const initial = {
   names: [],
   selectedName: null,
-  createdIdentity: null
+  identity: null,
+  balance: null
 };
 
 export default (state = initial, action) => {
@@ -19,7 +20,7 @@ export default (state = initial, action) => {
     case "CREATED_IDENTITY":
       return {
         ...state,
-        createdIdentity: action.payload
+        identity: action.payload
       };
 
     case "SELECT_ACCOUNT":
@@ -34,15 +35,21 @@ export default (state = initial, action) => {
     case "SELECT_USERNAME":
       return {
         ...state,
-        selectedName: state.names.find(n => n.username === action.payload)
+        selectedName: state.names.find(n => n.username === action.payload),
+        balance: null
+      };
+
+    case "IDENTITY_BALANCE_UPDATED":
+      return {
+        ...state,
+        balance: action.payload
       };
 
     case "ACCOUNT_IDENTITY_FOUND":
       return {
         ...state,
         names: action.payload,
-        selectedName: action.payload[0] ? action.payload[0].username : null,
-        createdIdentity: action.payload[0] ? action.payload[0].identityId : null
+        selectedName: action.payload[0] ? action.payload[0] : null
       };
 
     default:

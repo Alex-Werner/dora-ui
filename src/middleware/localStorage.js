@@ -56,7 +56,7 @@ export default store => next => action => {
       lsSet(`accounts.${payload}`, {
         names: [],
         selectedName: null,
-        createdIdentity: null
+        identity: null
       });
       break;
 
@@ -70,7 +70,7 @@ export default store => next => action => {
       lsSet(`accounts.${payload}`, {
         names: [],
         selectedName: null,
-        createdIdentity: null
+        identity: null
       });
       break;
 
@@ -88,7 +88,7 @@ export default store => next => action => {
     case "ACCOUNT_NAMES_NOT_FOUND_IN_LOCAL_STORAGE":
       // If user has already created an identity but not username, unlikely
       // occurrance. In this case, the created identity will be available for use.
-      const createdIdentity = lsGet(`accounts.${selected}.createdIdentity`);
+      const createdIdentity = lsGet(`accounts.${selected}.identity`);
       const createdIdentityLoadType = createdIdentity
         ? "CREATED_IDENTITY_FOUND_IN_LOCAL_STORAGE"
         : "CREATED_IDENTITY_NOT_FOUND_IN_LOCAL_STORAGE";
@@ -97,7 +97,7 @@ export default store => next => action => {
       break;
 
     case "CREATED_IDENTITY":
-      lsSet(`accounts.${selected}.createdIdentity`, action.payload);
+      lsSet(`accounts.${selected}.identity`, action.payload);
       break;
 
     case "USERNAME_CREATED":
@@ -116,7 +116,7 @@ export default store => next => action => {
       payload.forEach((accountNames, i) => {
         lsSet(`accounts.${i}`, {
           names: accountNames,
-          createdIdentity: accountNames[0] ? accountNames[0].identityId : null,
+          identity: accountNames[0] ? accountNames[0].identityId : null,
           selectedName: accountNames[0] ? accountNames[0].username : null
         });
       });

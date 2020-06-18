@@ -17,6 +17,10 @@ export default store => next => async action => {
       await createWallet(...args);
       break;
 
+    case "ACCOUNT_NAMES_FOUND_IN_LOCAL_STORAGE":
+      await updateIdentityBalance(...args);
+      break;
+
     case "SELECTED_ACCOUNT_FOUND_IN_LOCAL_STORAGE":
     case "SELECT_ACCOUNT":
     case "ACCOUNT_CREATED":
@@ -194,8 +198,7 @@ export async function createIdentity(payload, dispatch) {
 export async function createUsername(payload, dispatch, state) {
   try {
     const identityId =
-      state.identity.createdIdentity ||
-      (await createIdentity(payload, dispatch));
+      state.identity.identity || (await createIdentity(payload, dispatch));
 
     const identity = await client.platform.identities.get(identityId);
     const name = await client.platform.names.register(payload, identity);
@@ -214,4 +217,10 @@ export async function createAccount(payload, dispatch) {
   const account = await client.wallet.createAccount({ index });
   client.wallet.accounts[index] = account;
   dispatch({ type: "ACCOUNT_CREATED", payload: index });
+}
+
+export async function updateIdentityBalance(payload, dispatch, state) {
+  const identityId = state.identity.selectedName.identityId;
+  const identity = await client.platform.identities.get(identityId);
+  dispatch({ type: "IDENTITY_BALANCE_UPDATED", payload: identity.balance });
 }

@@ -1,13 +1,12 @@
 import React from "react";
 import { connect } from "react-redux";
 
-import { AccountMenu, DisplayName, DropdownIcon } from "../Styles";
-import DashAmount from "./DashAmount";
+import { AccountMenu, DisplayName, DropdownIcon, UserIcon } from "../Styles";
 import AccountDropdownMenu from "./AccountDropdownMenu";
 import LoadingInline from "./LoadingInline";
 import { useWindowClick } from "../hooks";
 
-function Account({ username, balance, isLoading }) {
+function Account({ username, isLoading }) {
   const [dropdownIsVisible, setDropdownIsVisible] = React.useState(false);
   useWindowClick(e => setDropdownIsVisible(false));
 
@@ -20,7 +19,7 @@ function Account({ username, balance, isLoading }) {
       onClick={e => e.stopPropagation()}
       isActive={dropdownIsVisible}
     >
-      {isLoading || !isLoading ? (
+      {isLoading ? (
         <LoadingInline size={0.6} />
       ) : (
         <a
@@ -30,8 +29,9 @@ function Account({ username, balance, isLoading }) {
             (!isLoading && setDropdownIsVisible(!dropdownIsVisible))
           }
         >
-          <DisplayName>{displayName}</DisplayName>
-          <DashAmount>{balance}</DashAmount>
+          <DisplayName>
+            <UserIcon /> {displayName}
+          </DisplayName>
           <DropdownIcon />
           <AccountDropdownMenu
             hide={e => setDropdownIsVisible(false)}
@@ -44,12 +44,10 @@ function Account({ username, balance, isLoading }) {
 }
 
 const stateToProps = state => {
-  const balance = state.account.balances[state.account.selected];
   return {
     isLoading: state.loading.account,
     username:
-      state.identity.selectedName && state.identity.selectedName.username,
-    balance: balance ? balance.total : 0
+      state.identity.selectedName && state.identity.selectedName.username
   };
 };
 
