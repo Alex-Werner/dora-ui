@@ -12,3 +12,4 @@ The goal of this changelog is to track all changes made and to stand as the reco
 
 ## 0.0.2 - 2020/06/18
 1. Improved styling of account menu and rearranging for next release. Included identity balance and set all elements for next release
+2. INCOMPLETE Added Tooltip and Help components to provide info on platform credits

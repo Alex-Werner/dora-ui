@@ -23,7 +23,6 @@ function Account({ username, isLoading }) {
         <LoadingInline size={0.6} />
       ) : (
         <a
-          href="/user.dora.dash"
           onClick={e =>
             e.preventDefault() ||
             (!isLoading && setDropdownIsVisible(!dropdownIsVisible))

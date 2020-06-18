@@ -7,7 +7,7 @@ const format = n => n.toLocaleString();
 function IdentityCredit({ children: amount }) {
   return (
     <IdentityCreditDisplay>
-      <CreditIcon /> <strong>{format(amount)}</strong> CR
+      <CreditIcon /> <strong>{format(amount)}</strong>
     </IdentityCreditDisplay>
   );
 }

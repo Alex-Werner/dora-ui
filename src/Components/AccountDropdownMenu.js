@@ -4,6 +4,7 @@ import { connect } from "react-redux";
 import { AccountDropdown, GhostButton, MenuIcon } from "../Styles";
 import DashAmount from "./DashAmount";
 import IdentityCredit from "./IdentityCredit";
+import HelpInfo from "./HelpInfo";
 
 function AccountDropdownMenu({
   isVisible,
@@ -20,7 +21,14 @@ function AccountDropdownMenu({
     <AccountDropdown isVisible={isVisible} onClick={hide}>
       <h5>Dash Balance</h5>
       <DashAmount unconfirmed={unconfirmed}>{confirmed}</DashAmount>
-      <h5>Platform Credits</h5>
+      <h5>
+        Platform Credits
+        <HelpInfo>
+          Platform Credits allow you to interract with the Dash Platform.
+          Anytime you interract, you will spend a small amount of Platform
+          Credits. No credits are used when just viewing content.
+        </HelpInfo>
+      </h5>
       <IdentityCredit>{identityBalance}</IdentityCredit>
       {/*<ul>
         <li>
