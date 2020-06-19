@@ -654,32 +654,6 @@ export const LoadingInlineContainer = styled.div`
   }
 `;
 
-export const Help = styled.span`
-  display: inline-block;
-  margin-left: ${space(5)};
-  font-style: italic;
-  padding: ${space(3)};
-  font-size: ${fontSize(1)};
-  border-bottom: 1px dashed ${light(3)};
-`;
-
-export const TooltipTrigger = styled.span`
-  cursor: pointer;
-  ${Help} {
-    background: ${props => (props.isVisible ? light(2) : light(1))};
-    &:hover {
-      background: ${light(2)};
-    }
-  }
-`;
-
-export const TooltipContent = styled.div`
-  position: fixed;
-  display: inline-block;
-  transform: scale(${props => (props.isVisible ? 1 : 0)});
-  width: 300px;
-`;
-
 export const GlobalStyle = createGlobalStyle`
   body{
     background: ${colors.background};
