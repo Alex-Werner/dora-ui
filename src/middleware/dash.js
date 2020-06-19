@@ -147,7 +147,8 @@ export async function initialiseAccountOnImportedWallet(payload, dispatch) {
 export async function selectAccount(payload, dispatch) {
   dispatch({ type: "LOADING_ACCOUNT" });
 
-  client.account = await client.wallet.getAccount({ index: payload });
+  const account = await client.wallet.getAccount({ index: payload });
+  client.account = account;
 
   dispatch({ type: "ACCOUNT_LOADED", payload });
 }

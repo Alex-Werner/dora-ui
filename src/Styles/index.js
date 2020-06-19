@@ -57,6 +57,7 @@ export const Header = styled(Container)`
   align-items: center;
   justify-content: space-between;
   color: ${colors.white};
+  opacity: 1;
 `;
 
 export const PageContainer = styled.div`
