@@ -4,6 +4,7 @@ import account from "./account";
 import wallet from "./wallet";
 import wizard from "./wizard";
 import identity from "./identity";
+import names from "./names";
 import loading from "./loading";
 import create from "./create";
 import apps from "./apps";
@@ -17,5 +18,6 @@ export default combineReducers({
   wizard,
   loading,
   identity,
+  names,
   error
 });

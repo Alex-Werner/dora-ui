@@ -65,6 +65,18 @@ export default (state = initial, action) => {
         createUsername: false
       };
 
+    case "IDENTITY_BALANCES_UPDATING":
+      return {
+        ...state,
+        identityBalances: true
+      };
+
+    case "IDENTITY_BALANCES_UPDATED":
+      return {
+        ...state,
+        identityBalances: false
+      };
+
     default:
       return state;
   }

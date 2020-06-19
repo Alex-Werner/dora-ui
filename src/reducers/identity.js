@@ -1,56 +1,47 @@
 const initial = {
-  names: [],
-  selectedName: null,
-  identity: null,
-  balance: null
+  available: [],
+  id: null,
+  balanceById: {},
+  byName: {}
 };
 
 export default (state = initial, action) => {
   switch (action.type) {
-    case "ACCOUNT_NAMES_FOUND_IN_LOCAL_STORAGE":
+    case "ACCOUNT_IDENTITIES_FOUND":
       return {
         ...state,
-        names: action.payload.names,
-        selectedName: action.payload.names.find(
-          n => n.username === action.payload.selectedName
-        )
+        available: action.payload
       };
 
-    case "CREATED_IDENTITY_FOUND_IN_LOCAL_STORAGE":
     case "CREATED_IDENTITY":
       return {
         ...state,
-        identity: action.payload
+        available: [...state.available, action.payload]
       };
-
-    case "SELECT_ACCOUNT":
-      return initial;
 
     case "USERNAME_CREATED":
       return {
         ...state,
-        names: [...state.names, action.payload]
+        byName: {
+          ...state.byName,
+          [action.payload.username]: action.payload.identityId
+        }
       };
 
     case "SELECT_USERNAME":
       return {
         ...state,
-        selectedName: state.names.find(n => n.username === action.payload),
-        balance: null
+        id: state.byName[action.payload]
       };
 
-    case "IDENTITY_BALANCE_UPDATED":
+    case "IDENTITY_BALANCES_UPDATED":
       return {
         ...state,
-        balance: action.payload
+        balances: action.payload
       };
 
-    case "ACCOUNT_IDENTITY_FOUND":
-      return {
-        ...state,
-        names: action.payload,
-        selectedName: action.payload[0] ? action.payload[0] : null
-      };
+    case "SELECT_ACCOUNT":
+      return initial;
 
     default:
       return state;

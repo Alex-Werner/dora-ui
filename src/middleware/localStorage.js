@@ -34,15 +34,7 @@ export default store => next => action => {
       break;
 
     case "WALLET_LOADED":
-      const availableAccounts = lsGet("accounts");
       const lastSelected = lsGet("selectedAccount");
-
-      if (typeof lastSelected !== "number") return;
-
-      dispatch({
-        type: "AVAILABLE_ACCOUNTS_FOUND_IN_LOCAL_STORAGE",
-        payload: availableAccounts
-      });
 
       dispatch({
         type: "SELECTED_ACCOUNT_FOUND_IN_LOCAL_STORAGE",

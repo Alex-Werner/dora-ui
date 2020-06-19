@@ -5,11 +5,12 @@ const wallet = state => state.wallet;
 const wizard = state => state.wizard;
 const loading = state => state.loading;
 const identity = state => state.identity;
+const names = state => state.names;
 
-const selectors = [account, wallet, wizard, loading, identity];
+const selectors = [account, wallet, wizard, loading, identity, names];
 
 export default createSelector(selectors, (...args) => {
-  const [account, wallet, wizard, loading, identity] = args;
+  const [account, wallet, wizard, loading, identity, names] = args;
 
   if (wizard.showAccountManagement) return "ACCOUNT_MANAGEMENT";
   if (wizard.showSend) return "SEND";
@@ -31,7 +32,7 @@ export default createSelector(selectors, (...args) => {
 
   const balance = account.balances[account.selected] || {};
   if (balance.total === 0 && !loading.account) return "FUNDS_REQUIRED";
-  if (identity.names.length === 0 && balance.total > 0) {
+  if (names.available.length === 0 && balance.total > 0) {
     return "CREATE_USERNAME";
   }
 

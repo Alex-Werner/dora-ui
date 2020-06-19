@@ -45,8 +45,7 @@ function Account({ username, isLoading }) {
 const stateToProps = state => {
   return {
     isLoading: state.loading.account,
-    username:
-      state.identity.selectedName && state.identity.selectedName.username
+    username: state.names.username
   };
 };
 

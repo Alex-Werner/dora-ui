@@ -17,3 +17,4 @@ The goal of this changelog is to track all changes made and to stand as the reco
 ## 0.0.3 - 2020/06/19
 1. Removed tooltip for the time being, was painful
 2. Fixed getUnusedAddress() development bug where crashed on live reload if account not loaded.
+3. Refactored to replace complex localstorage with persist enhancer, added names reducer and refactors names and identities

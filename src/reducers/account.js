@@ -8,12 +8,17 @@ const initial = {
 export default (state = initial, action) => {
   switch (action.type) {
     case "SELECT_ACCOUNT":
-    case "SELECTED_ACCOUNT_FOUND_IN_LOCAL_STORAGE":
+      return {
+        ...state,
+        selected: action.payload
+      };
+
     case "ACCOUNT_CREATED":
     case "ACCOUNT_CREATED_ON_NEW_WALLET":
       return {
         ...state,
-        selected: action.payload
+        selected: action.payload,
+        available: [...state.available, action.payload]
       };
 
     case "ACCOUNT_BALANCE_UPDATED":
@@ -28,7 +33,7 @@ export default (state = initial, action) => {
         address: action.payload
       };
 
-    case "AVAILABLE_ACCOUNTS_FOUND_IN_LOCAL_STORAGE":
+    case "WALLET_ACCOUNTS_LOADED":
       return {
         ...state,
         available: action.payload
