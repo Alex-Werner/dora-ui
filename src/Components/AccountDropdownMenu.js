@@ -62,7 +62,7 @@ const stateToProps = (state, ownProps) => {
     accounts: state.account.available,
     confirmed: balance ? balance.confirmed : 0,
     unconfirmed: balance ? balance.unconfirmed : 0,
-    identityBalance: state.identity.balance || 0
+    identityBalance: state.identity.balanceById[state.identity.id] || 0
   };
 };
 

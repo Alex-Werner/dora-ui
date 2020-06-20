@@ -1,5 +1,3 @@
-import worker from "workerize-loader!../workers"; // eslint-disable-line import/no-webpack-loader-syntax
-
 import { DASH_CONFIG } from "../dora.config";
 const Dash = window.Dash;
 let client;
@@ -153,30 +151,25 @@ export async function selectAccount(payload, dispatch) {
 }
 
 export async function importPlatformData(payload, dispatch, state) {
-  dispatch({ type: "IMPORTING_PLATFORM_DATA" });
-
-  const accounts = client.wallet.accounts.map(a => ({
-    transactions: a.getTransactions(),
-    index: a.index
-  }));
-  const workerInstance = worker();
-  const identities = await workerInstance.getWalletIdentities(accounts);
-
-  const identitiesByAccount = [];
-  for (const accountIdentities of identities) {
-    const names = [];
-    for (const identityId of accountIdentities) {
-      const usernames = await getUsernamesFromIdentityId(identityId);
-      names.push(...usernames.map(username => ({ username, identityId })));
-    }
-
-    identitiesByAccount.push(names);
-  }
-
-  dispatch({ type: "PLATFORM_DATA_IMPORTED", payload: identitiesByAccount });
-
-  const accountIdentity = identitiesByAccount[state.account.selected] || [];
-  dispatch({ type: "ACCOUNT_IDENTITY_FOUND", payload: accountIdentity });
+  // dispatch({ type: "IMPORTING_PLATFORM_DATA" });
+  // const accounts = client.wallet.accounts.map(a => ({
+  //   transactions: a.getTransactions(),
+  //   index: a.index
+  // }));
+  // const workerInstance = worker();
+  // const identities = await workerInstance.getWalletIdentities(accounts);
+  // const identitiesByAccount = [];
+  // for (const accountIdentities of identities) {
+  //   const names = [];
+  //   for (const identityId of accountIdentities) {
+  //     const usernames = await getUsernamesFromIdentityId(identityId);
+  //     names.push(...usernames.map(username => ({ username, identityId })));
+  //   }
+  //   identitiesByAccount.push(names);
+  // }
+  // dispatch({ type: "PLATFORM_DATA_IMPORTED", payload: identitiesByAccount });
+  // const accountIdentity = identitiesByAccount[state.account.selected] || [];
+  // dispatch({ type: "ACCOUNT_IDENTITY_FOUND", payload: accountIdentity });
 }
 
 export async function getUsernamesFromIdentityId(identityId) {
@@ -227,7 +220,7 @@ export async function updateIdentityBalances(payload, dispatch, state) {
 
   const balances = {};
   for (const id of payload) {
-    const identity = client.platform.identities.get(id);
+    const identity = await client.platform.identities.get(id);
     balances[id] = identity.balance;
   }
 

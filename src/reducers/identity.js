@@ -37,7 +37,7 @@ export default (state = initial, action) => {
     case "IDENTITY_BALANCES_UPDATED":
       return {
         ...state,
-        balances: action.payload
+        balanceById: action.payload
       };
 
     case "SELECT_ACCOUNT":
