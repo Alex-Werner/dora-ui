@@ -1,12 +1,15 @@
-/* Stolen and modified: https://github.com/elgerlambert/redux-localstorage */
+/* Stolen and modified for secure-ls and immutable: https://github.com/elgerlambert/redux-localstorage */
+import { fromJS } from "immutable";
 
 export default function persistState(paths, config) {
   const cfg = {
     key: "redux",
-    merge: mergeState,
-    slicer: createSlicer,
-    serialize: JSON.stringify,
-    deserialize: JSON.parse,
+    merge: (initialState, persistedState) =>
+      console.log(initialState) || initialState.mergeDeep(persistedState),
+    slicer: paths => state =>
+      paths ? state.filter((v, k) => paths.indexOf(k) > -1) : state,
+    serialize: subset => JSON.stringify(subset.toJS()),
+    deserialize: data => fromJS(JSON.parse(data)),
     ...config
   };
 
@@ -37,51 +40,4 @@ export default function persistState(paths, config) {
 
     return store;
   };
-}
-
-function createSlicer(paths) {
-  switch (typeOf(paths)) {
-    case "void":
-      return state => state;
-    case "string":
-      return state => getSubset(state, [paths]);
-    case "array":
-      return state => getSubset(state, paths);
-    default:
-      return console.error(
-        "Invalid paths argument, should be of type String, Array or Void"
-      );
-  }
-}
-
-function getSubset(obj, paths) {
-  let subset = {};
-
-  paths.forEach(key => {
-    let slice = obj[key];
-    if (slice) subset[key] = slice;
-  });
-
-  return subset;
-}
-
-function mergeState(initialState, persistedState) {
-  return persistedState ? { ...initialState, ...persistedState } : initialState;
-}
-
-const _isArray =
-  Array.isArray ||
-  (Array.isArray = function(a) {
-    return "" + a !== a && {}.toString.call(a) === "[object Array]";
-  });
-
-function typeOf(thing) {
-  if (!thing) return "void";
-
-  if (_isArray(thing)) {
-    if (!thing.length) return "void";
-    return "array";
-  }
-
-  return typeof thing;
 }

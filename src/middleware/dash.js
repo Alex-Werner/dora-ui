@@ -28,10 +28,6 @@ export default store => next => async action => {
       await selectWizardType(...args);
       break;
 
-    case "WALLET_IMPORT_COMPLETED":
-      await initialiseAccountOnImportedWallet(0, store.dispatch);
-      break;
-
     case "ACCOUNT_LOADED":
       updateAccountBalances(...args);
       updateAddress(...args);
@@ -60,27 +56,34 @@ export default store => next => async action => {
 
 export async function updateAccountBalances(payload, dispatch) {
   dispatch({ type: "UPDATING_ACCOUNT_BALANCES" });
-  const balances = client.wallet.accounts
-    .sort((a, b) => a.index - b.index)
-    .map(account => ({
+
+  const balances = client.wallet.accounts.forEach(account => {
+    const index = account.index;
+    const balance = {
       total: account.getTotalBalance(),
       unconfirmed: account.getUnconfirmedBalance(),
       confirmed: account.getConfirmedBalance()
-    }));
+    };
 
-  dispatch({ type: "ACCOUNT_BALANCE_UPDATED", payload: balances });
+    dispatch({ type: "ACCOUNT_BALANCE_UPDATED", payload: { index, balance } });
+  });
 }
 
 export async function updateAddress(payload, dispatch) {
   const address = client.account.getUnusedAddress().address;
-  dispatch({ type: "ACCOUNT_ADDRESS_UPDATED", payload: address });
+  const index = client.account.index;
+
+  dispatch({ type: "ACCOUNT_ADDRESS_UPDATED", payload: { address, index } });
 }
 
 export async function initialiseWallet(payload, dispatch, state) {
-  const mnemonic = state.wallet.mnemonic;
+  const mnemonic = state.getIn(["wallet", "mnemonic"]);
   if (!mnemonic) {
     dispatch({ type: "NO_INITIAL_WALLET_FOUND" });
-    if (state.wizard.type === "CREATE") dispatch({ type: "CREATE_WALLET" });
+    if (state.getIn(["wizard", "type"]) === "CREATE") {
+      dispatch({ type: "CREATE_WALLET" });
+    }
+
     return;
   }
 
@@ -89,9 +92,7 @@ export async function initialiseWallet(payload, dispatch, state) {
     wallet: { mnemonic }
   });
 
-  dispatch({ type: "WALLET_LOADED", payload: state.wallet });
-
-  const selectedAccount = state.account.selected || 0;
+  const selectedAccount = state.getIn(["wallet", "selectedAccount"], 0);
   selectAccount(selectedAccount, dispatch);
 }
 
@@ -102,25 +103,30 @@ export async function createWallet(payload, dispatch, state) {
     wallet: { mnemonic: null }
   });
 
-  await selectAccount(0, dispatch);
-
   const id = `${new Date().getTime()}`;
   const mnemonic = client.wallet.exportWallet();
 
   dispatch({ type: "WALLET_CREATED", payload: { id, mnemonic } });
+
+  await selectAccount(0, dispatch);
 }
 
 export async function importWallet(payload, dispatch) {
   dispatch({ type: "WALLET_IMPORT_STARTED" });
   try {
     client = new Dash.Client({
-      network: "testnet",
+      ...DASH_CONFIG,
       wallet: {
         mnemonic: payload
       }
     });
 
-    await client.wallet.getAccount({ index: 0 });
+    await importPlatformData(payload, dispatch);
+
+    const accounts = client.wallet.accounts;
+    if (accounts.length === 1) {
+      await selectAccount(0, dispatch);
+    }
 
     const id = `${new Date().getTime()}`;
     const newWallet = {
@@ -134,9 +140,22 @@ export async function importWallet(payload, dispatch) {
   }
 }
 
-export async function initialiseAccountOnImportedWallet(payload, dispatch) {
-  dispatch({ type: "ACCOUNT_SELECTED_ON_IMPORTED_WALLET", payload: 0 });
-  await selectAccount(0, dispatch);
+export async function importPlatformData(payload, dispatch) {
+  for (const account of client.wallet.accounts) {
+    const identityIds = account.getIdentityIds();
+    const index = account.index;
+
+    for (const identityId of identityIds) {
+      dispatch({ type: "IDENTITY_FOUND", payload: { identityId, index } });
+      const names = await getUsernamesFromIdentityId(identityId);
+      names.forEach(username => {
+        dispatch({
+          type: "USERNAME_FOUND",
+          payload: { username, identityId, index }
+        });
+      });
+    }
+  }
 }
 
 export async function selectAccount(payload, dispatch) {
@@ -144,9 +163,6 @@ export async function selectAccount(payload, dispatch) {
 
   const account = await client.wallet.getAccount({ index: payload });
   client.account = account;
-
-  const identities = account.getIdentityIds();
-  dispatch({ type: "ACCOUNT_IDENTITIES_FOUND", payload: identities });
 
   dispatch({ type: "ACCOUNT_LOADED", payload });
 }
@@ -162,22 +178,31 @@ export async function getUsernamesFromIdentityId(identityId) {
 export async function createIdentity(payload, dispatch) {
   dispatch({ type: "CREATING_IDENTITY" });
   const identity = await client.platform.identities.register();
-  dispatch({ type: "CREATED_IDENTITY", payload: identity.id });
+  dispatch({
+    type: "IDENTITY_CREATED",
+    payload: { index: payload, identityId: identity.id }
+  });
 
   return identity.id;
 }
 
 export async function createUsername(payload, dispatch, state) {
+  const index = state.getIn(["wallet", "selectedAccount"]);
+  const account = state.getIn(["wallet", "accounts", index]);
+
   try {
     const identityId =
-      state.identity.id || (await createIdentity(payload, dispatch));
+      account.selectedIdentity || (await createIdentity(index, dispatch));
 
     const identity = await client.platform.identities.get(identityId);
     const name = await client.platform.names.register(payload, identity);
     const username = name.data.label;
 
-    dispatch({ type: "USERNAME_CREATED", payload: { username, identityId } });
-    dispatch({ type: "SELECT_USERNAME", payload: username });
+    dispatch({
+      type: "USERNAME_CREATED",
+      payload: { index, username, identityId }
+    });
+    dispatch({ type: "SELECT_USERNAME", payload: { index, username } });
   } catch (e) {
     console.error(e);
     dispatch({ type: "CREATE_USERNAME_FAILED", payload: e.message });
@@ -194,7 +219,7 @@ export async function createAccount(payload, dispatch) {
   dispatch({ type: "ACCOUNT_CREATED", payload: index });
 }
 
-export async function updateIdentityBalances(payload, dispatch, state) {
+export async function updateIdentityBalances(payload, dispatch) {
   dispatch({ type: "IDENTITY_BALANCES_UPDATING" });
 
   const balances = {};

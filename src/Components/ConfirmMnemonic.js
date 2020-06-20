@@ -2,6 +2,7 @@ import React from "react";
 import { connect } from "react-redux";
 import { Wallet } from "@styled-icons/entypo/Wallet";
 
+import { wallet } from "../selectors";
 import { ActionButton, Form } from "../Styles";
 import AccountWizardLoading from "./AccountWizardLoading";
 import Mnemonic from "./Mnemonic";
@@ -30,8 +31,8 @@ function NewWallet({ isLoading, mnemonic, confirm }) {
 
 const stateToProps = state => {
   return {
-    mnemonic: state.wallet.mnemonic,
-    isLoading: state.loading.wallet
+    mnemonic: wallet(state).get("mnemonic"),
+    isLoading: state.getIn(["loading", "wallet"])
   };
 };
 

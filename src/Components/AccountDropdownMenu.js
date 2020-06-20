@@ -1,6 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
 
+import { balance, identityBalance } from "../selectors";
 import { AccountDropdown, GhostButton, MenuIcon, Help } from "../Styles";
 import DashAmount from "./DashAmount";
 import IdentityCredit from "./IdentityCredit";
@@ -11,7 +12,6 @@ function AccountDropdownMenu({
   hide,
   send,
   receive,
-  available,
   confirmed,
   unconfirmed,
   identityBalance
@@ -56,13 +56,11 @@ function AccountDropdownMenu({
 }
 
 const stateToProps = (state, ownProps) => {
-  const balance = state.account.balances[state.account.selected];
   return {
     isVisible: ownProps.isVisible,
-    accounts: state.account.available,
-    confirmed: balance ? balance.confirmed : 0,
-    unconfirmed: balance ? balance.unconfirmed : 0,
-    identityBalance: state.identity.balanceById[state.identity.id] || 0
+    confirmed: balance(state).get("confirmed", 0),
+    unconfirmed: balance(state).get("unconfirmed", 0),
+    identityBalance: identityBalance(state)
   };
 };
 

@@ -5,6 +5,7 @@ The goal of this changelog is to track all changes made and to stand as the reco
 1. Fixed platform credits showing 0 bug
 2. Fixed create wallet flow when reloading halfway through
 3. Fixed CHANGELOG order
+4. INCOMPLETE Refactor to make reducer structure match the underlying (all wallet data within wallet reducer) and added immutable to make it usable
 
 ## 0.0.3 - 2020/06/19
 1. Removed tooltip for the time being, was painful

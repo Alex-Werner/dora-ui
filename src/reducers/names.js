@@ -7,6 +7,7 @@ const initial = {
 export default (state = initial, action) => {
   switch (action.type) {
     case "CREATED_IDENTITY":
+    case "IDENTITY_FOUND":
       return {
         ...state,
         byIdentityId: {
@@ -16,6 +17,7 @@ export default (state = initial, action) => {
       };
 
     case "USERNAME_CREATED":
+    case "USERNAME_FOUND":
       return {
         ...state,
         available: [...state.available, action.payload.username],

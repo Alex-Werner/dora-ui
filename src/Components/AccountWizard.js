@@ -1,7 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
 
-import accountStatus from "../selectors/accountStatus";
+import { accountStatus } from "../selectors";
 import AccountWizardLoading from "./AccountWizardLoading";
 import Modal from "./Modal";
 
@@ -64,6 +64,7 @@ function AccountModal({ status, closeModal }) {
 }
 
 const stateToProps = state => {
+  console.log(state.get("wizard"));
   return {
     status: accountStatus(state)
   };

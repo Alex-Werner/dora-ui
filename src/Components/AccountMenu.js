@@ -1,6 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
 
+import { username } from "../selectors";
 import { AccountMenu, DisplayName, DropdownIcon, UserIcon } from "../Styles";
 import AccountDropdownMenu from "./AccountDropdownMenu";
 import LoadingInline from "./LoadingInline";
@@ -44,8 +45,8 @@ function Account({ username, isLoading }) {
 
 const stateToProps = state => {
   return {
-    isLoading: state.loading.account,
-    username: state.names.username
+    isLoading: state.getIn(["loading", "account"]),
+    username: username(state)
   };
 };
 
