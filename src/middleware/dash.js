@@ -11,6 +11,10 @@ export default store => next => async action => {
       await initialiseWallet(...args);
       break;
 
+    case "CREATE_WALLET":
+      await createWallet(...args);
+      break;
+
     case "ACCOUNT_IDENTITIES_FOUND":
       await updateIdentityBalances(...args);
       break;
@@ -20,8 +24,8 @@ export default store => next => async action => {
       await selectAccount(...args);
       break;
 
-    case "WALLET_CREATED":
-      await initialiseAccountOnNewWallet(0, store.dispatch);
+    case "SELECT_WIZARD_TYPE":
+      await selectWizardType(...args);
       break;
 
     case "WALLET_IMPORT_COMPLETED":
@@ -45,10 +49,6 @@ export default store => next => async action => {
       importWallet(...args);
       break;
 
-    case "IMPORT_PLATFORM_DATA":
-      importPlatformData(...args);
-      break;
-
     case "UPDATE_ACCOUNT_BALANCES":
       updateAccountBalances(...args);
       break;
@@ -59,6 +59,7 @@ export default store => next => async action => {
 };
 
 export async function updateAccountBalances(payload, dispatch) {
+  dispatch({ type: "UPDATING_ACCOUNT_BALANCES" });
   const balances = client.wallet.accounts
     .sort((a, b) => a.index - b.index)
     .map(account => ({
@@ -76,8 +77,12 @@ export async function updateAddress(payload, dispatch) {
 }
 
 export async function initialiseWallet(payload, dispatch, state) {
-  const { mnemonic } = state.wallet;
-  if (!mnemonic) return createWallet(payload, dispatch);
+  const mnemonic = state.wallet.mnemonic;
+  if (!mnemonic) {
+    dispatch({ type: "NO_INITIAL_WALLET_FOUND" });
+    if (state.wizard.type === "CREATE") dispatch({ type: "CREATE_WALLET" });
+    return;
+  }
 
   client = new Dash.Client({
     ...DASH_CONFIG,
@@ -88,6 +93,21 @@ export async function initialiseWallet(payload, dispatch, state) {
 
   const selectedAccount = state.account.selected || 0;
   selectAccount(selectedAccount, dispatch);
+}
+
+export async function createWallet(payload, dispatch, state) {
+  dispatch({ type: "CREATING_WALLET" });
+  client = new Dash.Client({
+    ...DASH_CONFIG,
+    wallet: { mnemonic: null }
+  });
+
+  await selectAccount(0, dispatch);
+
+  const id = `${new Date().getTime()}`;
+  const mnemonic = client.wallet.exportWallet();
+
+  dispatch({ type: "WALLET_CREATED", payload: { id, mnemonic } });
 }
 
 export async function importWallet(payload, dispatch) {
@@ -105,32 +125,13 @@ export async function importWallet(payload, dispatch) {
     const id = `${new Date().getTime()}`;
     const newWallet = {
       id,
-      mnemonic: payload,
-      requiresPlatformImport: true
+      mnemonic: payload
     };
 
     dispatch({ type: "WALLET_IMPORT_COMPLETED", payload: newWallet });
   } catch (e) {
     dispatch({ type: "WALLET_IMPORT_FAILED", payload: e.message });
   }
-}
-
-export async function createWallet(payload, dispatch) {
-  const wallet = {
-    mnemonic: null
-  };
-
-  client = new Dash.Client({ wallet });
-
-  const id = `${new Date().getTime()}`;
-  const mnemonic = client.wallet.exportWallet();
-
-  dispatch({ type: "WALLET_CREATED", payload: { id, mnemonic } });
-}
-
-export async function initialiseAccountOnNewWallet(payload, dispatch) {
-  dispatch({ type: "ACCOUNT_CREATED_ON_NEW_WALLET", payload: 0 });
-  await selectAccount(0, dispatch);
 }
 
 export async function initialiseAccountOnImportedWallet(payload, dispatch) {
@@ -148,28 +149,6 @@ export async function selectAccount(payload, dispatch) {
   dispatch({ type: "ACCOUNT_IDENTITIES_FOUND", payload: identities });
 
   dispatch({ type: "ACCOUNT_LOADED", payload });
-}
-
-export async function importPlatformData(payload, dispatch, state) {
-  // dispatch({ type: "IMPORTING_PLATFORM_DATA" });
-  // const accounts = client.wallet.accounts.map(a => ({
-  //   transactions: a.getTransactions(),
-  //   index: a.index
-  // }));
-  // const workerInstance = worker();
-  // const identities = await workerInstance.getWalletIdentities(accounts);
-  // const identitiesByAccount = [];
-  // for (const accountIdentities of identities) {
-  //   const names = [];
-  //   for (const identityId of accountIdentities) {
-  //     const usernames = await getUsernamesFromIdentityId(identityId);
-  //     names.push(...usernames.map(username => ({ username, identityId })));
-  //   }
-  //   identitiesByAccount.push(names);
-  // }
-  // dispatch({ type: "PLATFORM_DATA_IMPORTED", payload: identitiesByAccount });
-  // const accountIdentity = identitiesByAccount[state.account.selected] || [];
-  // dispatch({ type: "ACCOUNT_IDENTITY_FOUND", payload: accountIdentity });
 }
 
 export async function getUsernamesFromIdentityId(identityId) {
@@ -225,4 +204,10 @@ export async function updateIdentityBalances(payload, dispatch, state) {
   }
 
   dispatch({ type: "IDENTITY_BALANCES_UPDATED", payload: balances });
+}
+
+export async function selectWizardType(payload, dispatch) {
+  if (payload === "CREATE") {
+    dispatch({ type: "CREATE_WALLET" });
+  }
 }

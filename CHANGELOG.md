@@ -21,3 +21,4 @@ The goal of this changelog is to track all changes made and to stand as the reco
 
 ## 0.0.4 - 2020/06/20
 1. Fixed platform credits showing 0 bug
+2. Fixed create wallet flow when reloading halfway through

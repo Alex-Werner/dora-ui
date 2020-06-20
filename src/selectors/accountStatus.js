@@ -15,14 +15,13 @@ export default createSelector(selectors, (...args) => {
   if (wizard.showAccountManagement) return "ACCOUNT_MANAGEMENT";
   if (wizard.showSend) return "SEND";
   if (wizard.showReceive) return "RECEIVE";
-  if (wizard.isHidden || loading.wallet) return "HIDDEN";
+  if (wizard.isHidden) return "HIDDEN";
 
   // if (typeof account.selected !== "number") return "SELECT_ACCOUNT";
 
   if (!wizard.mnemonicConfirmed && !wizard.type) return "SELECT_WIZARD_TYPE";
 
-  if (wallet.requiresPlatformImport) return "IMPORT_PLATFORM_DATA";
-  if (wizard.type === "IMPORT" && !wallet.requiresPlatformImport) {
+  if (wizard.type === "IMPORT" && wizard.requiresMnemonic) {
     return "IMPORT_FROM_MNEMONIC";
   }
 
@@ -31,7 +30,9 @@ export default createSelector(selectors, (...args) => {
   }
 
   const balance = account.balances[account.selected] || {};
-  if (balance.total === 0 && !loading.account) return "FUNDS_REQUIRED";
+  if (balance.total === 0 || (wizard.type === "CREATE" && !balance.total)) {
+    return "FUNDS_REQUIRED";
+  }
   if (names.available.length === 0 && balance.total > 0) {
     return "CREATE_USERNAME";
   }

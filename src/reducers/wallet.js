@@ -1,7 +1,6 @@
 const initial = {
   mnemonic: null,
   id: null,
-  requiresPlatformImport: false,
   from: "DEFAULT"
 };
 
@@ -13,14 +12,7 @@ export default (state = initial, action) => {
       return {
         ...state,
         mnemonic: action.payload.mnemonic,
-        id: action.payload.id,
-        requiresPlatformImport: action.payload.requiresPlatformImport || false
-      };
-
-    case "PLATFORM_DATA_IMPORTED":
-      return {
-        ...state,
-        requiresPlatformImport: false
+        id: action.payload.id
       };
 
     default:

@@ -2,7 +2,8 @@ const initial = {
   isHidden: false,
   type: null,
   mnemonicConfirmed: false,
-  showAccountManagement: false
+  showAccountManagement: false,
+  requiresMnemonic: false
 };
 
 export default (state = initial, action) => {
@@ -13,7 +14,6 @@ export default (state = initial, action) => {
         isHidden: false
       };
 
-    case "WALLET_LOADED":
     case "CONFIRM_MNEMONIC":
       return {
         ...state,
@@ -27,6 +27,18 @@ export default (state = initial, action) => {
         showAccountManagement: false,
         showSend: false,
         showReceive: false
+      };
+
+    case "IMPORT_WALLET":
+      return {
+        ...state,
+        requiresMnemonic: true
+      };
+
+    case "WALLET_IMPORT_COMPLETED":
+      return {
+        ...state,
+        requiresMnemonic: false
       };
 
     case "SELECT_WIZARD_TYPE":
