@@ -51,7 +51,6 @@ const modalContentByStatus = {
 };
 
 function AccountModal({ status, closeModal }) {
-  console.log({ status });
   const { Component, ProgressComponent } = modalContentByStatus[status];
   const content = Component ? (
     <React.Suspense fallback={<AccountWizardLoading />}>
@@ -64,7 +63,6 @@ function AccountModal({ status, closeModal }) {
 }
 
 const stateToProps = state => {
-  console.log(state.get("wizard"));
   return {
     status: accountStatus(state)
   };

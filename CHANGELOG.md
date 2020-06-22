@@ -1,6 +1,9 @@
 # Changelog
 The goal of this changelog is to track all changes made and to stand as the record of work completed. This project doesn't adhere to Semver. Instead the "patch" version is updated daily, "minor" weekly and the major only for major release events.
 
+## 0.0.5 - 2020/06/21
+1. INCOMPLETE Refactor to make reducer structure match the underlying (all wallet data within wallet reducer) and added immutable to make it usable
+
 ## 0.0.4 - 2020/06/20
 1. Fixed platform credits showing 0 bug
 2. Fixed create wallet flow when reloading halfway through

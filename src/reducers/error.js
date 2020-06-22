@@ -1,30 +1,19 @@
-const initial = {};
+import { Map } from "immutable";
+const initial = Map();
 
 export default (state = initial, action) => {
   switch (action.type) {
     case "WALLET_IMPORT_FAILED":
-      return {
-        ...state,
-        WALLET_IMPORT_FAILED: true
-      };
+      return state.set("walletImport", true);
 
     case "WALLET_IMPORT_STARTED":
-      return {
-        ...state,
-        WALLET_IMPORT_FAILED: false
-      };
+      return state.set("walletImport", false);
 
     case "CREATE_USERNAME":
-      return {
-        ...state,
-        createUsername: false
-      };
+      return state.set("createUsername", false);
 
     case "CREATE_USERNAME_FAILED":
-      return {
-        ...state,
-        createUsername: action.payload || true
-      };
+      return state.set("createUsername", action.payload);
 
     default:
       return state;

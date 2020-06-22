@@ -1,6 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
 
+import { account, wallet } from "../selectors";
 import { OrderedList } from "../Styles";
 import DashAddress from "./DashAddress";
 import TextDropdown from "./TextDropdown";
@@ -39,7 +40,7 @@ function FundsRequired({ address }) {
 
 const stateToProps = state => {
   return {
-    address: state.account.address
+    address: account(state).get("address")
   };
 };
 

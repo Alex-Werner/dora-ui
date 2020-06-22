@@ -5,7 +5,7 @@ const initial = Map({
   id: null,
   from: "DEFAULT",
   selectedAccount: null,
-  accounts: Map()
+  accounts: List()
 });
 
 const initialAccount = Map({
@@ -40,10 +40,12 @@ export default (state = initial, action) => {
       return state.set("selectedAccount", a);
 
     case "ACCOUNT_CREATED":
-      return state.set("selected", a).setIn(["accounts", a], initialAccount);
+      return state
+        .set("selectedAccount", a)
+        .setIn(["accounts", a], initialAccount);
 
     case "ACCOUNT_BALANCE_UPDATED":
-      return state.setIn([...acc(), "balance"], a.balance);
+      return state.setIn([...acc(), "balance"], Map(a.balance));
 
     case "ACCOUNT_ADDRESS_UPDATED":
       return state.setIn([...acc(), "address"], a.address);
@@ -60,12 +62,15 @@ export default (state = initial, action) => {
     case "IDENTITY_BALANCES_UPDATED":
       return state.setIn([...id(), "balance"], a);
 
+    case "SELECT_IDENTITY":
+      return state.setIn([...acc(), "selectedIdentityId"], a.identityId);
+
     case "SELECT_USERNAME":
       return state
-        .setIn([...acc(), "selectedName"], a)
+        .setIn([...acc(), "selectedName"], a.username)
         .setIn(
           [...acc(), "selectedIdentityId"],
-          state.getIn([...acc(), "identityIdByName", a])
+          state.getIn([...acc(), "identityIdByName", a.username])
         );
 
     default:

@@ -20,15 +20,11 @@ export default store => next => async action => {
       break;
 
     case "SELECT_ACCOUNT":
-    case "ACCOUNT_CREATED":
       await selectAccount(...args);
       break;
 
-    case "SELECT_WIZARD_TYPE":
-      await selectWizardType(...args);
-      break;
-
     case "ACCOUNT_LOADED":
+    case "ACCOUNT_CREATED":
       updateAccountBalances(...args);
       updateAddress(...args);
       break;
@@ -80,9 +76,7 @@ export async function initialiseWallet(payload, dispatch, state) {
   const mnemonic = state.getIn(["wallet", "mnemonic"]);
   if (!mnemonic) {
     dispatch({ type: "NO_INITIAL_WALLET_FOUND" });
-    if (state.getIn(["wizard", "type"]) === "CREATE") {
-      dispatch({ type: "CREATE_WALLET" });
-    }
+    dispatch({ type: "CREATE_WALLET" });
 
     return;
   }
@@ -93,7 +87,8 @@ export async function initialiseWallet(payload, dispatch, state) {
   });
 
   const selectedAccount = state.getIn(["wallet", "selectedAccount"], 0);
-  selectAccount(selectedAccount, dispatch);
+  dispatch({ type: "WALLET_LOADED" });
+  dispatch({ type: "SELECT_ACCOUNT", payload: selectedAccount });
 }
 
 export async function createWallet(payload, dispatch, state) {
@@ -107,8 +102,7 @@ export async function createWallet(payload, dispatch, state) {
   const mnemonic = client.wallet.exportWallet();
 
   dispatch({ type: "WALLET_CREATED", payload: { id, mnemonic } });
-
-  await selectAccount(0, dispatch);
+  dispatch({ type: "CREATE_ACCOUNT" });
 }
 
 export async function importWallet(payload, dispatch) {
@@ -123,11 +117,6 @@ export async function importWallet(payload, dispatch) {
 
     await importPlatformData(payload, dispatch);
 
-    const accounts = client.wallet.accounts;
-    if (accounts.length === 1) {
-      await selectAccount(0, dispatch);
-    }
-
     const id = `${new Date().getTime()}`;
     const newWallet = {
       id,
@@ -135,6 +124,11 @@ export async function importWallet(payload, dispatch) {
     };
 
     dispatch({ type: "WALLET_IMPORT_COMPLETED", payload: newWallet });
+
+    const accounts = client.wallet.accounts;
+    if (accounts.length === 1) {
+      dispatch({ type: "SELECT_ACCOUNT", payload: 0 });
+    }
   } catch (e) {
     dispatch({ type: "WALLET_IMPORT_FAILED", payload: e.message });
   }
@@ -191,8 +185,9 @@ export async function createUsername(payload, dispatch, state) {
   const account = state.getIn(["wallet", "accounts", index]);
 
   try {
-    const identityId =
-      account.selectedIdentity || (await createIdentity(index, dispatch));
+    const storedId = account.get("selectedIdentityId");
+    const identityId = storedId || (await createIdentity(index, dispatch));
+    dispatch({ type: "SELECT_IDENTITY", payload: { index, identityId } });
 
     const identity = await client.platform.identities.get(identityId);
     const name = await client.platform.names.register(payload, identity);
@@ -229,10 +224,4 @@ export async function updateIdentityBalances(payload, dispatch) {
   }
 
   dispatch({ type: "IDENTITY_BALANCES_UPDATED", payload: balances });
-}
-
-export async function selectWizardType(payload, dispatch) {
-  if (payload === "CREATE") {
-    dispatch({ type: "CREATE_WALLET" });
-  }
 }

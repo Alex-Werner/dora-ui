@@ -48,8 +48,8 @@ function AccountCreateUsername({ createUsername, isLoading, error }) {
 
 const stateToProps = state => {
   return {
-    isLoading: state.loading.createUsername,
-    error: state.error.createUsername
+    isLoading: state.getIn(["loading", "createUsername"]),
+    error: state.getIn(["error", "createUsername"])
   };
 };
 

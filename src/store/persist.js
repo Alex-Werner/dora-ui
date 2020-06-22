@@ -1,13 +1,13 @@
 /* Stolen and modified for secure-ls and immutable: https://github.com/elgerlambert/redux-localstorage */
-import { fromJS } from "immutable";
+import { fromJS, Map } from "immutable";
 
 export default function persistState(paths, config) {
   const cfg = {
     key: "redux",
     merge: (initialState, persistedState) =>
-      console.log(initialState) || initialState.mergeDeep(persistedState),
+      initialState.mergeDeep(persistedState),
     slicer: paths => state =>
-      paths ? state.filter((v, k) => paths.indexOf(k) > -1) : state,
+      paths ? paths.reduce((m, p) => m.set(p, state.get(p)), Map()) : state,
     serialize: subset => JSON.stringify(subset.toJS()),
     deserialize: data => fromJS(JSON.parse(data)),
     ...config

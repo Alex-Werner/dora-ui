@@ -9,6 +9,8 @@ export const account = state =>
     Map()
   );
 
+export const names = state => account(state).get("identityIdByName", Map());
+
 export const username = state => account(state).get("selectedName");
 export const identityId = state => account(state).get("selectedIdentityId");
 export const balance = state => account(state).get("balance", Map());
@@ -16,9 +18,17 @@ export const identity = state =>
   account(state).getIn(["identities", identityId(state)], Map());
 export const identityBalance = state => identity(state).get("balance", 0);
 
-const accountStatusSelectors = [wizard, wallet, identityId, account, balance];
+const accountStatusSelectors = [
+  wizard,
+  wallet,
+  identityId,
+  account,
+  balance,
+  names
+];
 export const accountStatus = createSelector(accountStatusSelectors, (...r) => {
-  const [wizard, wallet, identityId, account, balance] = r;
+  const [wizard, wallet, identityId, account, balance, names] = r;
+  console.log(names.size);
 
   if (wizard.get("showAccountManagement")) return "ACCOUNT_MANAGEMENT";
   if (wizard.get("showSend")) return "SEND";
@@ -43,7 +53,7 @@ export const accountStatus = createSelector(accountStatusSelectors, (...r) => {
   if (total === 0 || (wizard.get("type") === "CREATE" && !total)) {
     return "FUNDS_REQUIRED";
   }
-  if (!identityId && total > 0) {
+  if (!identityId && total > 0 && names.size === 0) {
     return "CREATE_USERNAME";
   }
 

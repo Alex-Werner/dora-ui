@@ -14,8 +14,9 @@ const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
   : compose;
 
 const configureStore = () => {
-  const persistKeys = ["wallet"];
+  const persistKeys = ["wallet", "wizard"];
   const enhancers = composeEnhancers(middleware, persist(persistKeys));
+  // const enhancers = composeEnhancers(middleware);
   const store = createStore(reducers, Map(), enhancers);
 
   if (module.hot) {

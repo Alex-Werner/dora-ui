@@ -13,19 +13,20 @@ function AccountManagement({ accounts, selected, select, create, hide }) {
         button to add a fresh account.
       </p>
       <AccountList>
-        {accounts.map((account, i) => {
+        {Object.keys(accounts).map(index => {
+          const account = accounts[index];
+          const name = account.selectedName;
+          const names = Object.keys(account.identityIdByName);
+
           return (
             <li
-              key={i}
-              selected={selected === i}
-              onClick={e => select(i) || hide()}
+              key={index}
+              selected={selected === index}
+              onClick={e => select(index) || hide()}
             >
               <strong>{account.selectedName || "(anonymous)"}</strong>
               <small>
-                {account.names
-                  .filter(n => n.name !== account.selectedName)
-                  .map(n => n.name)
-                  .join(", ")}
+                {names.filter(n => n.name !== account.selectedName).join(", ")}
               </small>
             </li>
           );
@@ -40,8 +41,8 @@ function AccountManagement({ accounts, selected, select, create, hide }) {
 
 const stateToProps = state => {
   return {
-    selected: state.account.selected,
-    accounts: state.account.available
+    selected: state.getIn(["wallet", "selectedAccount"]),
+    accounts: state.getIn(["wallet", "accounts"])
   };
 };
 

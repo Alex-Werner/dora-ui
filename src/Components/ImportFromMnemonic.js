@@ -31,8 +31,8 @@ function ImportFromMnemonic({ isLoading, importWallet, error }) {
 
 const stateToProps = state => {
   return {
-    isLoading: state.loading.importMnemonic,
-    error: state.error.WALLET_IMPORT_FAILED
+    isLoading: state.getIn(["loading", "importMnemonic"]),
+    error: state.getIn(["error", "walletImport"])
   };
 };
 
