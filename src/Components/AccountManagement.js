@@ -1,9 +1,10 @@
 import React from "react";
 import { connect } from "react-redux";
 
+import { accountList } from "../selectors";
 import { AccountList, ActionButton } from "../Styles";
 
-function AccountManagement({ accounts, selected, select, create, hide }) {
+function AccountManagement({ accounts, select, create, hide }) {
   console.log(accounts);
   return (
     <>
@@ -13,20 +14,18 @@ function AccountManagement({ accounts, selected, select, create, hide }) {
         button to add a fresh account.
       </p>
       <AccountList>
-        {Object.keys(accounts).map(index => {
-          const account = accounts[index];
-          const name = account.selectedName;
-          const names = Object.keys(account.identityIdByName);
-
+        {accounts.map(account => {
           return (
             <li
-              key={index}
-              selected={selected === index}
-              onClick={e => select(index) || hide()}
+              key={account.index}
+              selected={account.isSelected}
+              onClick={e => select(account.index) || hide()}
             >
               <strong>{account.selectedName || "(anonymous)"}</strong>
               <small>
-                {names.filter(n => n.name !== account.selectedName).join(", ")}
+                {account.names
+                  .filter(n => n.name !== account.selectedName)
+                  .join(", ")}
               </small>
             </li>
           );
@@ -41,8 +40,7 @@ function AccountManagement({ accounts, selected, select, create, hide }) {
 
 const stateToProps = state => {
   return {
-    selected: state.getIn(["wallet", "selectedAccount"]),
-    accounts: state.getIn(["wallet", "accounts"])
+    accounts: accountList(state)
   };
 };
 

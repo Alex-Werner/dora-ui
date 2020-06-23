@@ -10,6 +10,8 @@ export const account = state =>
   );
 
 export const names = state => account(state).get("identityIdByName", Map());
+export const accounts = state => wallet(state).get("accounts");
+export const selectedAccount = state => wallet(state).get("selectedAccount");
 
 export const username = state => account(state).get("selectedName");
 export const identityId = state => account(state).get("selectedIdentityId");
@@ -26,6 +28,7 @@ const accountStatusSelectors = [
   balance,
   names
 ];
+
 export const accountStatus = createSelector(accountStatusSelectors, (...r) => {
   const [wizard, wallet, identityId, account, balance, names] = r;
   console.log(names.size);
@@ -59,3 +62,20 @@ export const accountStatus = createSelector(accountStatusSelectors, (...r) => {
 
   return "HIDDEN";
 });
+
+const accountListSelectors = [accounts, selectedAccount];
+export const accountList = createSelector(
+  accountListSelectors,
+  (accounts, selected) => {
+    return accounts
+      .map((account, index) => {
+        return Map({
+          isSelected: selected === index,
+          names: [...account.get("identityIdByName").keys()],
+          selectedName: account.get("selectedName"),
+          index
+        });
+      })
+      .toJS();
+  }
+);

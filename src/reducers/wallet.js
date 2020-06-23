@@ -58,7 +58,10 @@ export default (state = initial, action) => {
         .setIn([...acc(), "identityIdByName", a.username], a.identityId);
 
     case "IDENTITY_BALANCES_UPDATED":
-      return state.setIn([...id(), "balance"], a);
+      return Object.keys(a.balances).reduce((state, id) => {
+        const balance = a.balances[id];
+        return state.setIn([...acc(), "identities", id, "balance"], balance);
+      }, state);
 
     case "SELECT_USERNAME":
       return state

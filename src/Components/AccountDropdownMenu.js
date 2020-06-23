@@ -60,7 +60,7 @@ const stateToProps = (state, ownProps) => {
     isVisible: ownProps.isVisible,
     confirmed: balance(state).get("confirmed", 0),
     unconfirmed: balance(state).get("unconfirmed", 0),
-    identityBalance: identityBalance(state)
+    identityBalance: identityBalance(state) || 0
   };
 };
 

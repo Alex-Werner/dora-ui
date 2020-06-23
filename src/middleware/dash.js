@@ -15,10 +15,6 @@ export default store => next => async action => {
       await createWallet(...args);
       break;
 
-    case "ACCOUNT_IDENTITIES_FOUND":
-      await updateIdentityBalances(...args);
-      break;
-
     case "SELECT_ACCOUNT":
       await selectAccount(...args);
       break;
@@ -27,10 +23,15 @@ export default store => next => async action => {
     case "ACCOUNT_CREATED":
       updateAccountBalances(...args);
       updateAddress(...args);
+      updateIdentityBalances(...args);
       break;
 
     case "WALLET_IMPORT_COMPLETED":
       updateAccountBalances(...args);
+      break;
+
+    case "IDENTITY_CREATED":
+      updateIdentityBalances(...args);
       break;
 
     case "CREATE_ACCOUNT":
@@ -241,16 +242,22 @@ export async function createAccount(payload, dispatch) {
   dispatch({ type: "ACCOUNT_CREATED", payload: index });
 }
 
-export async function updateIdentityBalances(payload, dispatch) {
+export async function updateIdentityBalances(payload, dispatch, state) {
   dispatch({ type: "IDENTITY_BALANCES_UPDATING" });
 
+  const identityIds = state
+    .getIn(["wallet", "accounts", payload, "identities"])
+    .keys();
   const balances = {};
-  for (const id of payload) {
+  for (const id of identityIds) {
     const identity = await client.platform.identities.get(id);
     balances[id] = identity.balance;
   }
 
-  dispatch({ type: "IDENTITY_BALANCES_UPDATED", payload: balances });
+  dispatch({
+    type: "IDENTITY_BALANCES_UPDATED",
+    payload: { balances, index: payload }
+  });
 }
 
 export async function selectWizardType(payload, dispatch) {
