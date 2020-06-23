@@ -16,7 +16,8 @@ function AccountDropdownMenu({
   confirmed,
   unconfirmed,
   identityBalance,
-  discard
+  discard,
+  viewMnemonic
 }) {
   return (
     <AccountDropdown isVisible={isVisible} onClick={hide}>
@@ -48,7 +49,7 @@ function AccountDropdownMenu({
           </GhostButton>
         </li>
         <li>
-          <GhostButton>
+          <GhostButton onClick={viewMnemonic}>
             View Backup Phrase <MenuIcon />
           </GhostButton>
         </li>
@@ -87,6 +88,9 @@ const dispatchToProps = (dispatch, ownProps) => {
     },
     discard() {
       dispatch({ type: "DISCARD_WALLET" });
+    },
+    viewMnemonic() {
+      dispatch({ type: "VIEW_MNEMONIC" });
     },
     hide: ownProps.hide
   };

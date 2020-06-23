@@ -7,7 +7,8 @@ const initial = Map({
   showAccountManagement: false,
   requiresMnemonic: false,
   showCreateUsername: false,
-  showIdentityManagement: false
+  showIdentityManagement: false,
+  viewMnemonic: false
 });
 
 export default (state = initial, action) => {
@@ -25,7 +26,8 @@ export default (state = initial, action) => {
         showSend: false,
         showReceive: false,
         showIdentityManagement: false,
-        showCreateUsername: false
+        showCreateUsername: false,
+        viewMnemonic: false
       });
 
     case "IMPORT_WALLET":
@@ -66,6 +68,12 @@ export default (state = initial, action) => {
 
     case "HIDE_IDENTITY_MANAGEMENT":
       return state.set("showIdentityManagement", false);
+
+    case "VIEW_MNEMONIC":
+      return state.set("viewMnemonic", true);
+
+    case "HIDE_MNEMONIC":
+      return state.set("viewMnemonic", false);
 
     case "DISCARD_WALLET":
       return initial;

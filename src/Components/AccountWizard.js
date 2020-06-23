@@ -7,6 +7,7 @@ import Modal from "./Modal";
 
 const SelectWizardType = React.lazy(() => import("./SelectWizardType"));
 const ConfirmMnemonic = React.lazy(() => import("./ConfirmMnemonic"));
+const ViewMnemonic = React.lazy(() => import("./ViewMnemonic"));
 const FundsRequired = React.lazy(() => import("./FundsRequired"));
 const CreateUsername = React.lazy(() => import("./CreateUsername"));
 const ImportFromMnemonic = React.lazy(() => import("./ImportFromMnemonic"));
@@ -27,6 +28,9 @@ const modalContentByStatus = {
   },
   CONFIRM_MNEMONIC: {
     Component: ConfirmMnemonic
+  },
+  VIEW_MNEMONIC: {
+    Component: ViewMnemonic
   },
   IDENTITY_MANAGEMENT: {
     Component: IdentityManagement

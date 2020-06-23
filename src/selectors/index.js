@@ -37,6 +37,7 @@ export const accountStatus = createSelector(accountStatusSelectors, (...r) => {
   if (wizard.get("showIdentityManagement")) return "IDENTITY_MANAGEMENT";
   if (wizard.get("showCreateUsername")) return "CREATE_USERNAME";
   if (wizard.get("showReceive")) return "RECEIVE";
+  if (wizard.get("viewMnemonic")) return "VIEW_MNEMONIC";
   if (wizard.get("isHidden")) return "HIDDEN";
 
   if (
