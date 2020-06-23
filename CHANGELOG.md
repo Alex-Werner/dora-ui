@@ -7,6 +7,7 @@ The goal of this changelog is to track all changes made and to stand as the reco
 3. Added identity management component, forcing user to select a username if not done so. Also some import bug fixes.
 4. Added discard wallet
 5. Added view backup phrase
+6. UI improvements
 
 ## 0.0.5 - 2020/06/21
 1. INCOMPLETE Refactor to make reducer structure match the underlying (all wallet data within wallet reducer) and added immutable to make it usable

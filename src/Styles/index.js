@@ -20,13 +20,13 @@ export const fontSize = n => 11 + fib(n) + "px";
 export const colors = {
   text: "#5e6d89",
   white: "#fff",
-  link: "#284db5",
-  background: "#f2faf8",
+  link: "#4287f5",
+  background: "#f2f7fa",
   primary: "#4287f5",
-  muted: "#eee",
+  muted: "#e8f5ff",
   secondary: "#4257f5",
-  accent: "#2ac78d",
-  highlight: "#ffeb17",
+  accent: "#0cc285",
+  highlight: "#2ac78d",
   dash: "#008DE4",
   error: "#ffb940"
 };
@@ -43,8 +43,9 @@ export const shadows = {
   large: "0px 5px 5px 2px rgba(0,0,0,0.19)"
 };
 
-export const light = n => `rgba(242, 250, 248,${0.1 * fib(n)})`;
-export const dark = n => `rgba(0,0,0,${0.1 * fib(n)})`;
+export const light = n => `rgba(255,255,255,${0.1 + 0.1 * fib(n)})`;
+export const dark = n => `rgba(66,135,245,${0.1 * fib(n)})`;
+export const modalBg = "rgba(232,245,255,0.95)";
 
 export const Container = styled.div`
   padding: 0 ${space(6)};
@@ -368,18 +369,19 @@ export const ModalOverlay = styled.div`
   cursor: pointer;
   width: 100vw;
   height: 100vh;
-  background: ${light(5)};
+  background: ${modalBg};
   z-index: 9;
 `;
 
 export const ModalContent = styled.div`
-  background: #fff;
+  background: ${colors.white};
   position: fixed;
   cursor: default;
+  z-index: 10;
   top: ${space(7)};
   left: 50%;
   transform: translate(-50%, ${props => (props.isVisible ? 0 : "-100%")});
-  transition: transform 300ms ease-in-out;
+  transition: all 300ms ease-in-out;
   box-shadow: ${shadows.large};
   border-radius: ${borderRadius};
   padding: ${space(7)};
@@ -399,17 +401,15 @@ export const ModalContent = styled.div`
 
 export const Button = styled.button`
   text-transform: uppercase;
-  padding: ${space(5)} ${space(6)};
+  padding: ${space(6)} ${space(6)};
   font-size: ${fontSize(5)};
   cursor: pointer;
   outline: "none";
   background: ${colors.primary};
   color: ${colors.white};
   border-radius: ${borderRadius};
-  border-right: 1px solid ${dark(1)};
-  border-bottom: 1px solid ${dark(1)};
-  border-top: 1px solid ${light(1)};
-  border-left: 1px solid ${light(1)};
+  border: none;
+  box-shadow: ${shadows.small};
   outline: none;
   ${props =>
     props.ownRow
@@ -461,11 +461,11 @@ export const MnemonicList = styled.ul`
   margin: ${margin} 0 0 0;
   padding: 0;
   li {
-    background: ${light(5)};
+    background: ${colors.muted};
     padding: ${space(4)} 0;
     flex: 0 0 30%;
     text-align: center;
-    border: 1px dashed ${dark(1)};
+    border: 1px dashed ${dark(2)};
     &:nth-child(n + 4) {
       margin: ${space(5)} 0 0 0;
     }
@@ -477,10 +477,10 @@ export const Label = styled.label`
   font-weight: bold;
   cursor: pointer;
   font-size: ${fontSize(3)};
-  background: ${props => (props.checked ? light(3) : "transparent")};
   + input {
     margin-top: ${space(4)};
   }
+  background: ${props => (props.checked ? colors.muted : colors.white)};
   &:hover {
     ${props =>
       props.checked
