@@ -33,7 +33,6 @@ export default (state = initial, action) => {
 
   switch (action.type) {
     case "WALLET_CREATED":
-    case "WALLET_IMPORT_COMPLETED":
       return state.set("mnemonic", a.mnemonic).set("id", a.id);
 
     case "SELECT_ACCOUNT":
@@ -50,20 +49,16 @@ export default (state = initial, action) => {
     case "ACCOUNT_ADDRESS_UPDATED":
       return state.setIn([...acc(), "address"], a.address);
 
-    case "IDENTITY_FOUND":
     case "IDENTITY_CREATED":
       return state.setIn(id(), initialIdentity);
 
     case "USERNAME_CREATED":
       return state
         .updateIn([...id(), "names"], names => names.push(a.username))
-        .setIn([...acc(), "identityByName", a.username], a.identityId);
+        .setIn([...acc(), "identityIdByName", a.username], a.identityId);
 
     case "IDENTITY_BALANCES_UPDATED":
       return state.setIn([...id(), "balance"], a);
-
-    case "SELECT_IDENTITY":
-      return state.setIn([...acc(), "selectedIdentityId"], a.identityId);
 
     case "SELECT_USERNAME":
       return state
@@ -72,6 +67,36 @@ export default (state = initial, action) => {
           [...acc(), "selectedIdentityId"],
           state.getIn([...acc(), "identityIdByName", a.username])
         );
+
+    case "WALLET_IMPORT_COMPLETED":
+      const walletUpdate = state
+        .set("mnemonic", a.wallet.mnemonic)
+        .set("id", a.wallet.id);
+
+      const accountUpdate = a.accounts.reduce((state, index) => {
+        return state.setIn(["accounts", index], initialAccount);
+      }, walletUpdate);
+
+      const newState = Object.keys(a.identitiesByAccount).reduce((state, i) => {
+        const identities = a.identitiesByAccount[i];
+        const acc = ["accounts", i];
+        return Object.keys(identities).reduce((state, id) => {
+          const names = identities[id];
+          const withIdentity = state.setIn(
+            [...acc, "identities", id],
+            Map({
+              ...initialIdentity,
+              names: List(names)
+            })
+          );
+
+          return identities[id].reduce((state, name) => {
+            return state.setIn([...acc, "identityIdByName", name], id);
+          }, withIdentity);
+        }, state);
+      }, accountUpdate);
+
+      return newState;
 
     default:
       return state;

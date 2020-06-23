@@ -29,6 +29,10 @@ export default store => next => async action => {
       updateAddress(...args);
       break;
 
+    case "WALLET_IMPORT_COMPLETED":
+      updateAccountBalances(...args);
+      break;
+
     case "CREATE_ACCOUNT":
       createAccount(...args);
       break;
@@ -43,6 +47,10 @@ export default store => next => async action => {
 
     case "UPDATE_ACCOUNT_BALANCES":
       updateAccountBalances(...args);
+      break;
+
+    case "SELECT_WIZARD_TYPE":
+      selectWizardType(...args);
       break;
 
     default:
@@ -76,8 +84,6 @@ export async function initialiseWallet(payload, dispatch, state) {
   const mnemonic = state.getIn(["wallet", "mnemonic"]);
   if (!mnemonic) {
     dispatch({ type: "NO_INITIAL_WALLET_FOUND" });
-    dispatch({ type: "CREATE_WALLET" });
-
     return;
   }
 
@@ -115,17 +121,39 @@ export async function importWallet(payload, dispatch) {
       }
     });
 
-    await importPlatformData(payload, dispatch);
+    const accounts = [];
+    let allDone = false;
+    let index = 0;
+    let prev = "";
+    while (!allDone) {
+      const account = await client.wallet.getAccount({ index });
+      const transactions = JSON.stringify(account.store.transactions);
+      if (transactions === prev) {
+        allDone = true;
+      } else {
+        accounts.push(account);
+        index++;
+        prev = transactions;
+      }
+    }
+
+    const identitiesByAccount = await importPlatformData(accounts, dispatch);
 
     const id = `${new Date().getTime()}`;
-    const newWallet = {
+    const wallet = {
       id,
       mnemonic: payload
     };
 
-    dispatch({ type: "WALLET_IMPORT_COMPLETED", payload: newWallet });
+    const importData = {
+      wallet,
+      accounts: accounts.map(a => a.index).sort(),
+      identitiesByAccount
+    };
 
-    const accounts = client.wallet.accounts;
+    client.wallet.accounts = accounts;
+    dispatch({ type: "WALLET_IMPORT_COMPLETED", payload: importData });
+
     if (accounts.length === 1) {
       dispatch({ type: "SELECT_ACCOUNT", payload: 0 });
     }
@@ -134,22 +162,21 @@ export async function importWallet(payload, dispatch) {
   }
 }
 
-export async function importPlatformData(payload, dispatch) {
-  for (const account of client.wallet.accounts) {
+export async function importPlatformData(accounts, dispatch) {
+  const identitiesByAccount = {};
+  for (const account of accounts) {
     const identityIds = account.getIdentityIds();
     const index = account.index;
+    identitiesByAccount[index] = {};
 
     for (const identityId of identityIds) {
-      dispatch({ type: "IDENTITY_FOUND", payload: { identityId, index } });
       const names = await getUsernamesFromIdentityId(identityId);
-      names.forEach(username => {
-        dispatch({
-          type: "USERNAME_FOUND",
-          payload: { username, identityId, index }
-        });
-      });
+      const identity = await client.platform.identities.get(identityId);
+      identitiesByAccount[index][identityId] = names;
     }
   }
+
+  return identitiesByAccount;
 }
 
 export async function selectAccount(payload, dispatch) {
@@ -187,7 +214,6 @@ export async function createUsername(payload, dispatch, state) {
   try {
     const storedId = account.get("selectedIdentityId");
     const identityId = storedId || (await createIdentity(index, dispatch));
-    dispatch({ type: "SELECT_IDENTITY", payload: { index, identityId } });
 
     const identity = await client.platform.identities.get(identityId);
     const name = await client.platform.names.register(payload, identity);
@@ -209,6 +235,7 @@ export async function createAccount(payload, dispatch) {
   dispatch({ type: "CREATING_ACCOUNT", payload: index });
 
   const account = await client.wallet.createAccount({ index });
+  client.account = account;
   client.wallet.accounts[index] = account;
 
   dispatch({ type: "ACCOUNT_CREATED", payload: index });
@@ -224,4 +251,10 @@ export async function updateIdentityBalances(payload, dispatch) {
   }
 
   dispatch({ type: "IDENTITY_BALANCES_UPDATED", payload: balances });
+}
+
+export async function selectWizardType(payload, dispatch) {
+  if (payload === "CREATE") {
+    dispatch({ type: "CREATE_WALLET" });
+  }
 }

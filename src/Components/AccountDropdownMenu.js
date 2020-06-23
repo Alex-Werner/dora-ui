@@ -56,7 +56,6 @@ function AccountDropdownMenu({
 }
 
 const stateToProps = (state, ownProps) => {
-  console.log(identityBalance(state));
   return {
     isVisible: ownProps.isVisible,
     confirmed: balance(state).get("confirmed", 0),

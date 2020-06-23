@@ -12,9 +12,11 @@ export default (state = initial, action) => {
       return state.set("wallet", false);
 
     case "LOADING_ACCOUNT":
+    case "CREATING_ACCOUNT":
       return state.set("account", true);
 
     case "ACCOUNT_LOADED":
+    case "ACCOUNT_CREATED":
       return state.set("account", false);
 
     case "WALLET_IMPORT_STARTED":
