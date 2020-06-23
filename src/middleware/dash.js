@@ -19,6 +19,10 @@ export default store => next => async action => {
       await selectAccount(...args);
       break;
 
+    case "DISCARD_WALLET":
+      await discardWallet();
+      break;
+
     case "ACCOUNT_LOADED":
     case "ACCOUNT_CREATED":
       updateAccountBalances(...args);
@@ -261,4 +265,10 @@ export async function selectWizardType(payload, dispatch) {
   if (payload === "CREATE") {
     dispatch({ type: "CREATE_WALLET" });
   }
+}
+
+export async function discardWallet() {
+  setTimeout(() => {
+    window.location.reload();
+  }, 0);
 }

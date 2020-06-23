@@ -99,6 +99,9 @@ export default (state = initial, action) => {
 
       return newState;
 
+    case "DISCARD_WALLET":
+      return initial;
+
     default:
       return state;
   }

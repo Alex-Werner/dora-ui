@@ -67,6 +67,9 @@ export default (state = initial, action) => {
     case "HIDE_IDENTITY_MANAGEMENT":
       return state.set("showIdentityManagement", false);
 
+    case "DISCARD_WALLET":
+      return initial;
+
     default:
       return state;
   }

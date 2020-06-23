@@ -15,7 +15,8 @@ function AccountDropdownMenu({
   receive,
   confirmed,
   unconfirmed,
-  identityBalance
+  identityBalance,
+  discard
 }) {
   return (
     <AccountDropdown isVisible={isVisible} onClick={hide}>
@@ -52,7 +53,7 @@ function AccountDropdownMenu({
           </GhostButton>
         </li>
         <li>
-          <GhostButton>
+          <GhostButton onClick={discard}>
             Discard Wallet <MenuIcon />
           </GhostButton>
         </li>
@@ -83,6 +84,9 @@ const dispatchToProps = (dispatch, ownProps) => {
     },
     receive() {
       dispatch({ type: "OPEN_RECEIVE" });
+    },
+    discard() {
+      dispatch({ type: "DISCARD_WALLET" });
     },
     hide: ownProps.hide
   };
