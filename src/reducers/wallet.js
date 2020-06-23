@@ -1,4 +1,4 @@
-import { Map, List } from "immutable";
+import { OrderedMap, Map, List } from "immutable";
 
 const initial = Map({
   mnemonic: null,
@@ -16,7 +16,7 @@ const initialAccount = Map({
   }),
   address: null,
   identities: Map(),
-  identityIdByName: Map(),
+  identityIdByName: OrderedMap(),
   selectedName: null,
   selectedIdentityId: null
 });
@@ -60,6 +60,7 @@ export default (state = initial, action) => {
     case "IDENTITY_BALANCES_UPDATED":
       return Object.keys(a.balances).reduce((state, id) => {
         const balance = a.balances[id];
+        console.log(state.getIn([...acc(), "identities", id, "balance"]));
         return state.setIn([...acc(), "identities", id, "balance"], balance);
       }, state);
 
@@ -87,10 +88,7 @@ export default (state = initial, action) => {
           const names = identities[id];
           const withIdentity = state.setIn(
             [...acc, "identities", id],
-            Map({
-              ...initialIdentity,
-              names: List(names)
-            })
+            initialIdentity.set("names", List(names))
           );
 
           return identities[id].reduce((state, name) => {

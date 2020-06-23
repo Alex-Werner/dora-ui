@@ -10,6 +10,7 @@ const ConfirmMnemonic = React.lazy(() => import("./ConfirmMnemonic"));
 const FundsRequired = React.lazy(() => import("./FundsRequired"));
 const CreateUsername = React.lazy(() => import("./CreateUsername"));
 const ImportFromMnemonic = React.lazy(() => import("./ImportFromMnemonic"));
+const IdentityManagement = React.lazy(() => import("./IdentityManagement"));
 const AccountManagement = React.lazy(() => import("./AccountManagement"));
 const Send = React.lazy(() => import("./Send"));
 const Receive = React.lazy(() => import("./Receive"));
@@ -26,6 +27,9 @@ const modalContentByStatus = {
   },
   CONFIRM_MNEMONIC: {
     Component: ConfirmMnemonic
+  },
+  IDENTITY_MANAGEMENT: {
+    Component: IdentityManagement
   },
   FUNDS_REQUIRED: {
     Component: FundsRequired

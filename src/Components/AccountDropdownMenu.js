@@ -9,6 +9,7 @@ import IdentityCredit from "./IdentityCredit";
 function AccountDropdownMenu({
   isVisible,
   manageAccounts,
+  manageIdentities,
   hide,
   send,
   receive,
@@ -41,6 +42,11 @@ function AccountDropdownMenu({
           </GhostButton>
         </li>
         <li>
+          <GhostButton onClick={manageIdentities}>
+            Manage Identities <MenuIcon />
+          </GhostButton>
+        </li>
+        <li>
           <GhostButton>
             View Backup Phrase <MenuIcon />
           </GhostButton>
@@ -68,6 +74,9 @@ const dispatchToProps = (dispatch, ownProps) => {
   return {
     manageAccounts() {
       dispatch({ type: "OPEN_ACCOUNT_MANAGEMENT" });
+    },
+    manageIdentities() {
+      dispatch({ type: "SHOW_IDENTITY_MANAGEMENT" });
     },
     send() {
       dispatch({ type: "OPEN_SEND" });

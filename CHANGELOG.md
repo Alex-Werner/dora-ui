@@ -4,6 +4,7 @@ The goal of this changelog is to track all changes made and to stand as the reco
 ## 0.0.6 - 2020/06/22
 1. Refactor to make reducer structure match the underlying (all wallet data within wallet reducer) and added immutable to make it usable
 2. Got account management working again and identity balance updating at correct times
+3. Added identity management component, forcing user to select a username if not done so. Also some import bug fixes.
 
 ## 0.0.5 - 2020/06/21
 1. INCOMPLETE Refactor to make reducer structure match the underlying (all wallet data within wallet reducer) and added immutable to make it usable

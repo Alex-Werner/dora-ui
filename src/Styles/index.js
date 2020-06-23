@@ -23,6 +23,7 @@ export const colors = {
   link: "#284db5",
   background: "#f2faf8",
   primary: "#4287f5",
+  muted: "#eee",
   secondary: "#4257f5",
   accent: "#2ac78d",
   highlight: "#ffeb17",
@@ -37,7 +38,8 @@ export const fonts = {
 export const borderRadius = "4px";
 export const border = color => `1px solid ${color}`;
 export const shadows = {
-  small: "0 0 4px rgba(0, 0, 0, .125)",
+  small: "0px 1px 1px 1px rgba(0,0,0,0.05)",
+  smallEmpty: "0px 1px 1px 1px rgba(0,0,0,0)",
   large: "0px 5px 5px 2px rgba(0,0,0,0.19)"
 };
 
@@ -187,7 +189,7 @@ export const TextDropdownContent = styled.div`
   overflow: hidden;
   height: ${props => (props.isVisible ? "auto" : "0px")};
   font-size: ${fontSize(4)};
-  transition: height 100ms ease-in-out;
+  transition: height 150ms ease-in-out;
 `;
 
 export const DashIcon = styled(Dash)`
@@ -224,6 +226,8 @@ export const MenuIcon = styled(ChevronRight)`
   color: ${colors.white};
 `;
 
+export const GoIcon = styled(ChevronRight)``;
+
 export const UserIcon = styled(UserAstronaut)`
   width: ${fontSize(3)};
   height: ${fontSize(3)};
@@ -241,7 +245,7 @@ export const AccountMenu = styled.div`
     cursor: pointer;
     color: ${colors.white};
     background: ${props => (props.isActive ? colors.secondary : "transparent")};
-    transition: background 100ms ease-in-out;
+    transition: background 150ms ease-in-out;
     text-decoration: none;
     font-size: ${fontSize(5)};
     font-weight: bold;
@@ -276,7 +280,7 @@ export const AccountDropdown = styled.nav`
   right: 0;
   pointer-events: ${props => (props.isVisible ? "all" : "none")};
   opacity: ${props => (props.isVisible ? 1 : 0)};
-  transition: opacity 100ms ease-in-out;
+  transition: opacity 150ms ease-in-out;
   overflow: hidden;
   background: ${colors.secondary};
   box-shadow: ${shadows.large};
@@ -308,7 +312,7 @@ export const AccountDropdown = styled.nav`
     font-size: ${fontSize(2)};
     border-bottom: 1px solid ${light(1)};
     position: relative;
-    transition: background 100ms ease-in-out;
+    transition: background 150ms ease-in-out;
     &:hover {
       background: ${dark(1)};
       color: #fff;
@@ -360,7 +364,7 @@ export const ModalOverlay = styled.div`
   position: fixed;
   opacity: ${props => (props.isVisible ? 1 : 0)};
   pointer-events: ${props => (props.isVisible ? "all" : "none")};
-  transition: opacity 100ms ease-in-out;
+  transition: opacity 150ms ease-in-out;
   cursor: pointer;
   width: 100vw;
   height: 100vh;
@@ -652,6 +656,59 @@ export const LoadingInlineContainer = styled.div`
       left: 56px;
       animation: ${InlineEllipsis3} 0.6s infinite;
     }
+  }
+`;
+
+export const UsernameList = styled.ul`
+  margin: ${margin} 0 0 0;
+  padding: 0;
+  list-style: none;
+  li {
+    margin: ${space(6)} 0 0 0;
+  }
+  button {
+    width: 100%;
+    text-align: left;
+    padding: ${space(4)};
+    border: 1px solid ${colors.muted};
+    border-bottom-width: 2px;
+    color: ${colors.primary};
+    font-weight: bold;
+    font-size: ${fontSize(5)};
+    &:hover,
+    &:active,
+    &:focus {
+      border-top-width: 2px;
+      border-bottom-width: 1px;
+      background: ${colors.primary};
+      border-color: ${colors.secondary};
+      color: ${colors.white};
+      svg,
+      span {
+        color: ${colors.white};
+      }
+    }
+    transition: all 150ms ease-in-out;
+    position: relative;
+  }
+
+  ${GoIcon} {
+    position: absolute;
+    right: ${space(4)};
+    top: 50%;
+    transform: translate(0, -50%);
+    color: ${colors.primary};
+    width: ${fontSize(6)};
+    height: ${fontSize(6)};
+  }
+  ${IdentityCreditDisplay} {
+    ${mobile(`
+      display: none;
+    `)}
+    color: ${colors.text};
+    display: inline-block;
+    text-align: left;
+    margin-left: ${space(7)};
   }
 `;
 

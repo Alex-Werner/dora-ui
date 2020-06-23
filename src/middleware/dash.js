@@ -26,10 +26,6 @@ export default store => next => async action => {
       updateIdentityBalances(...args);
       break;
 
-    case "WALLET_IMPORT_COMPLETED":
-      updateAccountBalances(...args);
-      break;
-
     case "IDENTITY_CREATED":
       updateIdentityBalances(...args);
       break;
@@ -93,7 +89,7 @@ export async function initialiseWallet(payload, dispatch, state) {
     wallet: { mnemonic }
   });
 
-  const selectedAccount = state.getIn(["wallet", "selectedAccount"], 0);
+  const selectedAccount = state.getIn(["wallet", "selectedAccount"]) || 0;
   dispatch({ type: "WALLET_LOADED" });
   dispatch({ type: "SELECT_ACCOUNT", payload: selectedAccount });
 }
@@ -245,8 +241,9 @@ export async function createAccount(payload, dispatch) {
 export async function updateIdentityBalances(payload, dispatch, state) {
   dispatch({ type: "IDENTITY_BALANCES_UPDATING" });
 
+  const index = typeof payload.index === "number" ? payload.index : payload;
   const identityIds = state
-    .getIn(["wallet", "accounts", payload, "identities"])
+    .getIn(["wallet", "accounts", index, "identities"])
     .keys();
   const balances = {};
   for (const id of identityIds) {
@@ -256,7 +253,7 @@ export async function updateIdentityBalances(payload, dispatch, state) {
 
   dispatch({
     type: "IDENTITY_BALANCES_UPDATED",
-    payload: { balances, index: payload }
+    payload: { balances, index }
   });
 }
 
