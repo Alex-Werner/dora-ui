@@ -35,9 +35,14 @@ function AccountCreateUsername({ createUsername, isLoading, error }) {
           id="username"
           value={username}
           disabled={isLoading}
+          required={true}
+          minLength={3}
+          maxLength={60}
+          pattern="[a-z0-9]+"
           onChange={e => setUsername(e.target.value)}
           placeholder="Choose a username"
         />
+        <FieldInfo>Lower-case letters and numbers only</FieldInfo>
         <FieldError isVisible={!!error}>
           {error && (errorText[error] || "Username registration failed")}
         </FieldError>

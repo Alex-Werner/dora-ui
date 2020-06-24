@@ -12,8 +12,8 @@ function ImportFromMnemonic({ isLoading, importWallet, error }) {
     <Form onSubmit={e => e.preventDefault() || importWallet(mnemonic)}>
       <h2>Import an existing wallet</h2>
       <p>
-        Enter your 12-word backup phrase below to import your wallet and Dash
-        Platform data.
+        Enter your 12-word backup phrase below (separated by a space) to import
+        your wallet and Dash Platform data.
       </p>
       <Label htmlFor="mnemonic">Enter a backup phrase</Label>
       <Textarea

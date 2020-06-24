@@ -7,6 +7,7 @@ The goal of this changelog is to track all changes made and to stand as the reco
 3. Added loading screens to create username and import
 4. Fixed UI on IdentityManagement, AccountManagement and SelectWizardType for consistency
 5. Removed loading indicator from account menu and fixed mobile modal bug
+6. Fixed username validation and added help text to import
 
 ## 0.0.6 - 2020/06/23
 1. Refactor to make reducer structure match the underlying (all wallet data within wallet reducer) and added immutable to make it usable
