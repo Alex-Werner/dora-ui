@@ -61,7 +61,7 @@ const modalContentByStatus = {
 function AccountModal({ status, closeModal }) {
   const { Component, ProgressComponent } = modalContentByStatus[status];
   const content = Component ? (
-    <React.Suspense fallback={<AccountWizardLoading />}>
+    <React.Suspense fallback={<AccountWizardLoading children="Loading..." />}>
       <Component />
       {ProgressComponent && <ProgressComponent />}
     </React.Suspense>

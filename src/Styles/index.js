@@ -6,6 +6,7 @@ import { Qrcode } from "@styled-icons/icomoon/Qrcode";
 import { Coins } from "@styled-icons/fa-solid/Coins";
 import { Dash } from "@styled-icons/crypto/Dash";
 import { BadgeCheck } from "@styled-icons/boxicons-solid/BadgeCheck";
+import { Wallet } from "@styled-icons/entypo/Wallet";
 
 export const mobileWidth = 760;
 export const mobile = str => `
@@ -14,7 +15,7 @@ export const mobile = str => `
   }
 `;
 
-export const fib = n => [0, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89][n];
+export const fib = n => [0, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144][n];
 export const space = n => fib(n) + "px";
 export const margin = space(7);
 export const fontSize = n => 11 + fib(n) + "px";
@@ -757,6 +758,35 @@ export const PaymentReceived = styled.div`
   p {
     margin: 0 0 ${space(5)} 0;
     line-height: ${fontSize(6)};
+  }
+`;
+
+export const LoadingWizard = styled.div`
+  text-align: center;
+  p {
+    margin: ${margin} 0 0 0;
+    font-size: ${fontSize(6)};
+  }
+  > div {
+    position: relative;
+    width: ${fontSize(11)};
+    min-height: 80px;
+    margin: 0 auto;
+    svg {
+      width: ${fontSize(11)};
+      height: ${fontSize(11)};
+      opacity: 0.15;
+      color: ${colors.primary};
+    }
+  }
+  ${LoadingInlineContainer} {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    div {
+      background-color: ${colors.primary};
+    }
   }
 `;
 

@@ -2,7 +2,7 @@ import React from "react";
 import { connect } from "react-redux";
 import { Wallet } from "@styled-icons/entypo/Wallet";
 
-import { wallet } from "../selectors";
+import { wallet, account } from "../selectors";
 import { ActionButton, Form } from "../Styles";
 import AccountWizardLoading from "./AccountWizardLoading";
 import Mnemonic from "./Mnemonic";
@@ -13,18 +13,15 @@ function NewWallet({ isLoading, mnemonic, confirm }) {
       <h2>Your new wallet</h2>
       <p>Your wallet has been created successfully.</p>
       <p>
-        Below is a collection of words called a <strong>mnemonic</strong>. This{" "}
-        <strong>mnemonic</strong> will serve as a backup of this wallet.
-      </p>
-      <p>
-        Write these words down on paper and keep them somewhere safe and secure:
+        The 12 words below can be used to recover your wallet. Write these words
+        down on paper and keep them somewhere safe and secure:
       </p>
       <Mnemonic>{mnemonic}</Mnemonic>
       <ActionButton type="submit">Next</ActionButton>
     </Form>
   ) : (
     <AccountWizardLoading Icon={Wallet}>
-      <p>Creating your wallet...</p>
+      Creating your wallet...
     </AccountWizardLoading>
   );
 }
@@ -32,7 +29,8 @@ function NewWallet({ isLoading, mnemonic, confirm }) {
 const stateToProps = state => {
   return {
     mnemonic: wallet(state).get("mnemonic"),
-    isLoading: state.getIn(["loading", "wallet"])
+    isLoading:
+      state.getIn(["loading", "account"]) && !account(state).get("address")
   };
 };
 
