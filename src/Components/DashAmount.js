@@ -1,14 +1,21 @@
 import React from "react";
 
-import { DashAmount } from "../Styles";
-import { Dash } from "@styled-icons/crypto/Dash";
+import { DashAmount, DashIcon } from "../Styles";
 
-function DashAmountComponent({ children: amount, size = 14 }) {
+const satsToDash = n => n / 100000000;
+const format = n =>
+  satsToDash(n).toLocaleString(undefined, {
+    maximumSignificantDigits: 8,
+    minimumSignificantDigits: 5
+  });
+
+function DashAmountComponent({ children: amount, size = 4, unconfirmed = 0 }) {
   if (typeof amount !== "number") return amount;
   return (
-    <DashAmount style={{ fontSize: size }}>
-      <Dash size={size} />
-      <span>{(amount / 100000000).toFixed(4)}</span>
+    <DashAmount size={size}>
+      <DashIcon size={size - 1} />
+      <strong title={`${satsToDash(amount)} DASH`}>{format(amount)}</strong>
+      {unconfirmed > 0 && <small>+ {format(unconfirmed)} unconfirmed</small>}
     </DashAmount>
   );
 }

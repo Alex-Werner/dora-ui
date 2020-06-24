@@ -1,9 +1,17 @@
 import React from "react";
 import { connect } from "react-redux";
 
-import { AccountList, ActionButton } from "../Styles";
+import { accountList } from "../selectors";
+import {
+  SelectableList,
+  SelectableItem,
+  ActionButton,
+  GhostButton,
+  GoIcon
+} from "../Styles";
+import DashAmount from "./DashAmount";
 
-function AccountManagement({ accounts, selected, select, create, hide }) {
+function AccountManagement({ accounts, select, create, hide }) {
   console.log(accounts);
   return (
     <>
@@ -12,25 +20,28 @@ function AccountManagement({ accounts, selected, select, create, hide }) {
         Select an account to use from the options below. Hit the "Create New"
         button to add a fresh account.
       </p>
-      <AccountList>
-        {accounts.map((account, i) => {
+      <SelectableList>
+        {accounts.map(account => {
           return (
-            <li
-              key={i}
-              selected={selected === i}
-              onClick={e => select(i) || hide()}
+            <SelectableItem
+              isSelected={account.isSelected}
+              key={account.index}
+              onClick={e => select(account.index) || hide()}
             >
-              <strong>{account.selectedName || "(anonymous)"}</strong>
-              <small>
-                {account.names
-                  .filter(n => n.name !== account.selectedName)
-                  .map(n => n.name)
-                  .join(", ")}
-              </small>
-            </li>
+              <GhostButton onClick={e => select(account.index) || hide()}>
+                Account {account.index + 1}
+                <DashAmount size={3}>{account.balance}</DashAmount>
+                <small>
+                  {account.names.length
+                    ? account.names.join(", ")
+                    : "(anonymous)"}
+                </small>
+                <GoIcon />
+              </GhostButton>
+            </SelectableItem>
           );
         })}
-      </AccountList>
+      </SelectableList>
       <ActionButton ownRow={true} onClick={e => create() || hide()}>
         Create New
       </ActionButton>
@@ -40,8 +51,7 @@ function AccountManagement({ accounts, selected, select, create, hide }) {
 
 const stateToProps = state => {
   return {
-    selected: state.account.selected,
-    accounts: state.account.available
+    accounts: accountList(state)
   };
 };
 

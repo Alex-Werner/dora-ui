@@ -10,7 +10,7 @@ function Mnemonic({ children }) {
   return (
     <MnemonicList>
       {mnemonic.map(word => {
-        return <li>{word}</li>;
+        return <li key={word}>{word}</li>;
       })}
     </MnemonicList>
   );

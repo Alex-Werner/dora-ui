@@ -2,9 +2,14 @@ import React from "react";
 import { Close } from "@styled-icons/evaicons-solid/Close";
 
 import { ModalOverlay, ModalContent, GhostButton } from "../Styles";
+import { useWindowKeyup } from "../hooks";
 
 function Modal({ children, close, title }) {
   const isVisible = !!children;
+  useWindowKeyup("Escape", close);
+  React.useEffect(() => {
+    if (isVisible) window.scrollTo(0, 0);
+  }, [isVisible]);
 
   return (
     <ModalOverlay

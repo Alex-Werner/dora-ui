@@ -1,6 +1,12 @@
 import styled, { createGlobalStyle, keyframes } from "styled-components";
 import { ChevronDown } from "@styled-icons/boxicons-regular/ChevronDown";
+import { ChevronRight } from "@styled-icons/boxicons-regular/ChevronRight";
+import { UserAstronaut } from "@styled-icons/fa-solid/UserAstronaut";
 import { Qrcode } from "@styled-icons/icomoon/Qrcode";
+import { Coins } from "@styled-icons/fa-solid/Coins";
+import { Dash } from "@styled-icons/crypto/Dash";
+import { BadgeCheck } from "@styled-icons/boxicons-solid/BadgeCheck";
+import { Wallet } from "@styled-icons/entypo/Wallet";
 
 export const mobileWidth = 760;
 export const mobile = str => `
@@ -9,19 +15,20 @@ export const mobile = str => `
   }
 `;
 
-export const fib = n => [0, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89][n];
+export const fib = n => [0, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144][n];
 export const space = n => fib(n) + "px";
 export const margin = space(7);
 export const fontSize = n => 11 + fib(n) + "px";
 export const colors = {
   text: "#5e6d89",
   white: "#fff",
-  link: "#284db5",
-  background: "#f2faf8",
+  link: "#4287f5",
+  background: "#f2f7fa",
   primary: "#4287f5",
-  secondary: "#42f5ce",
-  accent: "#2ac78d",
-  highlight: "#ffeb17",
+  muted: "#e8f5ff",
+  secondary: "#4257f5",
+  accent: "#0cc285",
+  highlight: "#2ac78d",
   dash: "#008DE4",
   error: "#ffb940"
 };
@@ -33,12 +40,14 @@ export const fonts = {
 export const borderRadius = "4px";
 export const border = color => `1px solid ${color}`;
 export const shadows = {
-  small: "0 0 4px rgba(0, 0, 0, .125)",
-  large: "0 0 24px rgba(0, 0, 0, .125)"
+  small: "0px 1px 1px 1px rgba(0,0,0,0.05)",
+  smallEmpty: "0px 1px 1px 1px rgba(0,0,0,0)",
+  large: "0px 5px 5px 2px rgba(0,0,0,0.19)"
 };
 
-export const light = n => `rgba(242, 250, 248,${0.1 * fib(n)})`;
-export const dark = n => `rgba(0,0,0,${0.1 * fib(n)})`;
+export const light = n => `rgba(255,255,255,${0.1 + 0.1 * fib(n)})`;
+export const dark = n => `rgba(66,135,245,${0.1 * fib(n)})`;
+export const modalBg = "rgba(232,245,255,0.90)";
 
 export const Container = styled.div`
   padding: 0 ${space(6)};
@@ -53,10 +62,10 @@ export const Header = styled(Container)`
   align-items: center;
   justify-content: space-between;
   color: ${colors.white};
+  opacity: 1;
 `;
 
 export const PageContainer = styled.div`
-  background: ${light(5)};
   padding: ${margin} ${space(6)};
 `;
 
@@ -182,15 +191,28 @@ export const TextDropdownContent = styled.div`
   overflow: hidden;
   height: ${props => (props.isVisible ? "auto" : "0px")};
   font-size: ${fontSize(4)};
-  transition: height 100ms ease-in-out;
+  transition: height 150ms ease-in-out;
+`;
+
+export const DashIcon = styled(Dash)`
+  width: ${props => fontSize(props.size)};
+  height: ${props => fontSize(props.size)};
 `;
 
 export const DashAmount = styled.span`
   color: ${colors.white};
-  font-size: ${fontSize(4)};
-  span {
-    padding-left: ${space(4)};
+  font-size: ${props => fontSize(props.size)};
+  display: block;
+  strong {
+    padding: 0 ${space(3)};
   }
+  small {
+    display: block;
+      font-weight: normal;
+      margin: ${space(4)};
+  }
+  svg{
+    margin-top: -${space(3)};
 `;
 
 export const DropdownIcon = styled(ChevronDown)`
@@ -202,39 +224,48 @@ export const DropdownIcon = styled(ChevronDown)`
   `)}
 `;
 
+export const MenuIcon = styled(ChevronRight)`
+  color: ${colors.white};
+`;
+
+export const GoIcon = styled(ChevronRight)``;
+
+export const UserIcon = styled(UserAstronaut)`
+  width: ${fontSize(3)};
+  height: ${fontSize(3)};
+`;
+
 export const AccountMenu = styled.div`
-  flex: 0;
-  text-align: right;
-  ${mobile(`
-    flex: 0 0 75%;
-  `)}
-  > ${GhostButton}{
-  position:relative;
+  flex: 0 0 70%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  > a {
+    position: relative;
     margin: 0 ${space(6)};
     outline: none;
     cursor: pointer;
-    text-align: right;
     color: ${colors.white};
+    background: ${props => (props.isActive ? colors.secondary : "transparent")};
+    transition: background 150ms ease-in-out;
+    text-decoration: none;
     font-size: ${fontSize(5)};
-    font-weight:bold;
-    padding: ${space(4)} ${space(7)} ${space(4)} ${space(2)};
+    font-weight: bold;
+    padding: ${space(5)} ${space(7)} ${space(5)} ${space(5)};
     ${mobile(`
-      padding: ${space(3)} ${space(6)};
+      padding-right: ${space(6)};
     `)}
-    > span{
-      svg{
-        margin-top:-${space(3)};
+    > span {
+      svg {
+        margin-top: -${space(3)};
       }
     }
-    &:focus{
-      background: ${colors.secondary};
-    }
   }
-  ${DropdownIcon}{
-    position:absolute;
-    right:-${space(2)};
+  ${DropdownIcon} {
+    position: absolute;
+    right: -${space(2)};
     top: 50%;
-    margin-top: -${space(5)};
+    transform: translate(0, -50%);
   }
 `;
 
@@ -242,38 +273,78 @@ export const DisplayName = styled.span`
   display: block;
   margin: 0 0 ${space(1)} 0;
   font-size: ${fontSize(2)};
-  font-weight: normal;
-  ${mobile(`
-    display:none;
-  `)}
+  font-weight: bold;
 `;
 
 export const AccountDropdown = styled.nav`
   position: absolute;
   top: 100%;
   right: 0;
-  height: ${props => (props.isVisible ? "auto" : 0)};
-  transition: height 100ms ease-in-out;
+  pointer-events: ${props => (props.isVisible ? "all" : "none")};
+  opacity: ${props => (props.isVisible ? 1 : 0)};
+  transition: opacity 150ms ease-in-out;
   overflow: hidden;
-  background: ${colors.primary};
-  width: 200px;
+  background: ${colors.secondary};
   box-shadow: ${shadows.large};
+  width: 200px;
+  font-weight: normal;
   ul {
     list-style: none;
-    padding: ${space(3)} 0;
+    padding: 0 0 ${space(3)} 0;
+    background: ${light(0)};
+    margin: -${space(6)} 0 ${space(3)} 0;
   }
-  ul + ul {
-    padding: ${space(4)} 0 0 0;
-    margin: ${space(4)} 0 0 0;
-    border-top: 1px solid ${dark(1)};
+  h5 {
+    margin: ${space(6)} 0 ${space(6)} 0;
+    font-weight: normal;
+    text-transform: uppercase;
+    font-size: ${fontSize(0)};
+    color: ${light(4)};
+    border-bottom: 1px dashed ${light(2)};
+    padding: ${space(3)};
   }
-  a {
+  h5:first-child {
+    margin-top: ${space(5)};
+  }
+  ${GhostButton} {
     text-align: left;
     width: 100%;
-    padding: ${space(4)} ${space(4)};
+    padding: ${space(6)} ${space(5)};
+    background: ${colors.secondary};
     color: ${colors.white};
-    font-size: ${fontSize(3)};
+    font-size: ${fontSize(2)};
+    border-bottom: 1px solid ${light(1)};
+    position: relative;
+    transition: background 150ms ease-in-out;
+    &:hover {
+      background: ${dark(1)};
+      color: #fff;
+    }
   }
+  ${DashAmount} {
+    text-align: center;
+  }
+  ${MenuIcon} {
+    top: ${space(6)};
+    right: ${space(5)};
+    width: ${fontSize(2)};
+    height: ${fontSize(2)};
+  }
+`;
+
+export const CreditIcon = styled(Coins)`
+  width: ${fontSize(4)};
+  height: ${fontSize(4)};
+`;
+
+export const IdentityCreditDisplay = styled.span`
+  text-align: center;
+  display: block;
+  color: ${colors.white};
+  strong {
+    padding: 0 ${space(3)};
+  }
+  font-size: ${fontSize(4)};
 `;
 
 export const WarningBanner = styled(Container)`
@@ -296,22 +367,26 @@ export const ModalOverlay = styled.div`
   position: fixed;
   opacity: ${props => (props.isVisible ? 1 : 0)};
   pointer-events: ${props => (props.isVisible ? "all" : "none")};
-  transition: opacity 100ms ease-in-out;
+  transition: opacity 150ms ease-in-out;
   cursor: pointer;
   width: 100vw;
   height: 100vh;
-  background: ${light(5)};
+  background: ${modalBg};
   z-index: 9;
+  ${mobile(`
+    overflow-y: auto;
+  `)}
 `;
 
 export const ModalContent = styled.div`
-  background: #fff;
-  position: fixed;
+  background: ${colors.white};
+  position: absolute;
   cursor: default;
+  z-index: 10;
   top: ${space(7)};
   left: 50%;
   transform: translate(-50%, ${props => (props.isVisible ? 0 : "-100%")});
-  transition: transform 300ms ease-in-out;
+  transition: all 300ms ease-in-out;
   box-shadow: ${shadows.large};
   border-radius: ${borderRadius};
   padding: ${space(7)};
@@ -331,17 +406,15 @@ export const ModalContent = styled.div`
 
 export const Button = styled.button`
   text-transform: uppercase;
-  padding: ${space(5)} ${space(6)};
+  padding: ${space(6)} ${space(6)};
   font-size: ${fontSize(5)};
   cursor: pointer;
   outline: "none";
   background: ${colors.primary};
   color: ${colors.white};
   border-radius: ${borderRadius};
-  border-right: 1px solid ${dark(1)};
-  border-bottom: 1px solid ${dark(1)};
-  border-top: 1px solid ${light(1)};
-  border-left: 1px solid ${light(1)};
+  border: none;
+  box-shadow: ${shadows.small};
   outline: none;
   ${props =>
     props.ownRow
@@ -385,62 +458,6 @@ export const Form = styled.form`
   }
 `;
 
-export const ripple = size => keyframes`
-  0% {
-    top: ${size / 2 - 4}px;
-    left: ${size / 2 - 4}px;
-    width: 0;
-    height: 0;
-    opacity: 1;
-  }
-  100% {
-    top: 0px;
-    left: 0px;
-    width: ${size - 8}px;
-    height: ${size - 8}px;
-    opacity: 0;
-  }
-`;
-
-export const AnimatedWave = styled.div`
-  display: inline-block;
-  position: absolute;
-  top: 0;
-  left: 0;
-  border: 4px solid ${colors.text};
-  border-radius: 50%;
-  opacity: 1;
-  animation: ${props => ripple(props.size)} 1s cubic-bezier(0, 0.2, 0.8, 1)
-    infinite;
-`;
-
-export const SpinnerContainer = styled.div`
-  display: inline-block;
-  position: relative;
-  width: ${props => props.size}px;
-  height: ${props => props.size}px;
-  margin-left: ${props => props.size / 8}px;
-  ${AnimatedWave}:last-child {
-    animation-delay: -0.5s !important;
-  }
-`;
-
-export const ModalLoadingIcon = styled.div`
-  position: absolute;
-  top: 20px;
-  left: 0;
-  width: 100%;
-  opacity: 0.4;
-`;
-
-export const ModalLoading = styled.div`
-  text-align: center;
-  position: relative;
-  p {
-    font-size: ${fontSize(6)};
-  }
-`;
-
 export const MnemonicList = styled.ul`
   display: flex;
   flex-wrap: wrap;
@@ -449,11 +466,11 @@ export const MnemonicList = styled.ul`
   margin: ${margin} 0 0 0;
   padding: 0;
   li {
-    background: ${light(5)};
+    background: ${colors.muted};
     padding: ${space(4)} 0;
     flex: 0 0 30%;
     text-align: center;
-    border: 1px dashed ${dark(1)};
+    border: 1px dashed ${dark(2)};
     &:nth-child(n + 4) {
       margin: ${space(5)} 0 0 0;
     }
@@ -465,10 +482,10 @@ export const Label = styled.label`
   font-weight: bold;
   cursor: pointer;
   font-size: ${fontSize(3)};
-  background: ${props => (props.checked ? light(3) : "transparent")};
   + input {
     margin-top: ${space(4)};
   }
+  background: ${props => (props.checked ? colors.muted : colors.white)};
   &:hover {
     ${props =>
       props.checked
@@ -587,6 +604,209 @@ export const AccountList = styled.ul`
   }
 `;
 
+const InlineEllipsis1 = keyframes`
+  0% {
+    transform: scale(0);
+  }
+  100% {
+    transform: scale(1);
+  }
+`;
+
+const InlineEllipsis2 = keyframes`
+  0% {
+    transform: translate(0, 0);
+  }
+  100% {
+    transform: translate(24px, 0);
+  }
+`;
+
+const InlineEllipsis3 = keyframes`
+  0% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(0);
+  }
+`;
+
+export const LoadingInlineContainer = styled.div`
+  display: inline-block;
+  position: relative;
+  width: 80px;
+  height: 13px;
+  transform: scale(${props => props.scale});
+
+  div {
+    position: absolute;
+    width: 13px;
+    height: 13px;
+    border-radius: 50%;
+    background: #fff;
+    animation-timing-function: cubic-bezier(0, 1, 1, 0);
+    &:nth-child(1) {
+      left: 8px;
+      animation: ${InlineEllipsis1} 0.6s infinite;
+    }
+    &:nth-child(2) {
+      left: 8px;
+      animation: ${InlineEllipsis2} 0.6s infinite;
+    }
+    &:nth-child(3) {
+      left: 32px;
+      animation: ${InlineEllipsis2} 0.6s infinite;
+    }
+    &:nth-child(4) {
+      left: 56px;
+      animation: ${InlineEllipsis3} 0.6s infinite;
+    }
+  }
+`;
+
+export const SelectableList = styled.ul`
+  margin: ${margin} 0 0 0;
+  padding: 0;
+  list-style: none;
+`;
+
+export const SelectableItem = styled.li`
+  margin: ${space(4)} 0 0 0;
+  button {
+    width: 100%;
+    text-align: left;
+    padding: ${space(5)} ${space(4)};
+    box-shadow: ${shadows.small};
+    color: ${colors.primary};
+    background: ${props => (props.isSelected ? colors.muted : colors.white)};
+    font-weight: bold;
+    font-size: ${fontSize(5)};
+    &:hover,
+    &:active,
+    &:focus {
+      background: ${colors.primary};
+      border-color: ${colors.secondary};
+      color: ${colors.white};
+      svg,
+      small,
+      span {
+        color: ${colors.white};
+      }
+    }
+    transition: all 150ms ease-in-out;
+    position: relative;
+  }
+
+  ${GoIcon} {
+    position: absolute;
+    right: ${space(4)};
+    top: 50%;
+    transform: translate(0, -50%);
+    color: ${colors.primary};
+    width: ${fontSize(6)};
+    height: ${fontSize(6)};
+  }
+  ${DashAmount}{
+    color: ${colors.primary};
+    display:inline-block;
+    line-height: ${fontSize(4)};
+    margin-left: ${space(7)};
+  }
+  ${IdentityCreditDisplay} {
+    ${mobile(`
+      display: none;
+    `)}
+    color: ${colors.text};
+    display: inline-block;
+    text-align: left;
+    margin-left: ${space(7)};
+  }
+  small{
+    clear:both;
+    color: ${colors.text};
+    display:block;
+    margin-top: ${space(4)};
+    font-size: ${fontSize(2)};
+    font-weight:normal;
+  }
+`;
+
+export const LoadingPayment = styled.div`
+  margin: ${margin} 0 0 0;
+  box-shadow: ${shadows.small};
+  text-align: center;
+  padding: ${space(5)};
+  position: relative;
+  overflow: hidden;
+  ${LoadingInlineContainer} {
+    div {
+      background: ${colors.primary};
+    }
+  }
+  p {
+    margin: ${space(5)} 0 0 0;
+    text-align: center;
+  }
+`;
+
+export const PaymentTick = styled(BadgeCheck)`
+  width: ${fontSize(5)};
+  height: ${fontSize(5)};
+`;
+
+export const PaymentReceived = styled.div`
+  width: 100%;
+  height: 100%;
+  padding: ${space(5)};
+  background: ${colors.primary};
+  opacity: ${props => (props.isVisible ? 1 : 0)};
+  position: absolute;
+  top: 0;
+  left: 0;
+  transition: opacity 150ms ease-in-out;
+  color: ${colors.white};
+  ${DashAmount} {
+    opacity: ${props => (props.isVisible ? 1 : 0)};
+    transition: opacity 150ms ease-in-out 300ms;
+  }
+  ${PaymentTick} {
+    margin: -${space(2)} ${space(4)} 0 0;
+  }
+  p {
+    margin: 0 0 ${space(5)} 0;
+    line-height: ${fontSize(6)};
+  }
+`;
+
+export const LoadingWizard = styled.div`
+  text-align: center;
+  p {
+    margin: ${margin} 0 0 0;
+    font-size: ${fontSize(5)};
+  }
+  > div {
+    position: relative;
+    width: ${fontSize(11)};
+    min-height: 80px;
+    margin: 0 auto;
+    svg {
+      width: ${fontSize(11)};
+      height: ${fontSize(11)};
+      opacity: 0.15;
+      color: ${colors.primary};
+    }
+  }
+  ${LoadingInlineContainer} {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    div {
+      background-color: ${colors.primary};
+    }
+  }
+`;
+
 export const GlobalStyle = createGlobalStyle`
   body{
     background: ${colors.background};
@@ -606,7 +826,7 @@ export const GlobalStyle = createGlobalStyle`
       margin-top: 0;
     }
   }
-  a, a:link, a:visited{
+  a{
     color: ${colors.link};
   }
   p{

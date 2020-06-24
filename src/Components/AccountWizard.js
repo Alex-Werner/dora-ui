@@ -1,16 +1,17 @@
 import React from "react";
 import { connect } from "react-redux";
 
-import accountStatus from "../selectors/accountStatus";
+import { accountStatus } from "../selectors";
 import AccountWizardLoading from "./AccountWizardLoading";
 import Modal from "./Modal";
 
 const SelectWizardType = React.lazy(() => import("./SelectWizardType"));
 const ConfirmMnemonic = React.lazy(() => import("./ConfirmMnemonic"));
+const ViewMnemonic = React.lazy(() => import("./ViewMnemonic"));
 const FundsRequired = React.lazy(() => import("./FundsRequired"));
 const CreateUsername = React.lazy(() => import("./CreateUsername"));
 const ImportFromMnemonic = React.lazy(() => import("./ImportFromMnemonic"));
-const ImportPlatformData = React.lazy(() => import("./ImportPlatformData"));
+const IdentityManagement = React.lazy(() => import("./IdentityManagement"));
 const AccountManagement = React.lazy(() => import("./AccountManagement"));
 const Send = React.lazy(() => import("./Send"));
 const Receive = React.lazy(() => import("./Receive"));
@@ -27,6 +28,12 @@ const modalContentByStatus = {
   },
   CONFIRM_MNEMONIC: {
     Component: ConfirmMnemonic
+  },
+  VIEW_MNEMONIC: {
+    Component: ViewMnemonic
+  },
+  IDENTITY_MANAGEMENT: {
+    Component: IdentityManagement
   },
   FUNDS_REQUIRED: {
     Component: FundsRequired
@@ -46,19 +53,15 @@ const modalContentByStatus = {
   IMPORT_FROM_MNEMONIC: {
     Component: ImportFromMnemonic
   },
-  IMPORT_PLATFORM_DATA: {
-    Component: ImportPlatformData
-  },
   LOADING: {
     Component: AccountWizardLoading
   }
 };
 
 function AccountModal({ status, closeModal }) {
-  console.log({ status });
   const { Component, ProgressComponent } = modalContentByStatus[status];
   const content = Component ? (
-    <React.Suspense fallback={<AccountWizardLoading />}>
+    <React.Suspense fallback={<AccountWizardLoading children="Loading..." />}>
       <Component />
       {ProgressComponent && <ProgressComponent />}
     </React.Suspense>

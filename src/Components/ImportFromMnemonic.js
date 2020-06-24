@@ -1,26 +1,21 @@
 import React from "react";
 import { connect } from "react-redux";
+import { Import } from "@styled-icons/boxicons-regular/Import";
 
-import {
-  Form,
-  Textarea,
-  Label,
-  FieldInfo,
-  ActionButton,
-  FieldError
-} from "../Styles";
+import { Form, Textarea, Label, ActionButton, FieldError } from "../Styles";
+import AccountWizardLoading from "./AccountWizardLoading";
 
 function ImportFromMnemonic({ isLoading, importWallet, error }) {
   const [mnemonic, setMnemonic] = React.useState("");
 
-  return (
+  return !isLoading ? (
     <Form onSubmit={e => e.preventDefault() || importWallet(mnemonic)}>
       <h2>Import an existing wallet</h2>
       <p>
-        Enter your 12-word mnemonic below to import your wallet and Dash
-        Platform data.
+        Enter your 12-word backup phrase below (separated by a space) to import
+        your wallet and Dash Platform data.
       </p>
-      <Label htmlFor="mnemonic">Enter a Mnemonic</Label>
+      <Label htmlFor="mnemonic">Enter a backup phrase</Label>
       <Textarea
         id="mnemonic"
         name="mnemonic"
@@ -29,17 +24,24 @@ function ImportFromMnemonic({ isLoading, importWallet, error }) {
         onChange={e => setMnemonic(e.target.value)}
       />
       {error && (
-        <FieldError>That mnemonic was incorrect. Please try again.</FieldError>
+        <FieldError>
+          That backup phrase was incorrect. Please try again.
+        </FieldError>
       )}
       <ActionButton type="submit">Import</ActionButton>
     </Form>
+  ) : (
+    <AccountWizardLoading Icon={Import}>
+      Importing your Dash Wallet and Dash Platform data. This may take a few
+      minutes.
+    </AccountWizardLoading>
   );
 }
 
 const stateToProps = state => {
   return {
-    isLoading: state.loading.importMnemonic,
-    error: state.error.WALLET_IMPORT_FAILED
+    isLoading: state.getIn(["loading", "walletImport"]),
+    error: state.getIn(["error", "walletImport"])
   };
 };
 

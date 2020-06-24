@@ -1,39 +1,44 @@
-import worker from "workerize-loader!../workers"; // eslint-disable-line import/no-webpack-loader-syntax
-
 import { DASH_CONFIG } from "../dora.config";
 const Dash = window.Dash;
 let client;
+let listenTimeout;
 
 export default store => next => async action => {
   next(action);
 
-  const args = [action.payload, store.dispatch, store.getState()];
+  const args = [
+    action.payload,
+    store.dispatch,
+    store.getState(),
+    store.getState
+  ];
   switch (action.type) {
-    case "WALLET_FOUND_IN_LOCAL_STORAGE":
+    case "INIT":
       await initialiseWallet(...args);
       break;
 
-    case "WALLET_NOT_FOUND_IN_LOCAL_STORAGE":
+    case "CREATE_WALLET":
       await createWallet(...args);
       break;
 
-    case "SELECTED_ACCOUNT_FOUND_IN_LOCAL_STORAGE":
     case "SELECT_ACCOUNT":
-    case "ACCOUNT_CREATED":
       await selectAccount(...args);
       break;
 
-    case "WALLET_CREATED":
-      await initialiseAccountOnNewWallet(0, store.dispatch);
-      break;
-
-    case "WALLET_IMPORT_COMPLETED":
-      await initialiseAccountOnImportedWallet(0, store.dispatch);
+    case "DISCARD_WALLET":
+      await discardWallet();
       break;
 
     case "ACCOUNT_LOADED":
+    case "ACCOUNT_CREATED":
       updateAccountBalances(...args);
       updateAddress(...args);
+      updateIdentityBalances(...args);
+      listenForPayments(...args);
+      break;
+
+    case "IDENTITY_CREATED":
+      updateIdentityBalances(action.payload);
       break;
 
     case "CREATE_ACCOUNT":
@@ -48,12 +53,12 @@ export default store => next => async action => {
       importWallet(...args);
       break;
 
-    case "IMPORT_PLATFORM_DATA":
-      importPlatformData(...args);
-      break;
-
     case "UPDATE_ACCOUNT_BALANCES":
       updateAccountBalances(...args);
+      break;
+
+    case "SELECT_WIZARD_TYPE":
+      selectWizardType(...args);
       break;
 
     default:
@@ -62,122 +67,136 @@ export default store => next => async action => {
 };
 
 export async function updateAccountBalances(payload, dispatch) {
-  const balances = client.wallet.accounts
-    .sort((a, b) => a.index - b.index)
-    .map(account => ({
+  dispatch({ type: "UPDATING_ACCOUNT_BALANCES" });
+
+  const balances = client.wallet.accounts.forEach(account => {
+    const index = account.index;
+    const balance = {
       total: account.getTotalBalance(),
       unconfirmed: account.getUnconfirmedBalance(),
       confirmed: account.getConfirmedBalance()
-    }));
+    };
 
-  dispatch({ type: "ACCOUNT_BALANCE_UPDATED", payload: balances });
+    dispatch({ type: "ACCOUNT_BALANCE_UPDATED", payload: { index, balance } });
+  });
 }
 
 export async function updateAddress(payload, dispatch) {
   const address = client.account.getUnusedAddress().address;
-  dispatch({ type: "ACCOUNT_ADDRESS_UPDATED", payload: address });
+  const index = client.account.index;
+
+  dispatch({ type: "ACCOUNT_ADDRESS_UPDATED", payload: { address, index } });
 }
 
-export async function initialiseWallet(payload, dispatch) {
+export async function initialiseWallet(payload, dispatch, state) {
+  const mnemonic = state.getIn(["wallet", "mnemonic"]);
+  if (!mnemonic) {
+    dispatch({ type: "NO_INITIAL_WALLET_FOUND" });
+    return;
+  }
+
   client = new Dash.Client({
     ...DASH_CONFIG,
-    wallet: {
-      mnemonic: payload.mnemonic || null
-    }
+    wallet: { mnemonic }
   });
 
-  console.log(payload.mnemonic);
-  dispatch({ type: "WALLET_LOADED", payload });
+  const selectedAccount = state.getIn(["wallet", "selectedAccount"]) || 0;
+  dispatch({ type: "WALLET_LOADED" });
+  dispatch({ type: "SELECT_ACCOUNT", payload: selectedAccount });
+}
+
+export async function createWallet(payload, dispatch, state) {
+  dispatch({ type: "CREATING_WALLET" });
+  client = new Dash.Client({
+    ...DASH_CONFIG,
+    wallet: { mnemonic: null }
+  });
+
+  const id = `${new Date().getTime()}`;
+  const mnemonic = client.wallet.exportWallet();
+
+  dispatch({ type: "WALLET_CREATED", payload: { id, mnemonic } });
+  dispatch({ type: "CREATE_ACCOUNT" });
 }
 
 export async function importWallet(payload, dispatch) {
   dispatch({ type: "WALLET_IMPORT_STARTED" });
   try {
     client = new Dash.Client({
-      network: "testnet",
+      ...DASH_CONFIG,
       wallet: {
         mnemonic: payload
       }
     });
 
-    await client.wallet.getAccount({ index: 0 });
+    const accounts = [];
+    let allDone = false;
+    let index = 0;
+    let prev = "";
+    while (!allDone) {
+      const account = await client.wallet.getAccount({ index });
+      const transactions = JSON.stringify(account.store.transactions);
+      if (transactions === prev) {
+        allDone = true;
+      } else {
+        accounts.push(account);
+        index++;
+        prev = transactions;
+      }
+    }
+
+    const identitiesByAccount = await importPlatformData(accounts, dispatch);
 
     const id = `${new Date().getTime()}`;
-    const newWallet = {
+    const wallet = {
       id,
-      mnemonic: payload,
-      requiresPlatformImport: true
+      mnemonic: payload
     };
 
-    dispatch({ type: "WALLET_IMPORT_COMPLETED", payload: newWallet });
+    const importData = {
+      wallet,
+      accounts: accounts.map(a => a.index).sort(),
+      identitiesByAccount
+    };
+
+    client.wallet.accounts = accounts;
+    dispatch({ type: "WALLET_IMPORT_COMPLETED", payload: importData });
+
+    if (accounts.length === 1) {
+      dispatch({ type: "SELECT_ACCOUNT", payload: 0 });
+    }
   } catch (e) {
     dispatch({ type: "WALLET_IMPORT_FAILED", payload: e.message });
   }
 }
 
-export async function createWallet(payload, dispatch) {
-  const wallet = {
-    mnemonic: null
-  };
+export async function importPlatformData(accounts, dispatch) {
+  const identitiesByAccount = {};
+  for (const account of accounts) {
+    const identityIds = account.getIdentityIds();
+    const index = account.index;
+    identitiesByAccount[index] = {};
 
-  console.log(wallet);
-  client = new Dash.Client({ wallet });
+    for (const identityId of identityIds) {
+      const names = await getUsernamesFromIdentityId(identityId);
+      const identity = await client.platform.identities.get(identityId);
+      identitiesByAccount[index][identityId] = names;
+    }
+  }
 
-  console.log(client);
-  const id = `${new Date().getTime()}`;
-  const mnemonic = client.wallet.exportWallet();
-
-  dispatch({ type: "WALLET_CREATED", payload: { id, mnemonic } });
-}
-
-export async function initialiseAccountOnNewWallet(payload, dispatch) {
-  dispatch({ type: "ACCOUNT_CREATED_ON_NEW_WALLET", payload: 0 });
-  await selectAccount(0, dispatch);
-}
-
-export async function initialiseAccountOnImportedWallet(payload, dispatch) {
-  dispatch({ type: "ACCOUNT_SELECTED_ON_IMPORTED_WALLET", payload: 0 });
-  await selectAccount(0, dispatch);
+  return identitiesByAccount;
 }
 
 export async function selectAccount(payload, dispatch) {
   dispatch({ type: "LOADING_ACCOUNT" });
 
-  client.account = await client.wallet.getAccount({ index: payload });
+  const account = await client.wallet.getAccount({ index: payload });
+  client.account = account;
 
   dispatch({ type: "ACCOUNT_LOADED", payload });
 }
 
-export async function importPlatformData(payload, dispatch, state) {
-  dispatch({ type: "IMPORTING_PLATFORM_DATA" });
-
-  const debugAcc = client.wallet.accounts[0];
-  const accounts = client.wallet.accounts.map(a => ({
-    transactions: a.getTransactions(),
-    index: a.index
-  }));
-  const workerInstance = worker();
-  const identities = await workerInstance.getWalletIdentities(accounts);
-
-  const identitiesByAccount = [];
-  for (const accountIdentities of identities) {
-    const names = [];
-    for (const identityId of accountIdentities) {
-      const usernames = await getUsernamesFromIdentityId(identityId);
-      names.push(...usernames.map(username => ({ username, identityId })));
-    }
-
-    identitiesByAccount.push(names);
-  }
-
-  dispatch({ type: "PLATFORM_DATA_IMPORTED", payload: identitiesByAccount });
-
-  const accountIdentity = identitiesByAccount[state.account.selected] || [];
-  dispatch({ type: "ACCOUNT_IDENTITY_FOUND", payload: accountIdentity });
-}
-
 export async function getUsernamesFromIdentityId(identityId) {
-  const identity = await client.platform.identities.get(identityId);
   const names = await client.platform.documents.get("dpns.domain", {
     where: [["records.dashIdentity", "==", identityId]]
   });
@@ -187,24 +206,32 @@ export async function getUsernamesFromIdentityId(identityId) {
 
 export async function createIdentity(payload, dispatch) {
   dispatch({ type: "CREATING_IDENTITY" });
-  const identity = await client.platform.identities.register(1000000);
-  dispatch({ type: "CREATED_IDENTITY", payload: identity.id });
+  const identity = await client.platform.identities.register();
+  dispatch({
+    type: "IDENTITY_CREATED",
+    payload: { index: payload, identityId: identity.id }
+  });
 
   return identity.id;
 }
 
 export async function createUsername(payload, dispatch, state) {
+  const index = state.getIn(["wallet", "selectedAccount"]);
+  const account = state.getIn(["wallet", "accounts", index]);
+
   try {
-    const identityId =
-      state.identity.createdIdentity ||
-      (await createIdentity(payload, dispatch));
+    const storedId = account.get("selectedIdentityId");
+    const identityId = storedId || (await createIdentity(index, dispatch));
 
     const identity = await client.platform.identities.get(identityId);
     const name = await client.platform.names.register(payload, identity);
     const username = name.data.label;
 
-    dispatch({ type: "USERNAME_CREATED", payload: { username, identityId } });
-    dispatch({ type: "SELECT_USERNAME", payload: username });
+    dispatch({
+      type: "USERNAME_CREATED",
+      payload: { index, username, identityId }
+    });
+    dispatch({ type: "SELECT_USERNAME", payload: { index, username } });
   } catch (e) {
     console.error(e);
     dispatch({ type: "CREATE_USERNAME_FAILED", payload: e.message });
@@ -213,7 +240,82 @@ export async function createUsername(payload, dispatch, state) {
 
 export async function createAccount(payload, dispatch) {
   const index = client.wallet.accounts.length;
+  dispatch({ type: "CREATING_ACCOUNT", payload: index });
+
   const account = await client.wallet.createAccount({ index });
+  client.account = account;
   client.wallet.accounts[index] = account;
+
   dispatch({ type: "ACCOUNT_CREATED", payload: index });
+}
+
+export async function updateIdentityBalances(payload, dispatch, state) {
+  dispatch({ type: "IDENTITY_BALANCES_UPDATING" });
+
+  const index = typeof payload.index === "number" ? payload.index : payload;
+  console.log(index);
+  const identityIds = state
+    .getIn(["wallet", "accounts", index, "identities"])
+    .keys();
+  const balances = {};
+  for (const id of identityIds) {
+    const identity = await client.platform.identities.get(id);
+    balances[id] = identity.balance;
+  }
+
+  dispatch({
+    type: "IDENTITY_BALANCES_UPDATED",
+    payload: { balances, index }
+  });
+}
+
+export async function selectWizardType(payload, dispatch) {
+  if (payload === "CREATE") {
+    dispatch({ type: "CREATE_WALLET" });
+  }
+}
+
+export async function discardWallet() {
+  setTimeout(() => {
+    window.location.reload();
+  }, 0);
+}
+
+export async function listenForPayments(index, dispatch, state, getState) {
+  window.clearTimeout(listenTimeout);
+
+  const current = getState().getIn([
+    "wallet",
+    "accounts",
+    index,
+    "balance",
+    "confirmed"
+  ]);
+
+  if (!client.account) return; // FOr hot reload, stops it breaking
+  if (typeof current !== "number") {
+    listenTimeout = setTimeout(
+      () => listenForPayments(index, dispatch, state, getState),
+      100
+    );
+    return;
+  }
+
+  const newBalance = client.account.getConfirmedBalance();
+  const amount = newBalance - current;
+  console.log(amount, newBalance, current);
+  if (newBalance > current) {
+    dispatch({
+      type: "PAYMENT_RECEIVED",
+      payload: { index, amount, newBalance }
+    });
+    window.setTimeout(() => {
+      dispatch({ type: "UPDATE_ACCOUNT_BALANCES" });
+    }, 3000);
+  }
+
+  const timeout = newBalance > current ? 4000 : 1000;
+  listenTimeout = window.setTimeout(() => {
+    listenForPayments(index, dispatch, state, getState);
+  }, timeout);
 }

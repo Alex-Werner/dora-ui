@@ -1,15 +1,17 @@
 import React from "react";
 
-import Spinner from "./Spinner";
-import { ModalLoading, ModalLoadingIcon } from "../Styles";
+import { LoadingWizard } from "../Styles";
+import LoadingInline from "./LoadingInline";
 
 function AccountWizardLoading({ children, Icon }) {
   return (
-    <ModalLoading>
-      <Spinner size={80} />
-      <ModalLoadingIcon>{Icon && <Icon size={40} />}</ModalLoadingIcon>
-      {children}
-    </ModalLoading>
+    <LoadingWizard>
+      <div>
+        {Icon && <Icon />}
+        <LoadingInline />
+      </div>
+      <p>{children}</p>
+    </LoadingWizard>
   );
 }
 

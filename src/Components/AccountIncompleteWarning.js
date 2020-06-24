@@ -1,6 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
 
+import { identityId, names } from "../selectors";
 import { WarningBanner } from "../Styles";
 
 function AccountIncompleteWarning({ isIncomplete, showWizard }) {
@@ -14,7 +15,7 @@ function AccountIncompleteWarning({ isIncomplete, showWizard }) {
 
 const stateToProps = state => {
   return {
-    isIncomplete: !state.loading.account && !state.identity.selectedName
+    isIncomplete: !identityId(state) && names(state).size === 0
   };
 };
 

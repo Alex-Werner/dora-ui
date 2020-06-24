@@ -7,12 +7,12 @@ import RadioSet from "./RadioSet";
 const accountFromOptions = [
   {
     value: "CREATE",
-    label: "Create a new account",
+    label: "Create a new wallet",
     info: "If you're new to Dash or want to start from a blank slate"
   },
   {
     value: "IMPORT",
-    label: "Import an account",
+    label: "Import a wallet",
     info: "If you've created a wallet elsewhere and want to use it here"
   }
 ];
@@ -23,13 +23,7 @@ function AccountSetup({ next }) {
   return (
     <Form onSubmit={e => e.preventDefault() || next(accountFrom)}>
       <h2>Let's get started</h2>
-      <p>
-        To be able to interract fully with dapps, you need to setup an account.
-      </p>
-      <p>
-        An account is made up of a <em>wallet</em>, where funds are stored and a{" "}
-        <em>username</em> which is used to identify you.
-      </p>
+      <p>To interract with the Dash Platform, you need a wallet.</p>
 
       <RadioSet
         name="accountFrom"
