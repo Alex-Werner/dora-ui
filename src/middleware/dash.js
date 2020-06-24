@@ -1,11 +1,17 @@
 import { DASH_CONFIG } from "../dora.config";
 const Dash = window.Dash;
 let client;
+let listenTimeout;
 
 export default store => next => async action => {
   next(action);
 
-  const args = [action.payload, store.dispatch, store.getState()];
+  const args = [
+    action.payload,
+    store.dispatch,
+    store.getState(),
+    store.getState
+  ];
   switch (action.type) {
     case "INIT":
       await initialiseWallet(...args);
@@ -28,10 +34,11 @@ export default store => next => async action => {
       updateAccountBalances(...args);
       updateAddress(...args);
       updateIdentityBalances(...args);
+      listenForPayments(...args);
       break;
 
     case "IDENTITY_CREATED":
-      updateIdentityBalances(...args);
+      updateIdentityBalances(action.payload);
       break;
 
     case "CREATE_ACCOUNT":
@@ -246,6 +253,7 @@ export async function updateIdentityBalances(payload, dispatch, state) {
   dispatch({ type: "IDENTITY_BALANCES_UPDATING" });
 
   const index = typeof payload.index === "number" ? payload.index : payload;
+  console.log(index);
   const identityIds = state
     .getIn(["wallet", "accounts", index, "identities"])
     .keys();
@@ -271,4 +279,43 @@ export async function discardWallet() {
   setTimeout(() => {
     window.location.reload();
   }, 0);
+}
+
+export async function listenForPayments(index, dispatch, state, getState) {
+  window.clearTimeout(listenTimeout);
+
+  const current = getState().getIn([
+    "wallet",
+    "accounts",
+    index,
+    "balance",
+    "confirmed"
+  ]);
+
+  if (!client.account) return; // FOr hot reload, stops it breaking
+  if (typeof current !== "number") {
+    listenTimeout = setTimeout(
+      () => listenForPayments(index, dispatch, state, getState),
+      100
+    );
+    return;
+  }
+
+  const newBalance = client.account.getConfirmedBalance();
+  const amount = newBalance - current;
+  console.log(amount, newBalance, current);
+  if (newBalance > current) {
+    dispatch({
+      type: "PAYMENT_RECEIVED",
+      payload: { index, amount, newBalance }
+    });
+    window.setTimeout(() => {
+      dispatch({ type: "UPDATE_ACCOUNT_BALANCES" });
+    }, 3000);
+  }
+
+  const timeout = newBalance > current ? 4000 : 1000;
+  listenTimeout = window.setTimeout(() => {
+    listenForPayments(index, dispatch, state, getState);
+  }, timeout);
 }

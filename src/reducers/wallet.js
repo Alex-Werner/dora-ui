@@ -14,6 +14,7 @@ const initialAccount = Map({
     unconfirmed: null,
     total: null
   }),
+  incomingPayment: null,
   address: null,
   identities: Map(),
   identityIdByName: OrderedMap(),
@@ -36,15 +37,19 @@ export default (state = initial, action) => {
       return state.set("mnemonic", a.mnemonic).set("id", a.id);
 
     case "SELECT_ACCOUNT":
-      return state.set("selectedAccount", a);
+      return state
+        .set("selectedAccount", a)
+        .setIn(["accounts", a, "incomingPayment"], null);
 
-    case "ACCOUNT_CREATED":
+    case "CREATING_ACCOUNT":
       return state
         .set("selectedAccount", a)
         .setIn(["accounts", a], initialAccount);
 
     case "ACCOUNT_BALANCE_UPDATED":
-      return state.setIn([...acc(), "balance"], Map(a.balance));
+      return state
+        .setIn([...acc(), "balance"], Map(a.balance))
+        .setIn([...acc(), "incomingPayment"], null);
 
     case "ACCOUNT_ADDRESS_UPDATED":
       return state.setIn([...acc(), "address"], a.address);
@@ -98,6 +103,15 @@ export default (state = initial, action) => {
       }, accountUpdate);
 
       return newState;
+
+    case "PAYMENT_RECEIVED":
+      return state.setIn(
+        [...acc(), "incomingPayment"],
+        Map({
+          amount: a.amount,
+          newBalance: a.newBalance
+        })
+      );
 
     case "DISCARD_WALLET":
       return initial;

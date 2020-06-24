@@ -5,6 +5,7 @@ import { UserAstronaut } from "@styled-icons/fa-solid/UserAstronaut";
 import { Qrcode } from "@styled-icons/icomoon/Qrcode";
 import { Coins } from "@styled-icons/fa-solid/Coins";
 import { Dash } from "@styled-icons/crypto/Dash";
+import { BadgeCheck } from "@styled-icons/boxicons-solid/BadgeCheck";
 
 export const mobileWidth = 760;
 export const mobile = str => `
@@ -45,7 +46,7 @@ export const shadows = {
 
 export const light = n => `rgba(255,255,255,${0.1 + 0.1 * fib(n)})`;
 export const dark = n => `rgba(66,135,245,${0.1 * fib(n)})`;
-export const modalBg = "rgba(232,245,255,0.95)";
+export const modalBg = "rgba(232,245,255,0.90)";
 
 export const Container = styled.div`
   padding: 0 ${space(6)};
@@ -709,6 +710,53 @@ export const UsernameList = styled.ul`
     display: inline-block;
     text-align: left;
     margin-left: ${space(7)};
+  }
+`;
+
+export const LoadingPayment = styled.div`
+  margin: ${margin} 0 0 0;
+  box-shadow: ${shadows.small};
+  text-align: center;
+  padding: ${space(5)};
+  position: relative;
+  overflow: hidden;
+  ${LoadingInlineContainer} {
+    div {
+      background: ${colors.primary};
+    }
+  }
+  p {
+    margin: ${space(5)} 0 0 0;
+    text-align: center;
+  }
+`;
+
+export const PaymentTick = styled(BadgeCheck)`
+  width: ${fontSize(5)};
+  height: ${fontSize(5)};
+`;
+
+export const PaymentReceived = styled.div`
+  width: 100%;
+  height: 100%;
+  padding: ${space(5)};
+  background: ${colors.primary};
+  opacity: ${props => (props.isVisible ? 1 : 0)};
+  position: absolute;
+  top: 0;
+  left: 0;
+  transition: opacity 150ms ease-in-out;
+  color: ${colors.white};
+  ${DashAmount} {
+    opacity: ${props => (props.isVisible ? 1 : 0)};
+    transition: opacity 150ms ease-in-out 300ms;
+  }
+  ${PaymentTick} {
+    margin: -${space(2)} ${space(4)} 0 0;
+  }
+  p {
+    margin: 0 0 ${space(5)} 0;
+    line-height: ${fontSize(6)};
   }
 `;
 

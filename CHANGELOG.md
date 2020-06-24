@@ -1,7 +1,10 @@
 # Changelog
 The goal of this changelog is to track all changes made and to stand as the record of work completed. This project doesn't adhere to Semver. Instead the "patch" version is updated daily, "minor" weekly and the major only for major release events.
 
-## 0.0.6 - 2020/06/22
+## 0.1.0 - 2020/06/24
+1. Added transaction listening to FundsRequired component
+
+## 0.0.6 - 2020/06/23
 1. Refactor to make reducer structure match the underlying (all wallet data within wallet reducer) and added immutable to make it usable
 2. Got account management working again and identity balance updating at correct times
 3. Added identity management component, forcing user to select a username if not done so. Also some import bug fixes.
