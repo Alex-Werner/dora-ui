@@ -61,6 +61,7 @@ export default (state = initial, action) => {
       return state.set("showCreateUsername", true);
 
     case "HIDE_CREATE_USERNAME":
+    case "USERNAME_CREATED":
       return state.set("showCreateUsername", false);
 
     case "SHOW_IDENTITY_MANAGEMENT":

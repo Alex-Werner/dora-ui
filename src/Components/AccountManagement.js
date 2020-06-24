@@ -2,7 +2,14 @@ import React from "react";
 import { connect } from "react-redux";
 
 import { accountList } from "../selectors";
-import { AccountList, ActionButton } from "../Styles";
+import {
+  SelectableList,
+  SelectableItem,
+  ActionButton,
+  GhostButton,
+  GoIcon
+} from "../Styles";
+import DashAmount from "./DashAmount";
 
 function AccountManagement({ accounts, select, create, hide }) {
   console.log(accounts);
@@ -13,24 +20,28 @@ function AccountManagement({ accounts, select, create, hide }) {
         Select an account to use from the options below. Hit the "Create New"
         button to add a fresh account.
       </p>
-      <AccountList>
+      <SelectableList>
         {accounts.map(account => {
           return (
-            <li
+            <SelectableItem
+              isSelected={account.isSelected}
               key={account.index}
-              selected={account.isSelected}
               onClick={e => select(account.index) || hide()}
             >
-              <strong>{account.selectedName || "(anonymous)"}</strong>
-              <small>
-                {account.names
-                  .filter(n => n.name !== account.selectedName)
-                  .join(", ")}
-              </small>
-            </li>
+              <GhostButton onClick={e => select(account.index) || hide()}>
+                Account {account.index + 1}
+                <DashAmount size={3}>{account.balance}</DashAmount>
+                <small>
+                  {account.names.length
+                    ? account.names.join(", ")
+                    : "(anonymous)"}
+                </small>
+                <GoIcon />
+              </GhostButton>
+            </SelectableItem>
           );
         })}
-      </AccountList>
+      </SelectableList>
       <ActionButton ownRow={true} onClick={e => create() || hide()}>
         Create New
       </ActionButton>

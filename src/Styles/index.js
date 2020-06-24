@@ -66,7 +66,6 @@ export const Header = styled(Container)`
 `;
 
 export const PageContainer = styled.div`
-  background: ${light(5)};
   padding: ${margin} ${space(6)};
 `;
 
@@ -311,6 +310,7 @@ export const AccountDropdown = styled.nav`
     text-align: left;
     width: 100%;
     padding: ${space(6)} ${space(5)};
+    background: ${colors.secondary};
     color: ${colors.white};
     font-size: ${fontSize(2)};
     border-bottom: 1px solid ${light(1)};
@@ -661,31 +661,31 @@ export const LoadingInlineContainer = styled.div`
   }
 `;
 
-export const UsernameList = styled.ul`
+export const SelectableList = styled.ul`
   margin: ${margin} 0 0 0;
   padding: 0;
   list-style: none;
-  li {
-    margin: ${space(6)} 0 0 0;
-  }
+`;
+
+export const SelectableItem = styled.li`
+  margin: ${space(4)} 0 0 0;
   button {
     width: 100%;
     text-align: left;
-    padding: ${space(4)};
-    border: 1px solid ${colors.muted};
-    border-bottom-width: 2px;
+    padding: ${space(5)} ${space(4)};
+    box-shadow: ${shadows.small};
     color: ${colors.primary};
+    background: ${props => (props.isSelected ? colors.muted : colors.white)};
     font-weight: bold;
     font-size: ${fontSize(5)};
     &:hover,
     &:active,
     &:focus {
-      border-top-width: 2px;
-      border-bottom-width: 1px;
       background: ${colors.primary};
       border-color: ${colors.secondary};
       color: ${colors.white};
       svg,
+      small,
       span {
         color: ${colors.white};
       }
@@ -703,6 +703,12 @@ export const UsernameList = styled.ul`
     width: ${fontSize(6)};
     height: ${fontSize(6)};
   }
+  ${DashAmount}{
+    color: ${colors.primary};
+    display:inline-block;
+    line-height: ${fontSize(4)};
+    margin-left: ${space(7)};
+  }
   ${IdentityCreditDisplay} {
     ${mobile(`
       display: none;
@@ -711,6 +717,14 @@ export const UsernameList = styled.ul`
     display: inline-block;
     text-align: left;
     margin-left: ${space(7)};
+  }
+  small{
+    clear:both;
+    color: ${colors.text};
+    display:block;
+    margin-top: ${space(4)};
+    font-size: ${fontSize(2)};
+    font-weight:normal;
   }
 `;
 

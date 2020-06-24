@@ -34,8 +34,8 @@ export const accountStatus = createSelector(accountStatusSelectors, (...r) => {
 
   if (wizard.get("showAccountManagement")) return "ACCOUNT_MANAGEMENT";
   if (wizard.get("showSend")) return "SEND";
-  if (wizard.get("showIdentityManagement")) return "IDENTITY_MANAGEMENT";
   if (wizard.get("showCreateUsername")) return "CREATE_USERNAME";
+  if (wizard.get("showIdentityManagement")) return "IDENTITY_MANAGEMENT";
   if (wizard.get("showReceive")) return "RECEIVE";
   if (wizard.get("viewMnemonic")) return "VIEW_MNEMONIC";
   if (wizard.get("isHidden")) return "HIDDEN";
@@ -83,6 +83,7 @@ export const accountList = createSelector(
           isSelected: selected === index,
           names: [...account.get("identityIdByName").keys()],
           selectedName: account.get("selectedName"),
+          balance: account.getIn(["balance", "total"]),
           index
         });
       })
@@ -93,7 +94,8 @@ export const accountList = createSelector(
 export const nameList = createSelector(
   names,
   identities,
-  (names, identities) => {
+  username,
+  (names, identities, username) => {
     const identityList = [];
     const nameList = [];
     const nameMap = names.toObject();
@@ -110,6 +112,7 @@ export const nameList = createSelector(
       nameList.push({
         identity,
         name,
+        isSelected: name === username,
         balance: identities.getIn([identityId, "balance"], 0)
       });
     }
