@@ -765,7 +765,7 @@ export const LoadingWizard = styled.div`
   text-align: center;
   p {
     margin: ${margin} 0 0 0;
-    font-size: ${fontSize(6)};
+    font-size: ${fontSize(5)};
   }
   > div {
     position: relative;

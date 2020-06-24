@@ -1,5 +1,6 @@
 import React from "react";
 import { connect } from "react-redux";
+import { UserAstronaut } from "@styled-icons/fa-solid/UserAstronaut";
 
 import {
   Form,
@@ -9,6 +10,7 @@ import {
   FieldInfo,
   FieldError
 } from "../Styles";
+import AccountWizardLoading from "./AccountWizardLoading";
 
 const errorText = {
   "Invalid state transition":
@@ -18,7 +20,7 @@ const errorText = {
 function AccountCreateUsername({ createUsername, isLoading, error }) {
   const [username, setUsername] = React.useState("");
 
-  return (
+  return !isLoading ? (
     <div className="create-username">
       <h2>Choose a username</h2>
       <p>To get the most out of the Dash Platform, please create a username.</p>
@@ -36,13 +38,16 @@ function AccountCreateUsername({ createUsername, isLoading, error }) {
           onChange={e => setUsername(e.target.value)}
           placeholder="Choose a username"
         />
-        <FieldError isVisible={!!error}>{error && errorText[error]}</FieldError>
-        <FieldInfo>Info about validation</FieldInfo>
-        <ActionButton type="submit" disabled={isLoading}>
-          Confirm Username
-        </ActionButton>
+        <FieldError isVisible={!!error}>
+          {error && (errorText[error] || "Username registration failed")}
+        </FieldError>
+        <ActionButton type="submit">Confirm Username</ActionButton>
       </Form>
     </div>
+  ) : (
+    <AccountWizardLoading Icon={UserAstronaut}>
+      Registering your username on the Dash Platform...
+    </AccountWizardLoading>
   );
 }
 

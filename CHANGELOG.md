@@ -4,6 +4,7 @@ The goal of this changelog is to track all changes made and to stand as the reco
 ## 0.1.0 - 2020/06/24
 1. Added transaction listening to FundsRequired component
 2. Moved loading wait stage to happen on wallet create and built loading component
+3. Added loading screens to create username and import
 
 ## 0.0.6 - 2020/06/23
 1. Refactor to make reducer structure match the underlying (all wallet data within wallet reducer) and added immutable to make it usable
