@@ -373,11 +373,14 @@ export const ModalOverlay = styled.div`
   height: 100vh;
   background: ${modalBg};
   z-index: 9;
+  ${mobile(`
+    overflow-y: auto;
+  `)}
 `;
 
 export const ModalContent = styled.div`
   background: ${colors.white};
-  position: fixed;
+  position: absolute;
   cursor: default;
   z-index: 10;
   top: ${space(7)};

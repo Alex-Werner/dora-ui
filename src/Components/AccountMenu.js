@@ -45,7 +45,7 @@ function Account({ username, isLoading }) {
 
 const stateToProps = state => {
   return {
-    isLoading: state.getIn(["loading", "account"]),
+    isLoading: state.getIn(["loading", "wallet"]),
     username: username(state)
   };
 };

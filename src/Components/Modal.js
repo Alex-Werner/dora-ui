@@ -7,6 +7,9 @@ import { useWindowKeyup } from "../hooks";
 function Modal({ children, close, title }) {
   const isVisible = !!children;
   useWindowKeyup("Escape", close);
+  React.useEffect(() => {
+    if (isVisible) window.scrollTo(0, 0);
+  }, [isVisible]);
 
   return (
     <ModalOverlay
